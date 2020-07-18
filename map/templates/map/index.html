@@ -1,9 +1,12 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
       <title>Map</title>
       <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js'></script>
       <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
+      <link rel="stylesheet" type="text/css" href="{% static 'map/style.css' %}">
   </head>
   <body>
       <h1>Hello world! This is our interactive map</h1>
@@ -12,8 +15,14 @@
         mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
         var map = new mapboxgl.Map({
           container: 'map',
-          style: 'mapbox://styles/mapbox/streets-v11'
+          style: 'mapbox://styles/mapbox/streets-v11',
+          center: [12.550343, 55.665957],
+          zoom: 8
         });
+        
+        var marker = new mapboxgl.Marker()
+          .setLngLat([12.550343, 55.665957])
+          .addTo(map);
       </script>
   </body>
 </html>
