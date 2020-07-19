@@ -34,21 +34,22 @@
           });
           var e = document.createElement('div');                                       
           e.style.backgroundImage = 'url(https://placekitten.com/g/50/)';              
-          e.style.width = '50px';                                                      
-          e.style.height = '50px';
+          e.style.width = '70px';                                                      
+          e.style.height = '70px';
           e.style.borderRadius = '50%';                                                       
-          
           var embassies = {{ embassy_list|safe }};
-          for(var i = 0; i < 50; i++){
+          new mapboxgl.Marker(e).setLngLat([-16.686794,13.462059]).addTo(map);
+          for(var i = 0; i < 100; i++){
             props = embassies[i];
             var el = document.createElement('div');                                       
-          el.style.backgroundImage = 'url(https://placekitten.com/g/50/)';              
-          el.style.width = '50px';                                                      
-          el.style.height = '50px';
-          el.style.borderRadius = '50%';
+            el.style.backgroundImage = 'url(https://placekitten.com/g/50/)';              
+            el.style.width = '50px';                                                      
+            el.style.height = '50px';
+            el.style.borderRadius = '50%';
             new mapboxgl.Marker(el).setLngLat([props[14],props[13]]).addTo(map);
             //new mapboxgl.Marker(e).setLngLat([props[13],props[14]).addTo(map);
           }
+
       </script>
   </body>
 </html>
