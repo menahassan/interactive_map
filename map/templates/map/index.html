@@ -8,11 +8,12 @@
       <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
       <link rel="stylesheet" type="text/css" href="{% static 'map/style.css' %}">
       <script>
-          function center() { <!-- doesnt work; page refreshes when pin is set -->
+          function center() { //doesnt work; page refreshes when pin is set -->
               country = {{country}}
-              <!--map.center = [69.190028, 34.534618];-->
-              <!-- set to afghanistan; will have to extract location from excel -->
+              //map.center = [69.190028, 34.534618];-->
+              //set to afghanistan; will have to extract location from excel -->
           }
+          
       </script>
   </head>
   <body>
@@ -31,11 +32,23 @@
             center: [12.550343, 55.665957],
             zoom: 2
           });
-
-          var marker = new mapboxgl.Marker()
-            .setLngLat([12.550343, 55.665957])
-            .addTo(map);
-
+          var e = document.createElement('div');                                       
+          e.style.backgroundImage = 'url(https://placekitten.com/g/50/)';              
+          e.style.width = '50px';                                                      
+          e.style.height = '50px';
+          e.style.borderRadius = '50%';                                                       
+          
+          var embassies = {{ embassy_list|safe }};
+          for(var i = 0; i < 20; i++){
+            props = embassies[i];
+            var el = document.createElement('div');                                       
+          el.style.backgroundImage = 'url(https://placekitten.com/g/50/)';              
+          el.style.width = '50px';                                                      
+          el.style.height = '50px';
+          el.style.borderRadius = '50%';
+            new mapboxgl.Marker(el).setLngLat([props[13], props[14]]).addTo(map);
+            //new mapboxgl.Marker(e).setLngLat([props[13],props[14]).addTo(map);
+          }
       </script>
   </body>
 </html>
