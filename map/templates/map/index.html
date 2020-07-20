@@ -30,7 +30,7 @@
             pitch:0.01,
             container: 'map',
             style: 'mapbox://styles/mapbox/streets-v11',
-            center: [12.550343, 55.665957],
+            center: [35.385076, 36.983267],
             zoom: 2
           }); 
           //var marker = new mapboxgl.Marker().setLngLat([12.550343, 55.665957]).addTo(map);                                  
@@ -45,6 +45,7 @@
             el.style.width = '15px';                                                      
             el.style.height = '15px';
             el.style.borderRadius = '50%';
+            el.style.border = '0.25px solid';
             //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map); 
             let tmpMarker = new mapboxgl.Marker(el);
             el.markerInstance = tmpMarker;
