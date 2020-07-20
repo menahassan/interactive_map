@@ -27,25 +27,40 @@
       <script>
           mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
           var map = new mapboxgl.Map({
+            pitch:0.01,
             container: 'map',
             style: 'mapbox://styles/mapbox/streets-v11',
             center: [12.550343, 55.665957],
             zoom: 2
-          });                                                       
+          }); 
+          //var marker = new mapboxgl.Marker().setLngLat([12.550343, 55.665957]).addTo(map);                                  
           var embassies = {{ embassy_list|safe }};
-          for(var i = 0; i < 100; i++){
+          for(var i = 0; i < 275; i++){
             props = embassies[i];
             //commented out code is for adding background image
-            //var el = document.createElement('div'); 
-            //el.class = 'marker';                                      
-            //el.style.backgroundImage = 'url(https://placekitten.com/g/50/)';              
-            //el.style.width = '50px';                                                      
-            //el.style.height = '50px';
-            //el.style.borderRadius = '50%';
-            var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
-            //new mapboxgl.Marker(el).setLngLat([props[14],props[13]]).addTo(map);
-          }
+            var el = document.createElement('div'); 
+            el.class = 'marker'; 
+            //red box image                                     
+            el.style.backgroundImage = 'url(https://i.pinimg.com/564x/f4/a8/6a/f4a86a209ba10ab95afcfd4ed29f3acf.jpg)';              
+            el.style.width = '15px';                                                      
+            el.style.height = '15px';
+            el.style.borderRadius = '50%';
+            //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map); 
+            let tmpMarker = new mapboxgl.Marker(el);
+            el.markerInstance = tmpMarker;
+            tmpMarker.setLngLat([props[14],props[13]]).addTo(map);
+            el.addEventListener("click", e => {
+              // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
+              let coords = e.target.markerInstance.getLngLat();
 
+              //tell the map to center on the marker coordinates
+              map.flyTo({
+                  center: coords,
+                  speed: 0.6,
+                  zoom: 7
+              });
+          });
+          }
       </script>
   </body>
 </html>
