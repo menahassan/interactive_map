@@ -8,23 +8,38 @@
       <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
       <link rel="stylesheet" type="text/css" href="{% static 'map/style.css' %}">
       <script>
-          function center() { //doesnt work; page refreshes when pin is set -->
-              country = {{country}}
-              //map.center = [69.190028, 34.534618];-->
-              //set to afghanistan; will have to extract location from excel -->
-          }
-          
+          function center(country) {
+              var my_dict = JSON.parse('{{ dict|safe }}');
+              var longitude = my_dict[country].long;
+              var latitude = my_dict[country].lat;
+              var longlat = [longitude, latitude];
+              map.flyTo({
+                  center : longlat,
+                  <!--center: [-3.975871, 5.334631],-->
+                  zoom : 6,
+                  essential: true
+              });
+          };
+          document.addEventListener('DOMContentLoaded', function() {
+              document.querySelector('#countryselector').onclick = function() {
+                  const country = document.querySelector('#countries').value;
+                  center(country);
+              };
+          }); 
       </script>
   </head>
   <body>
       <h1>Hello world! This is our interactive map</h1>
-      <form id="countryform" action="" method="post">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <p><input type="submit" value="Submit" onclick="center()"></p>
-      </form> 
-
-        
+      <form id="countryform">
+          <label>Which country would you like to explore?</label>
+          <select id="countries" name="countries">
+            <!--to do: add all countries using loop-->
+              {% for country in countries %}
+                  <option value="{{country}}">{{country}}</option>
+              {% endfor %}
+          </select>
+          <input id="countryselector" type="button" value="Submit">
+      </form>
     <div id='map' style='width: 100%; height: 670px;'></div>
       <script>
           mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
@@ -35,12 +50,11 @@
             center: [35.385076, 36.983267],
             zoom: 2
           });
-        
+           var title = 'Learn more about this embassy!';
           //var marker = new mapboxgl.Marker().setLngLat([12.550343, 55.665957]).addTo(map);                                  
           var embassies = {{ embassy_list|safe }};
           for(var i = 0; i < 275; i++){
             props = embassies[i];
-            var title = 'Learn more about this embassy!';
             var description = props[3];
             //commented out code is for adding background image
             var el = document.createElement('div'); 
@@ -55,7 +69,7 @@
             let tmpMarker = new mapboxgl.Marker(el);
             el.markerInstance = tmpMarker;
             tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-    .setHTML('<h3>' + title + '</h3><p>' + description + '</p>')).addTo(map);
+    .setHTML('<h3>' + title + '</h3><p>' + description + '</p>'+ '<img src="{% static "map/embassy-1.jpg" %}" alt="My image" width = "40" height="40">')).addTo(map);
             el.addEventListener("click", e => {
               // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
               let coords = e.target.markerInstance.getLngLat();
