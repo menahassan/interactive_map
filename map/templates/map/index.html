@@ -1,4 +1,5 @@
 {% load static %}
+{% load extrafilters %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,12 +10,16 @@
       <!--link rel="stylesheet" type="text/css" href="{% static 'map/style.css' %}"-->
       <script>
           function center(country) {
+              var my_dict = JSON.parse('{{ dict|safe }}');
+              var longitude = my_dict[country].long;
+              var latitude = my_dict[country].lat;
+              var longlat = [longitude, latitude];
               map.flyTo({
-                  center: [-3.975871, 5.334631],
-                  zoom : 4,
+                  center : longlat,
+                  <!--center: [-3.975871, 5.334631],-->
+                  zoom : 6,
                   essential: true
               });
-              <!-- set to cote divoire; use dict -->
           };
           document.addEventListener('DOMContentLoaded', function() {
               document.querySelector('#countryselector').onclick = function() {

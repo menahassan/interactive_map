@@ -4,14 +4,14 @@ book = openpyxl.load_workbook('Embassies Consulates and Missions Lat Longs.xlsx'
 
 sheet = book.active
 
-DICT = {} #keys: countries , values: lists of long/lat - DICT has not yet been tested
+DICT = {} #keys: countries , values: long/lat dictionary - DICT has not yet been tested
 
 for row in sheet.iter_rows(min_row=2, max_row = 276, min_col=1, max_col=15, values_only=True):
-    longlat = []
-    longlat.append(row[14])
-    longlat.append(row[13])
+    longlat = {}
+    longlat["long"] = row[14]
+    longlat["lat"]= row[13]
     DICT[row[2]] = longlat
-     #TO DO: longlat has nonetype !
+
 
 
 

@@ -3,11 +3,12 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 #from .forms import CountriesForm
 from map import DICT
+import json
 
 # Create your views here.
 def index(request):
     mapbox_access_token = 'pk.my_mapbox_access_token'
-    dictionary = DICT
+    dictionary = json.dumps(DICT)
 
     #if "country" not in request.session:
     #    request.session["country"] = ""
@@ -25,5 +26,5 @@ def index(request):
     return render(request, "map/index.html", {
     'mapbox_access_token': mapbox_access_token,
     'countries' : sorted(DICT.keys()),
-    'DICT' : dictionary,
+    'dict' : dictionary,
     })
