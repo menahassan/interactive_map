@@ -37,5 +37,15 @@
             .addTo(map);
 
       </script>
+
+      <h1>News</h1>
+        <ul>
+            {% for article in articles %}
+                <li>{{ article.2 }}</li>
+                <ul>
+                    <li><a href={{ article.1 }}> {{ article.0 }} </a></li>
+                </ul>
+            {% endfor %}
+        </ul>
   </body>
 </html>
