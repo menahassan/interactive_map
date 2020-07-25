@@ -14,6 +14,6 @@ def index(request):
     return render(request, "map/index.html", {
     'mapbox_access_token': mapbox_access_token,
     'countries' : sorted(DICT.keys()),
-    'dict' : dictionary,
     'embassy_list': embassy_list,
+    'dict' : dictionary,
     })
