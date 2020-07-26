@@ -3,3 +3,7 @@
     height: 50px;
     background-color: lightblue;
 }
+h1{
+    font-family: 'Courier New', Courier, monospace;
+    color: red;
+}

@@ -6,7 +6,7 @@
       <title>Map</title>
       <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js'></script>
       <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
-      <!--link rel="stylesheet" type="text/css" href="{% static 'map/style.css' %}"-->
+      <link rel="stylesheet" href="{% static 'map/style.css' %}">
       <script>
           var cur_country = "";
           function toggleMarkers(country){
@@ -40,9 +40,9 @@
       </script>
   </head>
   <body>
-      <h1>Hello world! This is our interactive map</h1>
+      <h1 style="font-family: Courier New, Courier, monospace; font-size: 40px; padding-left: 5px">Welcome to our<span style="font-family: Brush Script MT; font-size: 55px; letter-spacing: 2.5px;"> interactive map</span></h1>
       <form id="countryform">
-          <label>Which country would you like to explore?</label>
+          <label style="font-family: Courier New, Courier, monospace; padding-left: 5px">Which country would you like to explore?</label>
           <select id="countries" name="countries">
               {% for country in countries %}
                   <option value="{{country}}">{{country}}</option>
