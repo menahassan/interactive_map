@@ -5,7 +5,6 @@
   <head>
       <title>Map</title>
       <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js'></script>
-      <script src="https://cdn.jsdelivr.net/npm/translate@1/translate.min.js"></script>
       <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
       <link rel="stylesheet" href="{% static 'map/style.css' %}">
       <script>
@@ -61,51 +60,34 @@
             center: [35.385076, 36.983267],
             zoom: 2
           });
-          
-          var title = '<h3>Learn more about this embassy!<h3>';
+          var title = 'Learn more about this embassy!';
+          //var marker = new mapboxgl.Marker().setLngLat([12.550343, 55.665957]).addTo(map);
           var embassies = {{ embassy_list|safe }};
-          var langs = {{ lang_list|safe }};
           for(var i = 0; i < 275; i++){
               props = embassies[i];
-
-              /*var l = document.createElement('div');
-              l.className = 'custom-marker';
-                l.style.backgroundImage ='url({% static "map/man.svg" %})';
-                l.style.width = "60px";
-                l.style.height = "60.23px";
-                let tmpMarker2 = new mapboxgl.Marker(l);*/
-                
-                var msg = new SpeechSynthesisUtterance();
-                msg.text = langs;
-                msg.lang = 'en-US';
-                
-              var description ='<p>' + props[3]+ '</p>';
+              var description = props[3];
+              //commented out code is for adding background image
               var el = document.createElement('div');
-
+              el.className = `${props[2]}`; //used to be set to 'marker'
+              //red box image
               el.style.backgroundImage = 'url(https://i.pinimg.com/564x/f4/a8/6a/f4a86a209ba10ab95afcfd4ed29f3acf.jpg)';
               el.style.width = '15px';
               el.style.height = '15px';
               el.style.borderRadius = '50%';
               el.style.border = '0.25px solid';
-              
               //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
               let tmpMarker = new mapboxgl.Marker(el);
               el.markerInstance = tmpMarker;
               tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-                .setHTML(title +  description + '<img src="{% static "map/embassy-1.jpg" %}" alt="My image" width = "60" height="60">')).addTo(map);
-                
-
+                .setHTML('<h3>' + title + '</h3><p>' + description + '</p>'+ '<img src="{% static "map/embassy-1.jpg" %}" alt="My image" width = "40" height="40">')).addTo(map);
               el.addEventListener("click", e => {
                   // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
                   let coords = e.target.markerInstance.getLngLat();
-                   window.speechSynthesis.speak(msg);
-              //l.markerInstance = tmpMarker2;
-                //tmpMarker2.setLngLat(coords).addTo(map);
                   //tell the map to center on the marker coordinates
                   map.flyTo({
                       center: coords,
                       speed: 0.6,
-                      zoom: 6
+                      zoom: 5
                   });
               });
           }
