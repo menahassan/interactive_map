@@ -8,35 +8,74 @@
       <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
       <!--link rel="stylesheet" type="text/css" href="{% static 'map/style.css' %}"-->
       <script>
-          var cur_country = "";
-          function toggleMarkers(country){
+          var embassies = {{ embassy_list|safe }};
+          function openPopups(country) {
               var markers = document.getElementsByClassName(`${country}`);
               for (i = 0; i < markers.length; ++i) {
-                  markers[i].markerInstance.togglePopup();
+                  if (!markers[i].markerInstance.getPopup().isOpen()){
+                      markers[i].markerInstance.togglePopup();
+                  }
               }
           };
+          //returns a list. first elem: the greatest difference in latitude, second elem: midpoint between two farthest markers
+          function getDistanceMidpoint(country) {
+              var markers = document.getElementsByClassName(`${country}`);
+              var result = 0;
+              var midpoint = [markers[0].markerInstance.getLngLat().lng, markers[0].markerInstance.getLngLat().lat];
+              for (i = 0; i < markers.length-1; ++i) {
+                  for (j = i+1; j < markers.length; ++j) {
+                      var firstLat = markers[i].markerInstance.getLngLat().lat;
+                      var secondLat = markers[j].markerInstance.getLngLat().lat;
+                      var latDif = Math.abs(firstLat - secondLat);
+                      if (latDif > result) {
+                          result = latDif;
+                          var firstLng = markers[i].markerInstance.getLngLat().lng;
+                          var secondLng = markers[j].markerInstance.getLngLat().lng;
+                          midpoint = [ (firstLng + secondLng)/2, (firstLat + secondLat)/2 ];
+                      }
+                  }
+              }
+              return [result, midpoint];
+          };
           function center(country) {
-              var my_dict = JSON.parse('{{ dict|safe }}');
-              var longitude = my_dict[country].long;
-              var latitude = my_dict[country].lat;
-              var longlat = [longitude, latitude];
+              var distAndMid = getDistanceMidpoint(country);
+              var distance = distAndMid[0];
+              var midpoint = distAndMid[1];
+              //varying zoom settings depending on the greatest distance between the markers
+              //might chage these later
+              var zoomSetting = 6;
+              if (distance > 10.0) {
+                  zoomSetting = 3;
+              }
+              else if (distance > 5.0) {
+                  zoomSetting = 4;
+              }
               map.flyTo({
-                  center : longlat,
-                  zoom : 3,
+                  center : midpoint,
+                  zoom : zoomSetting,
                   essential: true
               });
-              toggleMarkers(country);
+              openPopups(country);
           };
           document.addEventListener('DOMContentLoaded', function() {
               document.querySelector('#countryselector').onclick = function() {
-                  if (cur_country !== "") {
-                      toggleMarkers(cur_country);
+                  //closes all popups when the form is resubmitted
+                  var allCountries = {{countries|safe}};
+                  for (i = 0; i < allCountries.length; ++i) {
+                      var curCountries = document.getElementsByClassName(`${allCountries[i]}`);
+                      for (j = 0; j < curCountries.length; ++j) {
+                          var popup = curCountries[j].markerInstance.getPopup();
+                          if (popup.isOpen()) {
+                              popup.remove();
+                          }
+                      }
                   }
                   const country = document.querySelector('#countries').value;
-                  cur_country = country;
                   center(country);
               };
           });
+
+
       </script>
   </head>
   <body>
@@ -50,7 +89,7 @@
           </select>
           <input id="countryselector" type="button" value="Submit">
       </form>
-      <div id='map' style='width: 1000px; height: 670px;'></div>
+      <div id='map' style='width: 1400px; height: 750px;'></div>
       <script>
           mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
           var map = new mapboxgl.Map({
@@ -59,12 +98,15 @@
             center: [12.550343, 55.665957],
             zoom: 2
           });
-          var title = 'Learn more about this embassy!';
+
           //var marker = new mapboxgl.Marker().setLngLat([12.550343, 55.665957]).addTo(map);
           var embassies = {{ embassy_list|safe }};
-          for(var i = 0; i < 275; i++){
+          for(var i = 0; i < 275; i++) {
               props = embassies[i];
-              var description = props[3];
+              if (props[0] !== "Active") {
+                  continue;
+              }
+              var description = props[3]; //city name
               //commented out code is for adding background image
               var el = document.createElement('div');
               el.className = `${props[2]}`; //used to be set to 'marker'
@@ -77,8 +119,25 @@
               //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
               let tmpMarker = new mapboxgl.Marker(el);
               el.markerInstance = tmpMarker;
+              var title = '';
+              if (props[5] === 'OFFOBC') {
+                  title = `US Embassy in ${description}.`;
+              }
+              else if (props[5] === 'OFFCOB') {
+                  title = `US Consulate in ${description}.`;
+              }
+              else if (props[5] === 'OFFOBX'){
+                  title = `Annex building in ${description}.`;
+              }
+              else if (props[5] === 'OFFCAX' || props[5] === 'OFFAPP') {
+                  title = `US Embassy branch office in ${description}`;
+              }
+              else {
+                  title = `${props[2]}.`; //just to be safe -- change later
+              }
+
               tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-                .setHTML('<h3>' + title + '</h3><p>' + description + '</p>'+ '<img src="{% static "map/embassy-1.jpg" %}" alt="My image" width = "40" height="40">')).addTo(map);
+                .setHTML('<h3>' + title + '</h3><p>' + description + '</p>'+ '<img src="" alt="My image" width = "40" height="40">')).addTo(map);
               el.addEventListener("click", e => {
                   // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
                   let coords = e.target.markerInstance.getLngLat();
