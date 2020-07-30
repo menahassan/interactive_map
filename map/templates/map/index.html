@@ -53,29 +53,73 @@
               map.flyTo({
                   center : midpoint,
                   zoom : zoomSetting,
+                  speed : .6,
                   essential: true
               });
               openPopups(country);
           };
+          function closePopups(country) {
+              var curCountries = document.getElementsByClassName(`${country}`);
+              for (j = 0; j < curCountries.length; ++j) {
+                  var popup = curCountries[j].markerInstance.getPopup();
+                  if (popup.isOpen()) {
+                      popup.remove();
+                  }
+              }
+          };
+          //closes all existing popups and switches to country
+          function switchCountries(oldCountry, newCountry) {
+              if (oldCountry !== "") {
+                  closePopups(oldCountry);
+              }
+              center(newCountry);
+          };
+          //not sure if a global variable is good style
+          let countryList = {{countries|safe}};
+          function chooseCountry() {
+              if (countryList.length === 0) {
+                  return "";
+              }
+              var chosenIndex = Math.floor(Math.random() * countryList.length);
+              var chosenCountry = countryList[chosenIndex];
+              countryList.splice(chosenIndex, 1);
+              return chosenCountry;
+          }
+          var abort = false; //variable for freestyle loop to stop
           document.addEventListener('DOMContentLoaded', function() {
               document.querySelector('#countryselector').onclick = function() {
                   //closes all popups when the form is resubmitted
                   var allCountries = {{countries|safe}};
                   for (i = 0; i < allCountries.length; ++i) {
-                      var curCountries = document.getElementsByClassName(`${allCountries[i]}`);
-                      for (j = 0; j < curCountries.length; ++j) {
-                          var popup = curCountries[j].markerInstance.getPopup();
-                          if (popup.isOpen()) {
-                              popup.remove();
-                          }
-                      }
+                      closePopups(allCountries[i]);
                   }
                   const country = document.querySelector('#countries').value;
                   center(country);
               };
+              //loops through each country, zooming into its embassy/consulates.
+              //stops when loop is over
+              //TO DO: make stop and restart buttons.
+              //TO DO: have the loop automatically restart
+
+              document.querySelector('#fsmodebtn').onclick = function() {
+                  var old = "";
+                  var cur = chooseCountry();
+                  function loop() {
+                      if (abort) {
+                          return;
+                      }
+                      setTimeout(function() {
+                          switchCountries(old, cur);
+                          old = cur;
+                          cur = chooseCountry();
+                          if (cur !== "") {
+                              loop();
+                          }
+                      }, 4000) //this is the time for each loop iteration
+                  }
+                  loop();
+              };
           });
-
-
       </script>
   </head>
   <body>
@@ -89,6 +133,8 @@
           </select>
           <input id="countryselector" type="button" value="Submit">
       </form>
+      <button id="fsmodebtn">Freestyle Mode</button>
+      <button id="stopbtn" onclick="abort = true">Stop</button>
       <div id='map' style='width: 1400px; height: 750px;'></div>
       <script>
           mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
@@ -137,7 +183,7 @@
               }
 
               tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-                .setHTML('<h3>' + title + '</h3><p>' + description + '</p>'+ '<img src="" alt="My image" width = "40" height="40">')).addTo(map);
+                .setHTML('<h3>' + title + '</h3><p>' + `${props[2]}` + '</p>'+ '<img src="" alt="My image" width = "40" height="40">')).addTo(map);
               el.addEventListener("click", e => {
                   // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
                   let coords = e.target.markerInstance.getLngLat();
