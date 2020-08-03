@@ -77,7 +77,16 @@
                 let tmpMarker2 = new mapboxgl.Marker(l);*/
               var description ='<p>' + props[3]+ '</p>';
               var el = document.createElement('div');
+              var btn = '<div style="margin: 0 auto; width: 110px; text-align: center; cursor: pointer; background-color: black" onclick="myfunc('+props[13]+')"><p style="color: white">Play Language</p></div>'
 
+              function myfunc(x){
+                  var msg = new SpeechSynthesisUtterance(); 
+                    msg.text = langs[x].word;
+                    msg.lang = langs[x].language;
+                    //window.alert(msg.lang);
+                    window.speechSynthesis.speak(msg);
+              }
+              
               el.style.backgroundImage = 'url(https://i.pinimg.com/564x/f4/a8/6a/f4a86a209ba10ab95afcfd4ed29f3acf.jpg)';
               el.style.width = '15px';
               el.style.height = '15px';
@@ -88,17 +97,11 @@
               let tmpMarker = new mapboxgl.Marker(el);
               el.markerInstance = tmpMarker;
               tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-                .setHTML(title +  description + '<img src="{% static "map/embassy-1.jpg" %}" alt="My image" width = "60" height="60">')).addTo(map);
-                
+                .setHTML(title +  description + btn)).addTo(map);
 
               el.addEventListener("click", e => {
                   // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
                   let coords = e.target.markerInstance.getLngLat();
-                  var msg = new SpeechSynthesisUtterance();
-                  msg.text = langs[coords.lat].word;
-                  msg.lang = langs[coords.lat].language;
-                  window.alert(msg.text);
-                  window.speechSynthesis.speak(msg);
               //l.markerInstance = tmpMarker2;
                 //tmpMarker2.setLngLat(coords).addTo(map);
                   //tell the map to center on the marker coordinates
@@ -107,7 +110,9 @@
                       speed: 0.6,
                       zoom: 6
                   });
+                  
               });
+              
           }
       </script>
   </body>

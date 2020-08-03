@@ -32,5 +32,3 @@ for i in a:
     translated[i[13]] = langs
 #arr[0] is ['Active', 'AF', "Cote d'Ivoire"]
 #arr[0][0] is 'Active'
-
-#book.save('iterbycols.xlsx')
