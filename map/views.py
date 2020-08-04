@@ -6,6 +6,7 @@ from map import DICT
 import json
 from map import translated
 
+#btw, no more need for dict
 # Create your views here.
 def index(request):
     mapbox_access_token = 'pk.my_mapbox_access_token'
