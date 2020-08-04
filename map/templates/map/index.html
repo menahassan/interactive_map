@@ -236,5 +236,136 @@
 
           }
       </script>
+
+      <h1>Time</h1>
+      <h1 id="time"></h1>
+
+      <div id='map2' style='width: 1000px; height: 670px;'></div>
+      <script>
+          var counter = 0;
+
+          // Tell user if the embassy is open
+          function isOpen(start, end, time){
+              if(start < end){
+                  if(start <= time && time < end){
+                      return true;
+                  }
+                  else{
+                      return false
+                  }
+              }
+              else{
+                  if(start <= time || time < end){
+                      return true;
+                  }
+                  else{
+                      return false;
+                  }
+              }
+          }
+
+
+          mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
+          var map2 = new mapboxgl.Map({
+            container: 'map2',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [0,0],
+            zoom: 1    
+     
+          });
+
+          map2.scrollZoom.disable();
+
+          var geojson = {
+            type: 'FeatureCollection',
+            features: [{
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [-77.032, 38.913]
+                },
+                properties: {
+                    title: 'Mapbox',
+                    description: 'Washington, D.C.',
+                    openHour: 0,
+                    closeHour: 12,
+                }
+            },
+            {
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [-122.414, 37.776]
+                },
+                properties: {
+                    title: 'Mapbox',
+                    description: 'San Francisco, California',
+                    openHour: 15,
+                    closeHour: 3,
+                }
+            }]
+          };
+
+            var markerLst = []
+            geojson.features.forEach(function(marker) {
+
+                // make a marker for each feature and add to the map
+                //var m = new mapboxgl.Marker(el)
+                //.setLngLat(marker.geometry.coordinates)
+                //.addTo(map2);
+                var color = "#ff0000";        // Color red for close
+                if(isOpen(marker.properties.openHour, marker.properties.closeHour, counter)){
+                    // Color green for open
+                    color = "#008000"
+                }
+
+                markerLst.push(
+                    new mapboxgl.Marker({color: color, "icon-size": "0.5"})
+                    .setLngLat(marker.geometry.coordinates)
+                    .addTo(map2));
+            });
+
+            window.setInterval(function test(){   
+                counter = (counter + 1) % 24;
+                if(counter == 0){
+                    document.getElementById('time').textContent = "12:00 AM";
+                }
+                else if(counter < 12){
+                    document.getElementById('time').textContent = counter.toString() + ":00 AM";
+                }
+                else if(counter >= 12){
+                    document.getElementById('time').textContent = (counter % 12) == 0 ? "12:00 PM" : (counter % 12).toString() + ":00 PM";
+                }
+                
+                markerLst.forEach((m) => {
+                    m.remove();
+                });
+                markerLst = [];
+                geojson.features.forEach(function(marker) {
+                    var color = "#ff0000";        // Color red for close
+                    if(isOpen(marker.properties.openHour, marker.properties.closeHour, counter)){
+                        // Color green for open
+                        color = "#008000"
+                    }
+
+                    markerLst.push(
+                        new mapboxgl.Marker({color: color, "icon-size": "0.5"})
+                        .setLngLat(marker.geometry.coordinates)
+                        .addTo(map2));
+                });
+            
+            }, 1000);
+
+      </script>
+
+      <h1>News</h1>
+        <ul>
+            {% for article in articles %}
+                <li>{{ article.2 }}</li>
+                <ul>
+                    <li><a href={{ article.1 }}> {{ article.0 }} </a></li>
+                </ul>
+            {% endfor %}
+        </ul>
   </body>
 </html>
