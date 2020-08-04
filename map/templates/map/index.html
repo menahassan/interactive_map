@@ -1,41 +1,119 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
       <title>Map</title>
       <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js'></script>
+      <script src="https://cdn.jsdelivr.net/npm/translate@1/translate.min.js"></script>
       <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
-      <link rel="stylesheet" type="text/css" href="{% static 'map/style.css' %}">
+      <link rel="stylesheet" href="{% static 'map/style.css' %}">
       <script>
-          function center() { <!-- doesnt work; page refreshes when pin is set -->
-              country = {{country}}
-              <!--map.center = [69.190028, 34.534618];-->
-              <!-- set to afghanistan; will have to extract location from excel -->
-          }
+          var cur_country = "";
+          function toggleMarkers(country){
+              var markers = document.getElementsByClassName(`${country}`);
+              for (i = 0; i < markers.length; ++i) {
+                  markers[i].markerInstance.togglePopup();
+              }
+          };
+          function center(country) {
+              var my_dict = JSON.parse('{{ dict|safe }}');
+              var longitude = my_dict[country].long;
+              var latitude = my_dict[country].lat;
+              var longlat = [longitude, latitude];
+              map.flyTo({
+                  center : longlat,
+                  zoom : 3,
+                  essential: true
+              });
+              toggleMarkers(country);
+          };
+          document.addEventListener('DOMContentLoaded', function() {
+              document.querySelector('#countryselector').onclick = function() {
+                  if (cur_country !== "") {
+                      toggleMarkers(cur_country);
+                  }
+                  const country = document.querySelector('#countries').value;
+                  cur_country = country;
+                  center(country);
+              };
+          });
       </script>
   </head>
   <body>
-      <h1>Hello world! This is our interactive map</h1>
-      <form id="countryform" action="" method="post">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <p><input type="submit" value="Submit" onclick="center()"></p>
+      <h1 style="font-family: Courier New, Courier, monospace; font-size: 40px; padding-left: 5px">Welcome to our<span style="font-family: Brush Script MT; font-size: 55px; letter-spacing: 2.5px;"> interactive map</span></h1>
+      <form id="countryform">
+          <label style="font-family: Courier New, Courier, monospace; padding-left: 5px">Which country would you like to explore?</label>
+          <select id="countries" name="countries">
+              {% for country in countries %}
+                  <option value="{{country}}">{{country}}</option>
+              {% endfor %}
+          </select>
+          <input id="countryselector" type="button" value="Submit">
       </form>
-      <div id='map' style='width: 1000px; height: 670px;'></div>
+    <div id='map' style='width: 100%; height: 670px;'></div>
       <script>
           mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
           var map = new mapboxgl.Map({
+            pitch:0.01,
             container: 'map',
             style: 'mapbox://styles/mapbox/streets-v11',
-            center: [12.550343, 55.665957],
+            center: [35.385076, 36.983267],
             zoom: 2
           });
+          
+          var langs = JSON.parse('{{ lang_list|safe }}');
+          var title = '<h3>Learn more about this embassy!<h3>';
+          var embassies = {{ embassy_list|safe }};
+          for(var i = 0; i < 275; i++){
+              props = embassies[i];
+              
 
-          var marker = new mapboxgl.Marker()
-            .setLngLat([12.550343, 55.665957])
-            .addTo(map);
+              /*var l = document.createElement('div');
+              l.className = 'custom-marker';
+                l.style.backgroundImage ='url({% static "map/man.svg" %})';
+                l.style.width = "60px";
+                l.style.height = "60.23px";
+                let tmpMarker2 = new mapboxgl.Marker(l);*/
+              var description ='<p>' + props[3]+ '</p>';
+              var el = document.createElement('div');
+              var btn = '<div style="margin: 0 auto; width: 110px; text-align: center; cursor: pointer; background-color: black" onclick="myfunc('+props[13]+')"><p style="color: white">Play Language</p></div>'
 
+              function myfunc(x){
+                  var msg = new SpeechSynthesisUtterance(); 
+                    msg.text = langs[x].word;
+                    msg.lang = langs[x].language;
+                    //window.alert(msg.lang);
+                    window.speechSynthesis.speak(msg);
+              }
+              
+              el.style.backgroundImage = 'url(https://i.pinimg.com/564x/f4/a8/6a/f4a86a209ba10ab95afcfd4ed29f3acf.jpg)';
+              el.style.width = '15px';
+              el.style.height = '15px';
+              el.style.borderRadius = '50%';
+              el.style.border = '0.25px solid';
+              
+              //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
+              let tmpMarker = new mapboxgl.Marker(el);
+              el.markerInstance = tmpMarker;
+              tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+                .setHTML(title +  description + btn)).addTo(map);
+
+              el.addEventListener("click", e => {
+                  // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
+                  let coords = e.target.markerInstance.getLngLat();
+              //l.markerInstance = tmpMarker2;
+                //tmpMarker2.setLngLat(coords).addTo(map);
+                  //tell the map to center on the marker coordinates
+                  map.flyTo({
+                      center: coords,
+                      speed: 0.6,
+                      zoom: 6
+                  });
+                  
+              });
+              
+          }
       </script>
   </body>
 </html>

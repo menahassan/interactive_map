@@ -1,27 +1,21 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from .forms import CountriesForm
+from map import a
+from map import DICT
+import json
+from map import translated
 
 # Create your views here.
 def index(request):
     mapbox_access_token = 'pk.my_mapbox_access_token'
-
-    if "country" not in request.session:
-        request.session["country"] = ""
-    # TODO: move this token to Django settings from an environment variable
-    # found in the Mapbox account settings and getting started instructions
-    # see https://www.mapbox.com/account/ under the "Access tokens" section
-    if request.method == 'POST':
-        form = CountriesForm(request.POST)
-        if form.is_valid():
-            #TODO: make a pin at the location of this country
-            request.session["country"] = form.cleaned_data["country"]
-            return HttpResponseRedirect('/')
-    else:
-        form = CountriesForm()
+    embassy_list = json.dumps(a)
+    dictionary = json.dumps(DICT)
+    lang_list = json.dumps(translated)
     return render(request, "map/index.html", {
     'mapbox_access_token': mapbox_access_token,
-    'form': form,
-    'country' : request.session["country"],
+    'countries' : sorted(DICT.keys()),
+    'embassy_list': embassy_list,
+    'dict' : dictionary,
+    'lang_list' : lang_list,
     })
