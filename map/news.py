@@ -12,7 +12,7 @@ def get_article_list(country):
     return ["title", "media", "link"] #PLACEHOLDER B/C GOOGLENEWS.RESULT() RETURNS EMPTY LIST
     articles = []
     googlenews = GoogleNews(lang='en')
-    googlenews.search('USA ' +  country + " embassy")
+    googlenews.search(f"USA {country} embassy")
     lst = googlenews.result()
 
     for i in range(3):
@@ -22,3 +22,5 @@ def get_article_list(country):
         articles = articles + [(title, link, date)]
 
     return articles
+
+print(get_article_list('China'))

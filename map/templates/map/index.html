@@ -84,7 +84,22 @@
               var chosenCountry = countryList[chosenIndex];
               countryList.splice(chosenIndex, 1);
               return chosenCountry;
-          }
+          };
+          function sendAjax(country) {
+            $.ajax({
+                url: '{% url "get_news" %}',
+                data: {
+                  'country': country
+                },
+                dataType: 'json',
+                success: function (data) {
+                    document.getElementById("latestnews").innerHTML = `${data.article_list.toString()}`;
+                    window.scrollTo(0,document.body.scrollHeight);
+                    //tmpMarker.getPopup().setHTML(`${cur}<p>${data.article_list.toString()}</p>`);
+                }
+            });
+          };
+
           var abort = false; //variable for freestyle loop to stop
           document.addEventListener('DOMContentLoaded', function() {
               document.querySelector('#countryselector').onclick = function() {
@@ -183,8 +198,12 @@
                   title = `${props[2]}.`; //just to be safe -- change later
               }
 
+              //var news = [];
+              //TO DO: find a way to add it to popup, not replaces the html already there!
+
+
               tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-                .setHTML('<h3>' + title + '</h3><p>' + `${props[2]}` + '</p><img src="" alt="My image" width = "40" height="40">')).addTo(map);
+                .setHTML('<h3>' + title + '</h3><p>' + `${props[2]}` + `</p><button class="newsbtn" onclick="sendAjax('${props[2]}')">See the latest news!</button><img src="" alt="My image" width = "40" height="40">`)).addTo(map);
               el.addEventListener("click", e => {
                   // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
                   let coords = e.target.markerInstance.getLngLat();
@@ -195,22 +214,8 @@
                       zoom: 5
                   });
               });
-
-              //TO DO: find a way to add it to popup, not replaces the html already there!
-              $.ajax({
-                  url: '{% url "get_news" %}',
-                  data: {
-                    'country': `${props[2]}`
-                  },
-                  dataType: 'json',
-                  success: function (data) {
-                      tmpMarker.getPopup().setText(data.article_list.toString());
-                      //var cur = tmpMarker.getPopup().getElement();
-                      //tmpMarker.getPopup().setHTML(`${cur}<p>${data.article_list.toString()}</p>`);
-                  }
-              });
-
           }
       </script>
+      <p id="latestnews">
   </body>
 </html>
