@@ -5,12 +5,11 @@ from map import a
 from map import DICT
 import json
 from map import translated
-from .forms import CountriesForm
 from GoogleNews import GoogleNews
 
 class NewsArticles():
     
-        def news(country):
+        def news(self, country):
             articles = []
             googlenews = GoogleNews(lang='en')
             googlenews.search('USA ' +  country + " embassy")
@@ -38,7 +37,6 @@ def index(request):
     'embassy_list': embassy_list,
     'dict' : dictionary,
     'lang_list' : lang_list,
-    'form': form,
     'country' : request.session["country"],
     "articles": list,
     })

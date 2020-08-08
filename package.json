@@ -1,0 +1,23 @@
+{
+  "name": "interactive_map",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/menahassan/interactive_map.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/menahassan/interactive_map/issues"
+  },
+  "homepage": "https://github.com/menahassan/interactive_map#readme",
+  "dependencies": {
+    "googletrans": "^1.0.0",
+    "jquery-mapael": "^2.2.0"
+  }
+}
