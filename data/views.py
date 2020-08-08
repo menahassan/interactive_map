@@ -1,8 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from data import a
+import json
 
-# Create your views here.
 def index(request):
-    return render(request, "map/index.html", {
+    embassy_list = json.dumps(a)
+    return render(request, "data/index.html", {
+    'embassy_list': embassy_list,
     })

@@ -1,6 +1,8 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Data</title>
     <meta charset="utf-8">
     <title>Map with links between the plotted cities</title>
     <style type="text/css">
@@ -46,195 +48,288 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" charset="utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"
             charset="utf-8"></script>
+     <script src="https://rawgit.com/aterrien/jQuery-Knob/master/dist/jquery.knob.min.js" charset="utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js" charset="utf-8"></script>
-    <script src="../../js/jquery.mapael.js" charset="utf-8"></script>
-    <script src="../../js/maps/france_departments.js" charset="utf-8"></script>
-    <script src="../../js/maps/world_countries.js" charset="utf-8"></script>
-    <script src="../../js/maps/usa_states.js" charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/jquery.mapael.js" %}' charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/maps/france_departments.js" %}' charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/maps/world_countries.js" %}' charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/maps/usa_states.js" %}' charset="utf-8"></script>
 
     <script type="text/javascript">
-        $(function () {
-            $(".mapcontainer").mapael({
+    $(function () {
+
+            // Fake data for countries and cities from 2003 to 2013
+            var data = {
+                "2003": {
+                    "areas": {
+                        "AF": {
+                            "value": 23811026,
+                            "href": "http://en.wikipedia.org/w/index.php?search=Afghanistan",
+                            "tooltip": {
+                                "content": "<span style=\"font-weight:bold;\">Afghanistan</span><br />Population : 23811026"
+                            }
+                        },
+                        "ZA": {
+                            "value": 43635718,
+                            "href": "http://en.wikipedia.org/w/index.php?search=South Africa",
+                            "tooltip": {
+                                "content": "<span style=\"font-weight:bold;\">South Africa</span><br />Population : 43635718"
+                            }
+                        },
+                        "AL": {
+                            "value": 28472433,
+                            "href": "http://en.wikipedia.org/w/index.php?search=Albania",
+                            "tooltip": {
+                                "content": "<span style=\"font-weight:bold;\">Albania</span><br />Population : 28472433"
+                            }
+                        },
+                        "DZ": {
+                            "value": 7013507,
+                            "href": "http://en.wikipedia.org/w/index.php?search=Algeria",
+                            "tooltip": {
+                                "content": "<span style=\"font-weight:bold;\">Algeria</span><br />Population : 7013507"
+                            }
+                        },
+                        "DE": {
+                            "value": 36848343,
+                            "href": "http://en.wikipedia.org/w/index.php?search=Germany",
+                            "tooltip": {
+                                "content": "<span style=\"font-weight:bold;\">Germany</span><br />Population : 36848343"
+                            }
+                        },
+                        "AD": {
+                            "value": 30847009,
+                            "href": "http://en.wikipedia.org/w/index.php?search=Andorra",
+                            "tooltip": {
+                                "content": "<span style=\"font-weight:bold;\">Andorra</span><br />Population : 30847009"
+                            }
+                        },
+                         "ZM": {
+                            "value": 13872174,
+                            "href": "http://en.wikipedia.org/w/index.php?search=Zambia",
+                            "tooltip": {
+                                "content": "<span style=\"font-weight:bold;\">Zambia</span><br />Population : 13872174"
+                            }
+                        },
+                        "ZW": {
+                            "value": 28205545,
+                            "href": "http://en.wikipedia.org/w/index.php?search=Zimbabwe",
+                            "tooltip": {
+                                "content": "<span style=\"font-weight:bold;\">Zimbabwe</span><br />Population : 28205545"
+                            }
+                        }
+                    },
+                    "plots": {
+                        "paris": {
+                            "value": 1025415,
+                            "tooltip": {
+                                "content": "<span style=\"font-weight:bold;\">Paris</span><br />Population: 1025415"
+                            }
+                        },
+                        "newyork": {
+                            "value": 785175,
+                            "tooltip": {
+                                "content": "<span style=\"font-weight:bold;\">New-York</span><br />Population: 785175"
+                            }
+                        },
+                        "sydney": {
+                            "value": 477087,
+                            "tooltip": {
+                                "content": "<span style=\"font-weight:bold;\">Sydney</span><br />Population: 477087"
+                            }
+                        },
+                        "brasilia": {
+                            "value": 211212,
+                            "tooltip": {
+                                "content": "<span style=\"font-weight:bold;\">Brasilia</span><br />Population: 211212"
+                            }
+                        },
+                        "tokyo": {
+                            "value": 433935,
+                            "tooltip": {
+                                "content": "<span style=\"font-weight:bold;\">Tokyo</span><br />Population: 433935"
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Default plots params
+            var plots = {
+                "paris": {
+                    "latitude": 48.86,
+                    "longitude": 2.3444,
+                    "text": {
+                        "position": "left",
+                        "content": "Paris"
+                    },
+                    "href": "http://en.wikipedia.org/w/index.php?search=Paris"
+                },
+                "newyork": {
+                    "latitude": 40.667,
+                    "longitude": -73.833,
+                    "text": {
+                        "content": "New york"
+                    },
+                    "href": "http://en.wikipedia.org/w/index.php?search=New York"
+                },
+                "sydney": {
+                    "latitude": -33.917,
+                    "longitude": 151.167,
+                    "text": {
+                        "content": "Sydney"
+                    },
+                    "href": "http://en.wikipedia.org/w/index.php?search=Sidney"
+                },
+                "brasilia": {
+                    "latitude": -15.781682,
+                    "longitude": -47.924195,
+                    "text": {
+                        "content": "Brasilia"
+                    },
+                    "href": "http://en.wikipedia.org/w/index.php?search=Brasilia"
+                },
+                "tokyo": {
+                    "latitude": 35.687418,
+                    "longitude": 139.692306,
+                    "text": {
+                        "content": "Tokyo"
+                    },
+                    "href": "http://en.wikipedia.org/w/index.php?search=Tokyo"
+                }
+            };
+
+            // Knob initialisation (for selecting a year)
+            $(".knob").knob({
+                release: function (value) {
+                    $(".world").trigger('update', [{
+                        mapOptions: data[value],
+                        animDuration: 300
+                    }]);
+                }
+            });
+
+            // Mapael initialisation
+            $world = $(".world");
+            $world.mapael({
                 map: {
                     name: "world_countries",
                     defaultArea: {
                         attrs: {
-                            fill: "#f4f4e8"
-                            , stroke: "#ced8d0"
+                            fill: "#fff",
+                            stroke: "#232323",
+                            "stroke-width": 0.3
                         }
-                    }
-                    // Default attributes can be set for all links
-                    , defaultLink: {
-                        factor: 0.4
-                        , attrsHover: {
-                            stroke: "#a4e100"
-                        }
-                    }
-                    , defaultPlot: {
+                    },
+                    defaultPlot: {
                         text: {
                             attrs: {
-                                fill: "#000"
+                                fill: "#b4b4b4",
+                                "font-weight": "normal"
                             },
                             attrsHover: {
-                                fill: "#000"
+                                fill: "#fff",
+                                "font-weight": "bold"
                             }
                         }
                     }
-                },
-                plots: {
-                    'paris': {
-                        latitude: 48.86,
-                        longitude: 2.3444,
-                        tooltip: {content: "Paris<br />Population: 500000000"}
-                    },
-                    'newyork': {
-                        latitude: 40.667,
-                        longitude: -73.833,
-                        tooltip: {content: "New york<br />Population: 200001"}
-                    },
-                    'sanfrancisco': {
-                        latitude: 37.792032,
-                        longitude: -122.394613,
-                        tooltip: {content: "San Francisco"}
-                    },
-                    'brasilia': {
-                        latitude: -15.781682,
-                        longitude: -47.924195,
-                        tooltip: {content: "Brasilia<br />Population: 200000001"}
-                    },
-                    'roma': {
-                        latitude: 41.827637,
-                        longitude: 12.462732,
-                        tooltip: {content: "Roma"}
-                    },
-                    'miami': {
-                        latitude: 25.789125,
-                        longitude: -80.205674,
-                        tooltip: {content: "Miami"}
-                    },
-
-                    // Size=0 in order to make plots invisible
-                    'tokyo': {
-                        latitude: 35.687418,
-                        longitude: 139.692306,
-                        size: 0,
-                        text: {content: 'Tokyo'}
-                    },
-                    'sydney': {
-                        latitude: -33.917,
-                        longitude: 151.167,
-                        size: 0,
-                        text: {content: 'Sydney'}
-                    },
-                    'plot1': {
-                        latitude: 22.906561,
-                        longitude: 86.840170,
-                        size: 0,
-                        text: {content: 'Plot1', position: 'left', margin: 5}
-                    },
-                    'plot2': {
-                        latitude: -0.390553,
-                        longitude: 115.586762,
-                        size: 0,
-                        text: {content: 'Plot2'}
-                    },
-                    'plot3': {
-                        latitude: 44.065626,
-                        longitude: 94.576079,
-                        size: 0,
-                        text: {content: 'Plot3'}
+                    , zoom: {
+                        enabled: true
+                        , step: 0.25
+                        , maxLevel: 20
                     }
                 },
-                // Links allow you to connect plots between them
-                links: {
-                    'link1': {
-                        factor: -0.3
-                        // The source and the destination of the link can be set with a latitude and a longitude or a x and a y ...
-                        , between: [{latitude: 24.708785, longitude: -5.402427}, {x: 560, y: 280}]
-                        , attrs: {
-                            "stroke-width": 2
-                        }
-                        , tooltip: {content: "Link"}
+                legend: {
+                    area: {
+                        display: true,
+                        title: "Country population",
+                        marginBottom: 7,
+                        slices: [
+                            {
+                                max: 5000000,
+                                attrs: {
+                                    fill: "#6ECBD4"
+                                },
+                                label: "Less than 5M"
+                            },
+                            {
+                                min: 5000000,
+                                max: 10000000,
+                                attrs: {
+                                    fill: "#3EC7D4"
+                                },
+                                label: "Between 5M and 10M"
+                            },
+                            {
+                                min: 10000000,
+                                max: 50000000,
+                                attrs: {
+                                    fill: "#028E9B"
+                                },
+                                label: "Between 10M and 50M"
+                            },
+                            {
+                                min: 50000000,
+                                attrs: {
+                                    fill: "#01565E"
+                                },
+                                label: "More than 50M"
+                            }
+                        ]
+                    },
+                    plot: {
+                        display: true,
+                        title: "City population",
+                        marginBottom: 6,
+                        slices: [
+                            {
+                                type: "circle",
+                                max: 500000,
+                                attrs: {
+                                    fill: "#FD4851",
+                                    "stroke-width": 1
+                                },
+                                attrsHover: {
+                                    transform: "s1.5",
+                                    "stroke-width": 1
+                                },
+                                label: "Less than 500 000",
+                                size: 10
+                            },
+                            {
+                                type: "circle",
+                                min: 500000,
+                                max: 1000000,
+                                attrs: {
+                                    fill: "#FD4851",
+                                    "stroke-width": 1
+                                },
+                                attrsHover: {
+                                    transform: "s1.5",
+                                    "stroke-width": 1
+                                },
+                                label: "Between 500 000 and 1M",
+                                size: 20
+                            },
+                            {
+                                type: "circle",
+                                min: 1000000,
+                                attrs: {
+                                    fill: "#FD4851",
+                                    "stroke-width": 1
+                                },
+                                attrsHover: {
+                                    transform: "s1.5",
+                                    "stroke-width": 1
+                                },
+                                label: "More than 1M",
+                                size: 30
+                            }
+                        ]
                     }
-                    , 'parisnewyork': {
-                        // ... Or with IDs of plotted points
-                        factor: -0.3
-                        , between: ['paris', 'newyork']
-                        , attrs: {
-                            "stroke-width": 2
-                        }
-                        , tooltip: {content: "Paris - New-York"}
-                    }
-                    , 'parissanfrancisco': {
-                        // The curve can be inverted by setting a negative factor
-                        factor: -0.5
-                        , between: ['paris', 'sanfrancisco']
-                        , attrs: {
-                            "stroke-width": 4
-                        }
-                        , tooltip: {content: "Paris - San - Francisco"}
-                    }
-                    , 'parisbrasilia': {
-                        factor: -0.8
-                        , between: ['paris', 'brasilia']
-                        , attrs: {
-                            "stroke-width": 1
-                        }
-                        , tooltip: {content: "Paris - Brasilia"}
-                    }
-                    , 'romamiami': {
-                        factor: 0.2
-                        , between: ['roma', 'miami']
-                        , attrs: {
-                            "stroke-width": 4
-                        }
-                        , tooltip: {content: "Roma - Miami"}
-                    }
-                    , 'sydneyplot1': {
-                        factor: -0.2
-                        , between: ['sydney', 'plot1']
-                        , attrs: {
-                            stroke: "#a4e100",
-                            "stroke-width": 3,
-                            "stroke-linecap": "round",
-                            opacity: 0.6
-                        }
-                        , tooltip: {content: "Sydney - Plot1"}
-                    }
-                    , 'sydneyplot2': {
-                        factor: -0.1
-                        , between: ['sydney', 'plot2']
-                        , attrs: {
-                            stroke: "#a4e100",
-                            "stroke-width": 8,
-                            "stroke-linecap": "round",
-                            opacity: 0.6
-                        }
-                        , tooltip: {content: "Sydney - Plot2"}
-                    }
-                    , 'sydneyplot3': {
-                        factor: 0.2
-                        , between: ['sydney', 'plot3']
-                        , attrs: {
-                            stroke: "#a4e100",
-                            "stroke-width": 4,
-                            "stroke-linecap": "round",
-                            opacity: 0.6
-                        }
-                        , tooltip: {content: "Sydney - Plot3"}
-                    }
-                    , 'sydneytokyo': {
-                        factor: 0.2
-                        , between: ['sydney', 'tokyo']
-                        , attrs: {
-                            stroke: "#a4e100",
-                            "stroke-width": 6,
-                            "stroke-linecap": "round",
-                            opacity: 0.6
-                        }
-                        , tooltip: {content: "Sydney - Plot2"}
-                    }
-                }
+                },
+                plots: $.extend(true, {}, data[2009]['plots'], plots),
+                areas: data[2009]['areas']
             });
         });
     </script>
@@ -244,15 +339,25 @@
 <body>
 <div class="container">
 
-    <h1>Map with links between the plotted cities</h1>
+    <h1>Dataviz example with <a href="https://github.com/neveldo/jQuery-Mapael">jQuery Mapael</a></h1>
+    <!-- <a href="" id="zoom-northamerica">North America</a> <a href="" id="zoom-southamerica">South America</a> <a href="" id="zoom-europe">Europe</a> <a href="" id="zoom-asia">Asia</a> <a href="" id="zoom-africa">Africa</a>  <a href="" id="zoom-oceania">Oceania</a>-->
+    <div class="world">
+        <div class="rightPanel">
+            <h2>Select a year</h2>
 
-    <div class="mapcontainer">
-        <div class="map">
-            <span>Alternative content for the map</span>
+            <div class="knobContainer">
+                <input class="knob" data-width="80" data-height="80" data-min="2003" data-max="2013" data-cursor=true
+                       data-fgColor="#454545" data-thickness=.45 value="2009" data-bgColor="#c7e8ff"/>
+            </div>
+            <div class="areaLegend"></div>
+            <div class="plotLegend"></div>
         </div>
+        <div class="map"></div>
+        <div style="clear: both;"></div>
     </div>
-
-    <p><b>All example for jQuery Mapael are available <a href="https://www.vincentbroute.fr/mapael/">here</a>.</b></p>
+    <p style="text-align:center;">This dataviz is built on <a href="https://www.vincentbroute.fr/mapael/">Mapael</a> and
+        <a href="http://anthonyterrien.com/knob/">Knob</a>. This is an example with fake data. </p>
+</div>
 
 </div>
 
