@@ -1,0 +1,1572 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data</title>
+    <meta charset="utf-8">
+    <title>World Population (2005)</title>
+    <style type="text/css">
+        body {
+            color: #5d5d5d;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin: auto;
+            margin-top: 50px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        
+        /* Specific mapael css class are below
+         * 'mapael' class is added by plugin
+        */
+
+        .mapael .map {
+            position: relative;
+        }
+
+        .mapael .mapTooltip {
+            position: absolute;
+            background-color: #fff;
+            moz-opacity: 0.70;
+            opacity: 0.70;
+            filter: alpha(opacity=70);
+            border-radius: 10px;
+            padding: 10px;
+            z-index: 1000;
+            max-width: 200px;
+            display: none;
+            color: #343434;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"
+            charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js" charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/jquery.mapael.js" %}' charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/maps/france_departments.js" %}' charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/maps/world_countries.js" %}' charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/maps/usa_states.js" %}' charset="utf-8"></script>
+
+    <script type="text/javascript">
+    var my_dict = {{ mydict|safe }};
+    $(function () {
+            $(".mapcontainer").mapael({
+                map: {
+                    name: "world_countries",
+                    defaultArea: {
+                        attrs: {
+                            stroke: "#fff",
+                            "stroke-width": 1
+                        }
+                    }
+                },
+                legend: {
+                    area: {
+                        title: "Countries population",
+                        slices: [
+                            {
+                                max: 5000000,
+                                attrs: {
+                                    fill: "#6aafe1"
+                                },
+                                label: "Less than 5 million inhabitants"
+                            },
+                            {
+                                min: 5000000,
+                                max: 10000000,
+                                attrs: {
+                                    fill: "#459bd9"
+                                },
+                                label: "Between 5 million and 10 million inhabitants"
+                            },
+                            {
+                                min: 10000000,
+                                max: 50000000,
+                                attrs: {
+                                    fill: "#2579b5"
+                                },
+                                label: "Between 10 million and 50 million inhabitants"
+                            },
+                            {
+                                min: 50000000,
+                                attrs: {
+                                    fill: "#1a527b"
+                                },
+                                label: "More than 50 million inhabitants"
+                            }
+                        ]
+                    },
+                    plot: {
+                        title: "Cities population"
+                        , slices: [
+                            {
+                                max: 5000000,
+                                attrs: {
+                                    fill: "#f99200"
+                                },
+                                attrsHover: {
+                                    transform: "s1.5",
+                                    "stroke-width": 1
+                                },
+                                label: "less than 5 million inhabitants",
+                                size: 10
+                            },
+                            {
+                                min: 5000000,
+                                max: 10000000,
+                                attrs: {
+                                    fill: "#f99200"
+                                },
+                                attrsHover: {
+                                    transform: "s1.5",
+                                    "stroke-width": 1
+                                },
+                                label: "Between 5 million and 10 million inhabitants",
+                                size: 20
+                            },
+                            {
+                                min: 10000000,
+                                attrs: {
+                                    fill: "#f99200"
+                                },
+                                attrsHover: {
+                                    transform: "s1.5",
+                                    "stroke-width": 1
+                                },
+                                label: "More than 10 million inhabitants",
+                                size: 30
+                            }
+                        ]
+                    }
+                },
+                plots: {
+                    'delhi': {
+                        latitude: 28.6571579,
+                        longitude: 76.9734976,
+                        value: 29399141,
+                        tooltip: {content: "Delhi<br />Population: 29,399,141"}
+                    },
+                    'newyork': {
+                        latitude: 40.667,
+                        longitude: -73.833,
+                        value: 18804000,
+                        tooltip: {content: "New York City<br />Population: 18,804,000"}
+                    },
+                    'sydney': {
+                        latitude: -33.917,
+                        longitude: 151.167,
+                        value: 5230000,
+                        tooltip: {content: "Sydney<br />Population: 5,230,000"}
+                    },
+                    'sao paolo': {
+                        latitude: -23.6821604,
+                        longitude: -46.8754915,
+                        value: 21846507,
+                        tooltip: {content: "Sao Paolo<br />Population: 21,846,507"}
+                    },
+                    'tokyo': {
+                        latitude: 35.687418,
+                        longitude: 139.692306,
+                        value: 37435191,
+                        tooltip: {content: "Tokyo<br />Population: 37,435,191"}
+                    },
+                    'paris': {
+                        latitude: 48.8585212,
+                        longitude: 2.0675665,
+                        value: 2148000,
+                        tooltip: {content: "Paris<br />Population: 2,148,000"}
+                    }
+                },
+                areas: {
+                    "AF": {
+                        "value": my_dict["Afghanistan"].five20,
+                        "attrs": {
+                            "href": "#"
+                        },
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Afghanistan<\/span><br \/>Population : "+ my_dict["Afghanistan"].five20
+                        }
+                    },
+                    "ZA": {
+                        "value": my_dict["South Africa"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">South Africa<\/span><br \/>Population :" + my_dict["South Africa"].five20
+                        }
+                    },
+                    
+                    "AL": {
+                        "value": my_dict["Albania"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Albania<\/span><br \/>Population : " +  my_dict["Albania"].five20
+                        }
+                    },
+                    "DZ": {
+                        "value": my_dict["Algeria"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Algeria<\/span><br \/>Population : " +my_dict["Algeria"].five20
+                        }
+                    },
+                    "DE": {
+                        "value": my_dict["Germany"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Germany<\/span><br \/>Population : " +my_dict["Germany"].five20
+                        }
+                    },
+                    "AD": {
+                        "value": my_dict["Andorra"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Andorra<\/span><br \/>Population : " +  my_dict["Andorra"].five20
+                        }
+                    },
+                    "AO": {
+                        "value": my_dict["Angola"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Angola<\/span><br \/>Population : " +my_dict["Angola"].five20
+                        }
+                    },
+                    "AG": {
+                        "value": my_dict["Antigua and Barbuda"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Antigua And Barbuda<\/span><br \/>Population : " +my_dict["Antigua and Barbuda"].five20
+                        }
+                    },
+                    "SA": {
+                        "value": my_dict["Saudi Arabia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Saudi Arabia<\/span><br \/>Population : " +my_dict["Saudi Arabia"].five20
+                        }
+                    },
+                    "AR": {
+                        "value": my_dict["Argentina"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Argentina<\/span><br \/>Population : " +my_dict["Argentina"].five20
+                        }
+                    },
+                    "AM": {
+                        "value": my_dict["Armenia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Armenia<\/span><br \/>Population : " +my_dict["Armenia"].five20
+                        }
+                    },
+                    "AU": {
+                        "value": my_dict["Australia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Australia<\/span><br \/>Population : " +my_dict["Australia"].five20
+                        }
+                    },
+                    "AT": {
+                        "value": my_dict["Austria"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Austria<\/span><br \/>Population : " +my_dict["Austria"].five20
+                        }
+                    },
+                    "AZ": {
+                        "value": my_dict["Azerbaijan"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Azerbaijan<\/span><br \/>Population : " +my_dict["Azerbaijan"].five20
+                        }
+                    },
+                    
+                    "BS": {
+                        "value": my_dict["Bahamas, The"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Bahamas<\/span><br \/>Population : " +my_dict["Bahamas, The"].five20
+                        }
+                    },
+                    "BH": {
+                        "value": my_dict["Bahrain"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Bahrain<\/span><br \/>Population : " +my_dict["Bahrain"].five20
+                        }
+                    },
+                    "BD": {
+                        "value": my_dict["Bangladesh"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Bangladesh<\/span><br \/>Population : " +my_dict["Bangladesh"].five20
+                        }
+                    },
+                    "BB": {
+                        "value": my_dict["Barbados"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Barbados<\/span><br \/>Population : " +my_dict["Barbados"].five20
+                        }
+                    },
+                    "BE": {
+                        "value": my_dict["Belgium"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Belgium<\/span><br \/>Population : " +my_dict["Belgium"].five20
+                        }
+                    },
+                    "BZ": {
+                        "value": my_dict["Belize"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Belize<\/span><br \/>Population : " +my_dict["Belize"].five20
+                        }
+                    },
+                    "BJ": {
+                        "value": my_dict["Benin"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Benin<\/span><br \/>Population : " + my_dict["Benin"].five20
+                        }
+                    },
+                    "BT": {
+                        "value": my_dict["Bhutan"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Bhutan<\/span><br \/>Population : " +my_dict["Bhutan"].five20
+                        }
+                    },
+                    "BY": {
+                        "value": my_dict["Belarus"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Belarus<\/span><br \/>Population : " +my_dict["Belarus"].five20
+                        }
+                    },
+                    "MM": {
+                        "value": my_dict["Myanmar"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Myanmar<\/span><br \/>Population : " +my_dict["Myanmar"].five20
+                        }
+                    },
+                    "BO": {
+                        "value": my_dict["Bolivia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Bolivia, Plurinational State Of<\/span><br \/>Population : " + my_dict["Bolivia"].five20
+                        }
+                    },
+                    "BA": {
+                        "value": my_dict["Bosnia and Herzegovina"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Bosnia And Herzegovina<\/span><br \/>Population : " +my_dict["Bosnia and Herzegovina"].five20
+                        }
+                    },
+                    "BW": {
+                        "value": my_dict["Botswana"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Botswana<\/span><br \/>Population : " +my_dict["Botswana"].five20
+                        }
+                    },
+                    "BR": {
+                        "value": my_dict["Brazil"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Brazil<\/span><br \/>Population : " + my_dict["Brazil"].five20
+                        }
+                    },
+                    "BN": {
+                        "value": my_dict["Brunei Darussalam"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Brunei Darussalam<\/span><br \/>Population : " + my_dict["Brunei Darussalam"].five20
+                        }
+                    },
+                    "BG": {
+                        "value": my_dict["Bulgaria"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Bulgaria<\/span><br \/>Population : " +my_dict["Bulgaria"].five20
+                        }
+                    },
+                    "BF": {
+                        "value": my_dict["Burkina Faso"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Burkina Faso<\/span><br \/>Population : " + my_dict["Burkina Faso"].five20
+                        }
+                    },
+                    "BI": {
+                        "value": my_dict["Burundi"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Burundi<\/span><br \/>Population : " + my_dict["Burundi"].five20
+                        }
+                    },
+                    "KH": {
+                        "value": my_dict["Cambodia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Cambodia<\/span><br \/>Population : " + my_dict["Cambodia"].five20
+                        }
+                    },
+                    "CM": {
+                        "value": my_dict["Cameroon"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Cameroon<\/span><br \/>Population : " + my_dict["Cameroon"].five20
+                        }
+                    },
+                    "CA": {
+                        "value": my_dict["Canada"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Canada<\/span><br \/>Population : " + my_dict["Canada"].five20
+                        }
+                    },
+                    "CV": {
+                        "value": my_dict["Cabo Verde"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Cape Verde<\/span><br \/>Population : " + my_dict["Cabo Verde"].five20
+                        }
+                    },
+                    "CF": {
+                        "value": my_dict["Central African Republic"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Central African Republic<\/span><br \/>Population : " + my_dict["Central African Republic"].five20
+                        }
+                    },
+                    
+                    "CL": {
+                        "value": my_dict["Chile"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Chile<\/span><br \/>Population : " + my_dict["Chile"].five20
+                        }
+                    },
+                    "CN": {
+                        "value": my_dict["China"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">China<\/span><br \/>Population : " + my_dict["China"].five20
+                        }
+                    },
+                    "CY": {
+                        "value": my_dict["Cyprus"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Cyprus<\/span><br \/>Population : " + my_dict["Cyprus"].five20
+                        }
+                    },
+                    "CO": {
+                        "value": my_dict["Colombia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Colombia<\/span><br \/>Population : " + my_dict["Colombia"].five20
+                        }
+                    },
+                    "KM": {
+                        "value": my_dict["Comoros"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Comoros<\/span><br \/>Population : " + my_dict["Comoros"].five20
+                        }
+                    },
+                    "CG": {
+                        "value": my_dict["Congo, Rep."].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Congo<\/span><br \/>Population : " + my_dict["Congo, Rep."].five20
+                        }
+                    },
+                    "CD": {
+                        "value": my_dict["Congo, Dem. Rep."].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Congo, The Democratic Republic Of The<\/span><br \/>Population : " + my_dict["Congo, Dem. Rep."].five20
+                        }
+                    },
+                    "KP": {
+                        "value": my_dict["Korea, Dem. People\’s Rep."].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Korea, Democratic People's Republic Of<\/span><br \/>Population : " + my_dict["Korea, Dem. People\’s Rep."].five20
+                        }
+                    },
+                    "KR": {
+                        "value": my_dict["Korea, Rep."].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Korea, Republic Of<\/span><br \/>Population : " + my_dict["Korea, Rep."].five20
+                        }
+                    },
+                    "CR": {
+                        "value": my_dict["Costa Rica"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Costa Rica<\/span><br \/>Population : " + my_dict["Costa Rica"].five20
+                        }
+                    },
+                    "CI": {
+                        "value": my_dict["Cote d\'Ivoire"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">C\u00d4te D'ivoire<\/span><br \/>Population : " + my_dict["Cote d\'Ivoire"].five20
+                        }
+                    },
+                    "HR": {
+                        "value": my_dict["Croatia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Croatia<\/span><br \/>Population : " + my_dict["Croatia"].five20
+                        }
+                    },
+                    "CU": {
+                        "value": my_dict["Cuba"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Cuba<\/span><br \/>Population : " + my_dict["Cuba"].five20
+                        }
+                    },
+                    "DK": {
+                        "value": my_dict["Denmark"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Denmark<\/span><br \/>Population : " + my_dict["Denmark"].five20
+                        }
+                    },
+                    "DJ": {
+                        "value": my_dict["Djibouti"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Djibouti<\/span><br \/>Population : " + my_dict["Djibouti"].five20
+                        }
+                    },
+                    "DM": {
+                        "value": my_dict["Dominica"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Dominica<\/span><br \/>Population : " + my_dict["Dominica"].five20
+                        }
+                    },
+                    "EG": {
+                        "value": my_dict["Egypt, Arab Rep."].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Egypt<\/span><br \/>Population : " + my_dict["Egypt, Arab Rep."].five20
+                        }
+                    },
+                    "AE": {
+                        "value": my_dict["United Arab Emirates"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">United Arab Emirates<\/span><br \/>Population : " + my_dict["United Arab Emirates"].five20
+                        }
+                    },
+                    "EC": {
+                        "value": my_dict["Ecuador"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Ecuador<\/span><br \/>Population : " + my_dict["Ecuador"].five20
+                        }
+                    },
+                    
+                    "ER": {
+                        "value": my_dict["Eritrea"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Eritrea<\/span><br \/>Population : " + my_dict["Eritrea"].five20
+                        }
+                    },
+                    "ES": {
+                        "value": my_dict["Spain"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Spain<\/span><br \/>Population : " + my_dict["Spain"].five20
+                        }
+                    },
+                    "EE": {
+                        "value": my_dict["Estonia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Estonia<\/span><br \/>Population : " + my_dict["Estonia"].five20
+                        }
+                    },
+                    "US": {
+                        "value": my_dict["United States"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">United States<\/span><br \/>Population : " + my_dict["United States"].five20
+                        }
+                    },
+                    "ET": {
+                        "value": my_dict["Ethiopia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Ethiopia<\/span><br \/>Population : " +my_dict["Ethiopia"].five20
+                        }
+                    },
+                    "FJ": {
+                        "value": my_dict["Fiji"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Fiji<\/span><br \/>Population : " + my_dict["Fiji"].five20
+                        }
+                    },
+                    "FI": {
+                        "value": my_dict["Finland"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Finland<\/span><br \/>Population : " + my_dict["Finland"].five20
+                        }
+                    },
+                    "FR": {
+                        "value": my_dict["France"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">France<\/span><br \/>Population : " + my_dict["France"].five20
+                        }
+                    },
+                    "GA": {
+                        "value": my_dict["Gabon"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Gabon<\/span><br \/>Population : " + my_dict["Gabon"].five20
+                        }
+                    },
+                    
+                    "GA": {
+                        "value": my_dict["Gambia, The"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Gabon<\/span><br \/>Population : " + my_dict["Gambia, The"].five20
+                        }
+                    },
+                    "GE": {
+                        "value": my_dict["Georgia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Georgia<\/span><br \/>Population : " + my_dict["Georgia"].five20
+                        }
+                    },
+                    "GH": {
+                        "value": my_dict["Ghana"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Ghana<\/span><br \/>Population : " + my_dict["Ghana"].five20
+                        }
+                    },
+                    
+                    "GR": {
+                        "value": my_dict["Greece"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Greece<\/span><br \/>Population : " + my_dict["Greece"].five20
+                        }
+                    },
+                    "GD": {
+                        "value": my_dict["Grenada"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Grenada<\/span><br \/>Population : " + my_dict["Grenada"].five20
+                        }
+                    },
+                    
+                    "GT": {
+                        "value": my_dict["Guatemala"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Guatemala<\/span><br \/>Population : " + my_dict["Guatemala"].five20
+                        }
+                    },
+                    "GN": {
+                        "value": my_dict["Guinea"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Guinea<\/span><br \/>Population : " + my_dict["Guinea"].five20
+                        }
+                    },
+                    "GQ": {
+                        "value": my_dict["Equatorial Guinea"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Equatorial Guinea<\/span><br \/>Population : " +  my_dict["Equatorial Guinea"].five20
+                        }
+                    },
+                    "GW": {
+                        "value": my_dict["Guinea-Bissau"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Guinea-bissau<\/span><br \/>Population : " + my_dict["Guinea-Bissau"].five20
+                        }
+                    },
+                    
+                    "GY": {
+                        "value": my_dict["Guyana"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Guyana<\/span><br \/>Population : " + my_dict["Guyana"].five20
+                        }
+                    },
+                    "HT": {
+                        "value": my_dict["Haiti"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Haiti<\/span><br \/>Population : " + my_dict["Haiti"].five20
+                        }
+                    },
+                    "HN": {
+                        "value": my_dict["Honduras"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Honduras<\/span><br \/>Population : " + my_dict["Honduras"].five20
+                        }
+                    },
+                    "HU": {
+                        "value": my_dict["Hungary"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Hungary<\/span><br \/>Population : " + my_dict["Hungary"].five20
+                        }
+                    },
+                    "JM": {
+                        "value": my_dict["Jamaica"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Jamaica<\/span><br \/>Population : " +my_dict["Jamaica"].five20
+                        }
+                    },
+                    
+                    "JP": {
+                        "value": my_dict["Japan"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Japan<\/span><br \/>Population : " + my_dict["Japan"].five20
+                        }
+                    },
+                    "MH": {
+                        "value": my_dict["Marshall Islands"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Marshall Islands<\/span><br \/>Population : " + my_dict["Marshall Islands"].five20
+                        }
+                    },
+                    "PW": {
+                        "value": my_dict["Palau"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Palau<\/span><br \/>Population : " + my_dict["Palau"].five20
+                        }
+                    },
+                    "SB": {
+                        "value": my_dict["Solomon Islands"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Solomon Islands<\/span><br \/>Population : " + my_dict["Solomon Islands"].five20
+                        }
+                    },
+                    "IN": {
+                        "value": my_dict["India"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">India<\/span><br \/>Population : " + my_dict["India"].five20
+                        }
+                    },
+                    "ID": {
+                        "value": my_dict["Indonesia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Indonesia<\/span><br \/>Population : " + my_dict["Indonesia"].five20
+                        }
+                    },
+                    "JO": {
+                        "value": my_dict["Jordan"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Jordan<\/span><br \/>Population : " + my_dict["Jordan"].five20
+                        }
+                    },
+                    "IR": {
+                        "value": my_dict["Iran, Islamic Rep."].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Iran, Islamic Republic Of<\/span><br \/>Population : " + my_dict["Iran, Islamic Rep."].five20
+                        }
+                    },
+                    "IQ": {
+                        "value": my_dict["Iraq"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Iraq<\/span><br \/>Population : " + my_dict["Iraq"].five20
+                        }
+                    },
+                    "IE": {
+                        "value": my_dict["Ireland"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Ireland<\/span><br \/>Population : " + my_dict["Ireland"].five20
+                        }
+                    },
+                    
+                    "IS": {
+                        "value": my_dict["Iceland"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Iceland<\/span><br \/>Population : " + my_dict["Iceland"].five20
+                        }
+                    },
+                    "IL": {
+                        "value": my_dict["Israel"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Israel<\/span><br \/>Population : " + my_dict["Israel"].five20
+                        }
+                    },
+                    "IT": {
+                        "value": my_dict["Italy"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Italy<\/span><br \/>Population : " + my_dict["Italy"].five20
+                        }
+                    },
+                    "KZ": {
+                        "value": my_dict["Kazakhstan"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Kazakhstan<\/span><br \/>Population : " + my_dict["Kazakhstan"].five20
+                        }
+                    },
+                    "KE": {
+                        "value": my_dict["Kenya"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Kenya<\/span><br \/>Population : " + my_dict["Kenya"].five20
+                        }
+                    },
+                    "KG": {
+                        "value": my_dict["Kyrgyz Republic"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Kyrgyzstan<\/span><br \/>Population : " + my_dict["Kyrgyz Republic"].five20
+                        }
+                    },
+                    "KI": {
+                        "value": my_dict["Kiribati"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Kiribati<\/span><br \/>Population : " + my_dict["Kiribati"].five20
+                        }
+                    },
+                    "KW": {
+                        "value": my_dict["Kuwait"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Kuwait<\/span><br \/>Population : " +my_dict["Kuwait"].five20
+                        }
+                    },
+                    
+                    "KW": {
+                        "value": my_dict["Lao PDR"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Kuwait<\/span><br \/>Population : " +my_dict["Lao PDR"].five20
+                        }
+                    },
+                    
+                    "LS": {
+                        "value": my_dict["Lesotho"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Lesotho<\/span><br \/>Population : " +my_dict["Lesotho"].five20
+                        }
+                    },
+                    "LV": {
+                        "value": my_dict["Latvia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Latvia<\/span><br \/>Population : " + my_dict["Latvia"].five20
+                        }
+                    },
+                    "LB": {
+                        "value": my_dict["Lebanon"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Lebanon<\/span><br \/>Population : " + my_dict["Lebanon"].five20
+                        }
+                    },
+                    
+                    "LR": {
+                        "value": my_dict["Liberia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Liberia<\/span><br \/>Population : " + my_dict["Liberia"].five20
+                        }
+                    },
+                    "LY": {
+                        "value": my_dict["Libya"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Libya<\/span><br \/>Population : " + my_dict["Libya"].five20
+                        }
+                    },
+                    "LI": {
+                        "value": my_dict["Liechtenstein"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Liechtenstein<\/span><br \/>Population : " + my_dict["Liechtenstein"].five20
+                        }
+                    },
+                    
+                    
+                    "LT": {
+                        "value": my_dict["Lithuania"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Lithuania<\/span><br \/>Population : " + my_dict["Lithuania"].five20
+                        }
+                    },
+                    "LU": {
+                        "value": my_dict["Luxembourg"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Luxembourg<\/span><br \/>Population : " + my_dict["Luxembourg"].five20
+                        }
+                    },
+                    "MK": {
+                        "value": my_dict["North Macedonia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Macedonia, The Former Yugoslav Republic Of<\/span><br \/>Population : " + my_dict["North Macedonia"].five20
+                        }
+                    },
+                    "MG": {
+                        "value": my_dict["Madagascar"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Madagascar<\/span><br \/>Population : " + my_dict["Madagascar"].five20
+                        }
+                    },
+                    "MY": {
+                        "value": my_dict["Malaysia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Malaysia<\/span><br \/>Population : " +my_dict["Malaysia"].five20
+                        }
+                    },
+                    
+                    "MW": {
+                        "value": my_dict["Malawi"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Malawi<\/span><br \/>Population : " + my_dict["Malawi"].five20
+                        }
+                    },
+                    "MV": {
+                        "value": my_dict["Maldives"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Maldives<\/span><br \/>Population : " + my_dict["Maldives"].five20
+                        }
+                    },
+                    "ML": {
+                        "value": my_dict["Mali"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Mali<\/span><br \/>Population : " + my_dict["Mali"].five20
+                        }
+                    },
+                    "MT": {
+                        "value": my_dict["Malta"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Malta<\/span><br \/>Population : " + my_dict["Malta"].five20
+                        }
+                    },
+                    "MA": {
+                        "value": my_dict["Morocco"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Morocco<\/span><br \/>Population : " + my_dict["Morocco"].five20
+                        }
+                    },
+                    "MU": {
+                        "value": my_dict["Mauritius"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Mauritius<\/span><br \/>Population : " + my_dict["Mauritius"].five20
+                        }
+                    },
+                    "MR": {
+                        "value": my_dict["Mauritania"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Mauritania<\/span><br \/>Population : " +my_dict["Mauritania"].five20
+                        }
+                    },
+                    "MX": {
+                        "value": my_dict["Mexico"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Mexico<\/span><br \/>Population : " + my_dict["Mexico"].five20
+                        }
+                    },
+                    "FM": {
+                        "value": my_dict["Micronesia, Fed. Sts."].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Micronesia, Federated States Of<\/span><br \/>Population : " + my_dict["Micronesia, Fed. Sts."].five20
+                        }
+                    },
+                    "MD": {
+                        "value": my_dict["Moldova"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Moldova, Republic Of<\/span><br \/>Population : " + my_dict["Moldova"].five20
+                        }
+                    },
+                    "MC": {
+                        "value": my_dict["Monaco"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Monaco<\/span><br \/>Population : " + my_dict["Monaco"].five20
+                        }
+                    },
+                    "MN": {
+                        "value": my_dict["Mongolia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Mongolia<\/span><br \/>Population : " +my_dict["Mongolia"].five20
+                        }
+                    },
+                    "ME": {
+                        "value": my_dict["Montenegro"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Montenegro<\/span><br \/>Population : " +my_dict["Montenegro"].five20
+                        }
+                    },
+                    "MZ": {
+                        "value": my_dict["Mozambique"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Mozambique<\/span><br \/>Population : " +my_dict["Mozambique"].five20
+                        }
+                    },
+                    "NA": {
+                        "value": my_dict["Namibia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Namibia<\/span><br \/>Population : " +my_dict["Namibia"].five20
+                        }
+                    },
+                    "NP": {
+                        "value": my_dict["Nepal"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Nepal<\/span><br \/>Population : " +my_dict["Nepal"].five20
+                        }
+                    },
+                    "NI": {
+                        "value": my_dict["Nicaragua"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Nicaragua<\/span><br \/>Population : " + my_dict["Nicaragua"].five20
+                        }
+                    },
+                    "NE": {
+                        "value": my_dict["Niger"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Niger<\/span><br \/>Population : " + my_dict["Niger"].five20
+                        }
+                    },
+                    "NG": {
+                        "value": my_dict["Nigeria"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Nigeria<\/span><br \/>Population : " + my_dict["Nigeria"].five20
+                        }
+                    },
+                    "NO": {
+                        "value": my_dict["Norway"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Norway<\/span><br \/>Population : " + my_dict["Norway"].five20
+                        }
+                    },
+                    "NZ": {
+                        "value": my_dict["New Zealand"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">New Zealand<\/span><br \/>Population : " + my_dict["New Zealand"].five20
+                        }
+                    },
+                    "OM": {
+                        "value": my_dict["Oman"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Oman<\/span><br \/>Population : " + my_dict["Oman"].five20
+                        }
+                    },
+                    "UG": {
+                        "value": my_dict["Uganda"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Uganda<\/span><br \/>Population : " + my_dict["Uganda"].five20
+                        }
+                    },
+                    "UZ": {
+                        "value": my_dict["Uzbekistan"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Uzbekistan<\/span><br \/>Population : " + my_dict["Uzbekistan"].five20
+                        }
+                    },
+                    "PK": {
+                        "value": my_dict["Pakistan"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Pakistan<\/span><br \/>Population : " + my_dict["Pakistan"].five20
+                        }
+                    },
+                    "PA": {
+                        "value": my_dict["Panama"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Panama<\/span><br \/>Population : " + my_dict["Panama"].five20
+                        }
+                    },
+                    "PG": {
+                        "value": my_dict["Papua New Guinea"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Papua New Guinea<\/span><br \/>Population : " + my_dict["Papua New Guinea"].five20
+                        }
+                    },
+                    "PY": {
+                        "value": my_dict["Paraguay"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Paraguay<\/span><br \/>Population : " + my_dict["Paraguay"].five20
+                        }
+                    },
+                    "NL": {
+                        "value": my_dict["Netherlands"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Netherlands<\/span><br \/>Population : " + my_dict["Netherlands"].five20
+                        }
+                    },
+                    "PE": {
+                        "value": my_dict["Peru"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Peru<\/span><br \/>Population : " + my_dict["Peru"].five20
+                        }
+                    },
+                    "PH": {
+                        "value": my_dict["Philippines"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Philippines<\/span><br \/>Population : " + my_dict["Philippines"].five20
+                        }
+                    },
+                    "PL": {
+                        "value": my_dict["Poland"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Poland<\/span><br \/>Population : " + my_dict["Poland"].five20
+                        }
+                    },
+                    "PT": {
+                        "value": my_dict["Portugal"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Portugal<\/span><br \/>Population : " + my_dict["Portugal"].five20
+                        }
+                    },
+                    "QA": {
+                        "value": my_dict["Qatar"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Qatar<\/span><br \/>Population : " + my_dict["Qatar"].five20
+                        }
+                    },
+                    "DO": {
+                        "value": my_dict["Dominican Republic"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Dominican Republic<\/span><br \/>Population : " + my_dict["Dominican Republic"].five20
+                        }
+                    },
+                    "RO": {
+                        "value": my_dict["Romania"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Romania<\/span><br \/>Population : " + my_dict["Romania"].five20
+                        }
+                    },
+                    "GB": {
+                        "value": my_dict["United Kingdom"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">United Kingdom<\/span><br \/>Population : " + my_dict["United Kingdom"].five20
+                        }
+                    },
+                    "RU": {
+                        "value": my_dict["Russian Federation"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Russian Federation<\/span><br \/>Population : " + my_dict["Russian Federation"].five20
+                        }
+                    },
+                    "RW": {
+                        "value": my_dict["Rwanda"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Rwanda<\/span><br \/>Population : " + my_dict["Rwanda"].five20
+                        }
+                    },
+                    "KN": {
+                        "value": my_dict["St. Kitts and Nevis"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Saint Kitts And Nevis<\/span><br \/>Population : " + my_dict["St. Kitts and Nevis"].five20
+                        }
+                    },
+                    "SM": {
+                        "value": my_dict["San Marino"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">San Marino<\/span><br \/>Population : " + my_dict["San Marino"].five20
+                        }
+                    },
+                    "VC": {
+                        "value": my_dict["St. Vincent and the Grenadines"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Saint Vincent And The Grenadines<\/span><br \/>Population : " + my_dict["St. Vincent and the Grenadines"].five20
+                        }
+                    },
+                    "LC": {
+                        "value": my_dict["St. Lucia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Saint Lucia<\/span><br \/>Population : " + my_dict["St. Lucia"].five20
+                        }
+                    },
+                    "SV": {
+                        "value": my_dict["El Salvador"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">El Salvador<\/span><br \/>Population : " + my_dict["El Salvador"].five20
+                        }
+                    },
+                    "WS": {
+                        "value": my_dict["Samoa"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Samoa<\/span><br \/>Population : " + my_dict["Samoa"].five20
+                        }
+                    },
+                    "ST": {
+                        "value": my_dict["Sao Tome and Principe"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Sao Tome And Principe<\/span><br \/>Population : " + my_dict["Sao Tome and Principe"].five20
+                        }
+                    },
+                    "SN": {
+                        "value":  my_dict["Senegal"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Senegal<\/span><br \/>Population : " +  my_dict["Senegal"].five20
+                        }
+                    },
+                    "RS": {
+                        "value":  my_dict["Serbia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Serbia<\/span><br \/>Population : " +  my_dict["Serbia"].five20
+                        }
+                    },
+                    "SC": {
+                        "value":  my_dict["Seychelles"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Seychelles<\/span><br \/>Population : " + my_dict["Seychelles"].five20
+                        }
+                    },
+                    "SL": {
+                        "value":  my_dict["Sierra Leone"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Sierra Leone<\/span><br \/>Population : " + my_dict["Sierra Leone"].five20
+                        }
+                    },
+                    "SG": {
+                        "value":  my_dict["Singapore"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Singapore<\/span><br \/>Population : " + my_dict["Singapore"].five20
+                        }
+                    },
+                    "SK": {
+                        "value":  my_dict["Slovak Republic"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Slovakia<\/span><br \/>Population : " + my_dict["Slovak Republic"].five20
+                        }
+                    },
+                    "SI": {
+                        "value":  my_dict["Slovenia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Slovenia<\/span><br \/>Population : " + my_dict["Slovenia"].five20
+                        }
+                    },
+                    "SO": {
+                        "value":  my_dict["Somalia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Somalia<\/span><br \/>Population : " + my_dict["Somalia"].five20
+                        }
+                    },
+                    "SD": {
+                        "value":  my_dict["Sudan"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Sudan<\/span><br \/>Population : " + my_dict["Sudan"].five20
+                        }
+                    },
+                    "SS": {
+                        "value":  my_dict["South Sudan"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">South Sudan<\/span><br \/>Population : " + my_dict["South Sudan"].five20
+                        }
+                    },
+                    "LK": {
+                        "value":  my_dict["Sri Lanka"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Sri Lanka<\/span><br \/>Population : " + my_dict["Sri Lanka"].five20
+                        }
+                    },
+                    "SE": {
+                        "value":  my_dict["Sweden"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Sweden<\/span><br \/>Population : " + my_dict["Sweden"].five20
+                        }
+                    },
+                    "CH": {
+                        "value":  my_dict["Switzerland"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Switzerland<\/span><br \/>Population : " + my_dict["Switzerland"].five20
+                        }
+                    },
+                    "SR": {
+                        "value":  my_dict["Suriname"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Suriname<\/span><br \/>Population : " + my_dict["Suriname"].five20
+                        }
+                    },
+                    "SY": {
+                        "value":  my_dict["Syrian Arab Republic"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Syrian Arab Republic<\/span><br \/>Population : " + my_dict["Syrian Arab Republic"].five20
+                        }
+                    },
+                    "TJ": {
+                        "value":  my_dict["Tajikistan"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Tajikistan<\/span><br \/>Population : " +my_dict["Tajikistan"].five20
+                        }
+                    },
+                    "TZ": {
+                        "value":  my_dict["Tanzania"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Tanzania, United Republic Of<\/span><br \/>Population : " + my_dict["Tanzania"].five20
+                        }
+                    },
+                    "TD": {
+                        "value":  my_dict["Chad"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Chad<\/span><br \/>Population : " + my_dict["Chad"].five20
+                        }
+                    },
+                    "CZ": {
+                        "value":  my_dict["Czech Republic"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Czech Republic<\/span><br \/>Population: " + my_dict["Czech Republic"].five20
+                        }
+                    },
+                    "TH": {
+                        "value":  my_dict["Thailand"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Thailand<\/span><br \/>Population : " + my_dict["Thailand"].five20
+                        }
+                    },
+                    "TL": {
+                        "value":  my_dict["Timor-Leste"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Timor-leste<\/span><br \/>Population : " + my_dict["Timor-Leste"].five20
+                        }
+                    },
+                    "TG": {
+                        "value":  my_dict["Togo"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Togo<\/span><br \/>Population : " + my_dict["Togo"].five20
+                        }
+                    },
+                    "TO": {
+                        "value":  my_dict["Tonga"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Tonga<\/span><br \/>Population : " + my_dict["Tonga"].five20
+                        }
+                    },
+                    "TT": {
+                        "value":  my_dict["Trinidad and Tobago"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Trinidad And Tobago<\/span><br \/>Population : " + my_dict["Trinidad and Tobago"].five20
+                        }
+                    },
+                    "TN": {
+                        "value":  my_dict["Tunisia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Tunisia<\/span><br \/>Population : " + my_dict["Tunisia"].five20
+                        }
+                    },
+                    "TM": {
+                        "value":  my_dict["Turkmenistan"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Turkmenistan<\/span><br \/>Population : " + my_dict["Turkmenistan"].five20
+                        }
+                    },
+                    "TR": {
+                        "value":  my_dict["Turkey"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Turkey<\/span><br \/>Population : " +my_dict["Turkey"].five20
+                        }
+                    },
+                    "TV": {
+                        "value":  my_dict["Tuvalu"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Tuvalu<\/span><br \/>Population : " + my_dict["Tuvalu"].five20
+                        }
+                    },
+                    "VU": {
+                        "value":  my_dict["Vanuatu"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Vanuatu<\/span><br \/>Population : " + my_dict["Vanuatu"].five20
+                        }
+                    },
+                    "VE": {
+                        "value":  my_dict["Venezuela, RB"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Venezuela, Bolivarian Republic Of<\/span><br \/>Population : " + my_dict["Venezuela, RB"].five20
+                        }
+                    },
+                    "VN": {
+                        "value":  my_dict["Vietnam"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Vietnam<\/span><br \/>Population : " + my_dict["Vietnam"].five20
+                        }
+                    },
+                    "UA": {
+                        "value":  my_dict["Ukraine"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Ukraine<\/span><br \/>Population : " + my_dict["Ukraine"].five20
+                        }
+                    },
+                    "UY": {
+                        "value":  my_dict["Uruguay"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Uruguay<\/span><br \/>Population : " + my_dict["Uruguay"].five20
+                        }
+                    },
+                    "YE": {
+                        "value":  my_dict["Yemen, Rep."].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Yemen<\/span><br \/>Population : " + my_dict["Yemen, Rep."].five20
+                        }
+                    },
+                    "ZM": {
+                        "value":  my_dict["Zambia"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Zambia<\/span><br \/>Population : " + my_dict["Zambia"].five20
+                        }
+                    },
+                    "ZW": {
+                        "value":  my_dict["Zimbabwe"].five20,
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Zimbabwe<\/span><br \/>Population : " + my_dict["Zimbabwe"].five20
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+</head>
+
+<body>
+<div class="container">
+
+    <h1>World Population (2005)</h1>
+
+    <div class="mapcontainer">
+        <div class="map">
+            <span>Alternative content for the map</span>
+        </div>
+        <div class="areaLegend">
+            <span>Alternative content for the legend</span>
+        </div>
+        <div class="plotLegend">
+            <span>Alternative content for the legend</span>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+</body>
+</html>
