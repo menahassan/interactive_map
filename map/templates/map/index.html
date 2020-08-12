@@ -125,6 +125,10 @@
   </head>
   <body>
       <h1 style="font-family: Courier New, Courier, monospace; font-size: 40px; padding-left: 5px">Welcome to our<span style="font-family: Brush Script MT; font-size: 55px; letter-spacing: 2.5px;"> interactive map</span></h1>
+      <h1 style="font-family: Courier New, Courier, monospace; font-size: 40px; padding-left: 5px">Explore more maps!</h1>
+      <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
+        <a href="{% url 'data:index' %}"><p style="display: inline-block; color: white">World Population Data</p></a>
+      </div>
       <form id="countryform">
           <label style="font-family: Courier New, Courier, monospace; padding-left: 5px">Which country would you like to explore?</label>
           <select id="countries" name="countries">
@@ -219,22 +223,7 @@
                   });
                   
               });
-
               //TO DO: find a way to add it to popup, not replaces the html already there!
-              $.ajax({
-                  url: '{% url "get_news" %}',
-                  data: {
-                    'country': `${props[2]}`
-                  },
-                  dataType: 'json',
-                  success: function (data) {
-                      tmpMarker.getPopup().setText(data.article_list.toString());
-                      //var cur = tmpMarker.getPopup().getElement();
-                      //tmpMarker.getPopup().setHTML(`${cur}<p>${data.article_list.toString()}</p>`);
-                  }
-              });
-
-          }
       </script>
 
       <h1>Time</h1>
