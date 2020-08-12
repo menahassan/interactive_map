@@ -26,7 +26,7 @@ class NewsArticles():
 #btw, no more need for dict
 # Create your views here.
 def index(request):
-    list = NewsArticles.news('England')
+    list = NewsArticles.news(country = 'England')
     mapbox_access_token = 'pk.my_mapbox_access_token'
     embassy_list = json.dumps(a)
     dictionary = json.dumps(DICT)
