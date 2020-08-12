@@ -85,6 +85,48 @@
               countryList.splice(chosenIndex, 1);
               return chosenCountry;
           };
+
+          function openIssue(country) {
+              var curCountries = document.getElementsByClassName(`${country}`);
+              for (j = 0; j < curCountries.length; ++j) {
+                  var popup = curCountries[j].markerInstance.getPopup();
+                  if (!((popup.innerHTML).indexOf("No US Diplomatic Presence") !== -1 || (popup.innerHTML).indexOf("Embassy") !== -1)) {
+                     //has neither of these strings
+                     continue;
+                  }
+                  if (!popup.isOpen()){
+                      popup.togglePopup();
+                  }
+                  //to do: use popup or marker element to do the following
+                  var elems = document.getElementsByClassName(`issuebtn${country}`);
+                  for (i = 0; i < elems.length; ++i) {
+                      elems[i].style.visibility = 'visible';
+                  }
+                  elems = document.getElementsByClassName(`issueparagraph${country}`);
+                  for (i = 0; i < elems.length; ++i) {
+                      elems[i].style.visibility = 'visible';
+                  }
+              }
+          };
+          function closeIssue(country) {
+            var curCountries = document.getElementsByClassName(`${country}`);
+            for (j = 0; j < curCountries.length; ++j) {
+                var popup = curCountries[j].markerInstance.getPopup();
+                if (popup.isOpen()){
+                    popup.remove();
+                }
+                //to do: use popup or marker element to do the following
+                var elems = document.getElementsByClassName(`issuebtn${country}`);
+                for (i = 0; i < elems.length; ++i) {
+                    elems[i].style.visibility = 'hidden';
+                }
+                elems = document.getElementsByClassName(`issueparagraph${country}`);
+                for (i = 0; i < elems.length; ++i) {
+                    elems[i].style.visibility = 'hidden';
+                }
+            }
+          };
+
           function sendAjax(country) {
             $.ajax({
                 url: '{% url "get_news" %}',
@@ -99,6 +141,22 @@
                 }
             });
           };
+          //probably can combine these two to avoid repetition
+          function sendAjaxTwo(country, issue) {
+            $.ajax({
+                url: '{% url "get_news_issue" %}',
+                data: {
+                  'country': country,
+                  'issue' : issue
+                },
+                dataType: 'json',
+                success: function (data) {
+                    document.getElementById("latestnews").innerHTML = `${data.article_list.toString()}`;
+                    window.scrollTo(0,document.body.scrollHeight);
+
+                }
+            });
+          };
 
           var abort = false; //variable for freestyle loop to stop
           document.addEventListener('DOMContentLoaded', function() {
@@ -110,6 +168,27 @@
                   }
                   const country = document.querySelector('#countries').value;
                   center(country);
+              };
+
+              document.querySelector('#issueselector').onclick = function() {
+                  var allCountries = {{countries|safe}};
+                  for (i = 0; i < allCountries.length; ++i) {
+                      closeIssue(allCountries[i]);
+                  }
+                  const issue = document.querySelector('#issues').value;
+                  //TO DO: issuedict will be a dict of issues with corresponding list of countries related to it
+                  //const issues = JSON.parse({{ issuedict }});
+
+                  //TO DO: add all countries to nodiplpresencelist
+                  //TO DO: find a way to use the selected issue to choose template variable
+                  var list = {{ airpollution|safe }};
+                  for (i = 0; i < list.length; ++i) {
+                      openIssue(list[i][0]);
+                      var parags = document.getElementsByClassName(`issueparagraph${list[i][0]}`);
+                      for (j = 0; j < parags.length; j++) {
+                          parags[j].innerHTML = `${list[i][1].toString()}`;
+                      }
+                  }
               };
               //loops through each country, zooming into its embassy/consulates.
               //stops when loop is over
@@ -148,6 +227,13 @@
           </select>
           <input id="countryselector" type="button" value="Submit">
       </form>
+      <form id="issueform">
+          <label>Global issue:</label>
+          <select id="issues" name="issues">
+              <option value="airpollution">Air pollution</option>
+          </select>
+          <input id="issueselector" type="button" value="Submit">
+      </form>
       <button id="fsmodebtn">Freestyle Mode</button>
       <button id="stopbtn" onclick="abort = true">Stop</button>
       <div id='map' style='width: 1400px; height: 750px;'></div>
@@ -163,12 +249,47 @@
 
           //var marker = new mapboxgl.Marker().setLngLat([12.550343, 55.665957]).addTo(map);
           var embassies = {{ embassy_list|safe }};
-          for(var i = 0; i < 275; i++) {
+          var countries = {{ countries|safe }};
+          const countriesNoDiplPresence = {{ nodiplpresencelist|safe }};
+          for (var i = 0; i < countriesNoDiplPresence.length; i++) {
+              var props = countriesNoDiplPresence[i];
+              var country = props[0];
+              var el = document.createElement('div');
+              el.className = `${country}`;
+              el.style.width = '15px';
+              el.style.height = '15px';
+              el.style.borderRadius = '50%';
+              el.style.border = '0.25px solid';
+              el.style.backgroundImage = 'url(https://i.pinimg.com/564x/f4/a8/6a/f4a86a209ba10ab95afcfd4ed29f3acf.jpg)';
+              el.style.color = 'blue';
+              let tmpMarker = new mapboxgl.Marker(el);
+              el.markerInstance = tmpMarker;
+              el.style.color = 'red';
+              //TO DO: how to make these markers present for issues
+              //TO DO: should we add countries with no dipl presence to main menu?
+              //TO DO: make spreadsheet with all countries and lat/long and use it instead of countries template var
+              tmpMarker.setLngLat([props[2],props[1]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+                .setHTML(`<h3 class="title${country}">No US Diplomatic Presence</h3><p>` + `${country}` + `</p><button class="newsbtn" onclick="sendAjax('${country}')">See the latest news!</button>
+                <button class="issuebtn${country}" onclick="sendAjaxTwo('${country}', '${document.querySelector('#issues').value}')" style="visibility:hidden">See the latest news about ${document.querySelector('#issues').value}!</button>
+                <p class='issueparagraph${country}' style='visibility:hidden'></p>
+                <img src="" alt="My image" width = "40" height="40">`)).addTo(map);
+              el.addEventListener("click", e => {
+                  // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
+                  let coords = e.target.markerInstance.getLngLat();
+                  //tell the map to center on the marker coordinates
+                  map.flyTo({
+                      center: coords,
+                      speed: 0.6,
+                      zoom: 5
+                  });
+              });
+
+          }
+          for(var i = 0; i < embassies.length; i++) {
               props = embassies[i];
               if (props[0] !== "Active") {
                   continue;
               }
-              var description = props[3]; //city name
               //commented out code is for adding background image
               var el = document.createElement('div');
               el.className = `${props[2]}`; //used to be set to 'marker'
@@ -178,21 +299,23 @@
               el.style.height = '15px';
               el.style.borderRadius = '50%';
               el.style.border = '0.25px solid';
+
               //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
               let tmpMarker = new mapboxgl.Marker(el);
               el.markerInstance = tmpMarker;
               var title = '';
+              var city = props[3]; //city name
               if (props[5] === 'OFFOBC') {
-                  title = `US Embassy in ${description}.`;
+                  title = `US Embassy in ${city}.`;
               }
               else if (props[5] === 'OFFCOB') {
-                  title = `US Consulate in ${description}.`;
+                  title = `US Consulate in ${city}.`;
               }
               else if (props[5] === 'OFFOBX'){
-                  title = `Annex building in ${description}.`;
+                  title = `Annex building in ${city}.`;
               }
               else if (props[5] === 'OFFCAX' || props[5] === 'OFFAPP') {
-                  title = `US Embassy branch office in ${description}`;
+                  title = `US Embassy branch office in ${city}`;
               }
               else {
                   title = `${props[2]}.`; //just to be safe -- change later
@@ -203,7 +326,10 @@
 
 
               tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-                .setHTML('<h3>' + title + '</h3><p>' + `${props[2]}` + `</p><button class="newsbtn" onclick="sendAjax('${props[2]}')">See the latest news!</button><img src="" alt="My image" width = "40" height="40">`)).addTo(map);
+                .setHTML(`<h3 class="title${country}">` + title + '</h3><p>' + `${props[2]}` + `</p><button class="newsbtn" onclick="sendAjax('${props[2]}')">See the latest news!</button>
+                <button class="issuebtn${props[2]}" onclick="sendAjaxTwo('${props[2]}', '${document.querySelector('#issues').value}')" style="visibility:hidden">See the latest news about ${document.querySelector('#issues').value}!</button>
+                <p class='issueparagraph${props[2]}' style='visibility:hidden'></p>
+                <img src="" alt="My image" width = "40" height="40">`)).addTo(map);
               el.addEventListener("click", e => {
                   // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
                   let coords = e.target.markerInstance.getLngLat();
@@ -216,6 +342,7 @@
               });
           }
       </script>
-      <p id="latestnews">
+
+      <p id="latestnews"> <!--where news will show up-->
   </body>
 </html>
