@@ -2,8 +2,10 @@ from django.urls import include, path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from . import views
 
+app_name = "data"
 urlpatterns = [
     path('', views.index, name='index'),
+    path('index', views.index, name='index'),
     path('population1980', views.population1980, name='population1980'),
     path('population1981', views.population1981, name='population1981'),
     path('population1982', views.population1982, name='population1982'),
