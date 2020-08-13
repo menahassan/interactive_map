@@ -1,183 +1,196 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>Countries Human Development Index</title>
-    <style type="text/css">
-        body {
-            color: #5d5d5d;
-            font-family: Helvetica, Arial, sans-serif;
-        }
-
-        h1 {
-            font-size: 30px;
-            margin: auto;
-            margin-top: 50px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: auto;
-        }
-        
-        /* Specific mapael css class are below
-         * 'mapael' class is added by plugin
-        */
-
-        .mapael .map {
-            position: relative;
-        }
-
-        .mapael .mapTooltip {
-            position: absolute;
-            background-color: #fff;
-            moz-opacity: 0.70;
-            opacity: 0.70;
-            filter: alpha(opacity=70);
-            border-radius: 10px;
-            padding: 10px;
-            z-index: 1000;
-            max-width: 200px;
-            display: none;
-            color: #343434;
-        }
-    </style>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" charset="utf-8"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"
-            charset="utf-8"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js" charset="utf-8"></script>
-    <script src='{% static "/jquery-mapael/js/jquery.mapael.js" %}' charset="utf-8"></script>
-    <script src='{% static "/jquery-mapael/js/maps/france_departments.js" %}' charset="utf-8"></script>
-    <script src='{% static "/jquery-mapael/js/maps/world_countries.js" %}' charset="utf-8"></script>
-    <script src='{% static "/jquery-mapael/js/maps/usa_states.js" %}' charset="utf-8"></script>
-
-    <script type="text/javascript">
-
-        var hdiLst = {{ countriesHDI|safe }};
-        $(function () {
-            var list = {}
-            for(let k in hdiLst){
-                list[k] = {
-                    "value": hdiLst[k][1],
-                    "href": "#",
-                    "tooltip": {
-                        "content": "<span style=\"font-weight:bold;\">"+ hdiLst[k][0] +"<\/span><br \/>HDI : " + hdiLst[k][1]
-                    }
-                }
+    <head>
+        <meta charset="utf-8">
+        <title>Countries Human Development Index</title>
+        <style type="text/css">
+            body {
+                color: #5d5d5d;
+                font-family: Helvetica, Arial, sans-serif;
             }
 
+            h1 {
+/*                font-size: 30px;*/
+                margin: auto;
+                margin-top: 20px;
+                margin-right: 10px;
+                margin-left: 10px;
+            }
 
-            $(".mapcontainer").mapael({
-                map: {
-                    name: "world_countries",
-                    defaultArea: {
-                        attrs: {
-                            stroke: "#fff",
-                            "stroke-width": 1
-                        }
-                    }
-                },
-                legend: {
-                    area: {
-                        title: "Countries Human Development Index",
-                        slices: [
-                            {
-                                max: 0.2,
-                                attrs: {
-                                    fill: "#89ff89"
-                                },
-                                label: "HDI less than 0.2"
-                            },
-                            {
-                                min: 0.2,
-                                max: 0.5,
-                                attrs: {
-                                    fill: "#62ff62"
-                                },
-                                label: "HDI between 0.2 and 0.4"
-                            },
-                            {
-                                min: 0.5,
-                                max: 0.8,
-                                attrs: {
-                                    fill: "#00e600"
-                                },
-                                label: "HDI between 0.4 and 0.7"
-                            },
-                            {
-                                min: 0.8,
-                                attrs: {
-                                    fill: "#009d00"
-                                },
-                                label: "HDI more than 0.7"
-                            },
-                            {
-                                attrs: {
-                                    fill: "#000000"
-                                },
-                                label: "No data"
-                            },
-                        ]
-                    },
-                },
-                areas: list
-            });
-        
+            h4 {
+                margin: auto;
+                margin-top: 10px;
+                margin-right: 10px;
+                margin-left: 10px;    
+            }
+
+            .container {
+                max-width: 800px;
+                margin: auto;
+            }
             
-            var counter = 0;
-            var yearStart = 1990;
-            document.getElementById('year').textContent = "Human Development Index: " + (yearStart + counter);
-            window.setInterval(function test(){
-                counter = (counter + 1) % 29;
-                document.getElementById('year').textContent = "Human Development Index: " + (yearStart + counter);
-                
-                // Update the area value
-                var updatedOptions = {'areas': {}};
+            /* Specific mapael css class are below
+            * 'mapael' class is added by plugin
+            */
+
+            .mapael .map {
+                position: relative;
+            }
+
+            .mapael .mapTooltip {
+                position: absolute;
+                background-color: #fff;
+                moz-opacity: 0.70;
+                opacity: 0.70;
+                filter: alpha(opacity=70);
+                border-radius: 10px;
+                padding: 10px;
+                z-index: 1000;
+                max-width: 200px;
+                display: none;
+                color: #343434;
+            }
+        </style>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" charset="utf-8"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"
+                charset="utf-8"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js" charset="utf-8"></script>
+        <script src='{% static "/jquery-mapael/js/jquery.mapael.js" %}' charset="utf-8"></script>
+        <script src='{% static "/jquery-mapael/js/maps/france_departments.js" %}' charset="utf-8"></script>
+        <script src='{% static "/jquery-mapael/js/maps/world_countries.js" %}' charset="utf-8"></script>
+        <script src='{% static "/jquery-mapael/js/maps/usa_states.js" %}' charset="utf-8"></script>
+
+        <script type="text/javascript">
+
+            var hdiLst = {{ countriesHDI|safe }};
+            $(function () {
+                var list = {}
                 for(let k in hdiLst){
-                    // Update the area
-                    updatedOptions.areas[k] = {
-                        "value": hdiLst[k][counter + 1],
+                    var hdiVal = hdiLst[k][1] === ".." ? "No Data" : hdiLst[k][1]; 
+                    list[k] = {
+                        "value": hdiLst[k][1],
                         "href": "#",
                         "tooltip": {
-                            "content": "<span style=\"font-weight:bold;\">"+ hdiLst[k][0] +"<\/span><br \/>HDI : " + hdiLst[k][counter + 1]
+                            "content": "<span style=\"font-weight:bold;\">"+ hdiLst[k][0] +"<\/span><br \/>HDI : " + hdiVal
                         }
                     }
                 }
 
-                $(".mapcontainer").trigger('update', [{
-                    mapOptions: updatedOptions, 
-                    animDuration: 500
-                }]);
-            }, 1000)
-        });
+
+                $(".mapcontainer").mapael({
+                    map: {
+                        name: "world_countries",
+                        defaultArea: {
+                            attrs: {
+                                stroke: "#fff",
+                                "stroke-width": 1
+                            }
+                        },
+                        width: 1200,
+                        height: 1100
+                    },
+                    legend: {
+                        area: {
+                            title: "Countries Human Development Index",
+                            mode: 'horizontal',
+                            slices: [
+                                {
+                                    max: 0.2,
+                                    attrs: {
+                                        fill: "#89ff89"
+                                    },
+                                    label: "HDI less than 0.2"
+                                },
+                                {
+                                    min: 0.2,
+                                    max: 0.5,
+                                    attrs: {
+                                        fill: "#62ff62"
+                                    },
+                                    label: "HDI between 0.2 and 0.4"
+                                },
+                                {
+                                    min: 0.5,
+                                    max: 0.8,
+                                    attrs: {
+                                        fill: "#00e600"
+                                    },
+                                    label: "HDI between 0.4 and 0.7"
+                                },
+                                {
+                                    min: 0.8,
+                                    attrs: {
+                                        fill: "#009d00"
+                                    },
+                                    label: "HDI more than 0.7"
+                                },
+                                {
+                                    attrs: {
+                                        fill: "#000000"
+                                    },
+                                    label: "No data"
+                                },
+                            ]
+                        },
+                    },
+                    areas: list
+                });
+            
+                
+                var counter = 0;
+                var yearStart = 1990;
+                document.getElementById('year').textContent = "Human Development Index: " + (yearStart + counter);
+                window.setInterval(function test(){
+                    counter = (counter + 1) % 29;
+                    document.getElementById('year').textContent = "Human Development Index: " + (yearStart + counter);
+                    
+                    // Update the area value
+                    var updatedOptions = {'areas': {}};
+                    for(let k in hdiLst){
+                        // Update the area
+                        var hdiVal = hdiLst[k][counter + 1] === ".." ? "No Data" : hdiLst[k][counter + 1]; 
+                        updatedOptions.areas[k] = {
+                            "value": hdiLst[k][counter + 1],
+                            "href": "#",
+                            "tooltip": {
+                                "content": "<span style=\"font-weight:bold;\">"+ hdiLst[k][0] +"<\/span><br \/>HDI : " + hdiVal
+                            }
+                        }
+                    }
+
+                    $(".mapcontainer").trigger('update', [{
+                        mapOptions: updatedOptions, 
+                        animDuration: 500
+                    }]);
+                }, 1000)
+            });
 
 
-        
-    </script>
+            
+        </script>
 
-</head>
+    </head>
 
-<body>
+    <body>
+        <h1 id="year"></h1>
+        <h4>Human Development Index (HDI) look at the life expectancy, education, and gross 
+            national income per capita to create a value, ranging from 0 - 1, to assess the 
+            development of a country.</h4>
+        <div>
+            <div class="mapcontainer">
+                <div>
+                    <div class="map">
+                        <span>Alternative content for the map</span>
+                    </div>
+                </div>
 
-<div class="container">
-
-    <h1 id="year"></h1>
-
-    <div class="mapcontainer">
-        <div class="map">
-            <span>Alternative content for the map</span>
+                <div class="areaLegend">
+                    <span>Alternative content for the legend</span>
+                </div>
+            </div>
         </div>
-        <div class="areaLegend">
-            <span>Alternative content for the legend</span>
-        </div>
-    </div>
-    <p>Source of data is United Nations Development Programme Human Development Reports.</p>
-</div>
-
-</div>
-
-
-</body>
+        <p>Source of data is United Nations Development Programme Human Development Reports.</p>
+    </body>
 </html>
