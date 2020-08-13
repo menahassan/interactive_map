@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data</title>
+    <meta charset="utf-8">
+    <title>World Population (2019)</title>
+    <style type="text/css">
+        body {
+            color: #5d5d5d;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin: auto;
+            margin-top: 50px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        
+        /* Specific mapael css class are below
+         * 'mapael' class is added by plugin
+        */
+
+        .mapael .map {
+            position: relative;
+        }
+
+        .mapael .mapTooltip {
+            position: absolute;
+            background-color: #fff;
+            moz-opacity: 0.70;
+            opacity: 0.70;
+            filter: alpha(opacity=70);
+            border-radius: 10px;
+            padding: 10px;
+            z-index: 1000;
+            max-width: 200px;
+            display: none;
+            color: #343434;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"
+            charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js" charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/jquery.mapael.js" %}' charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/maps/france_departments.js" %}' charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/maps/world_countries.js" %}' charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/maps/usa_states.js" %}' charset="utf-8"></script>
+
+    <script type="text/javascript">
+
+        var hdiLst = {{ countriesHDI|safe }};
+        $(function () {
+            var list = {}
+            for(let k in hdiLst){
+                list[k] = {
+                    "value": hdiLst[k][1],
+                    "href": "#",
+                    "tooltip": {
+                        "content": "<span style=\"font-weight:bold;\">"+ hdiLst[k][0] +"<\/span><br \/>HDI : " + hdiLst[k][1]
+                    }
+                }
+            }
+
+
+            $(".mapcontainer").mapael({
+                map: {
+                    name: "world_countries",
+                    defaultArea: {
+                        attrs: {
+                            stroke: "#fff",
+                            "stroke-width": 1
+                        }
+                    }
+                },
+                legend: {
+                    area: {
+                        title: "Countries Human Development Index",
+                        slices: [
+                            {
+                                max: 0.2,
+                                attrs: {
+                                    fill: "#89ff89"
+                                },
+                                label: "HDI less than 0.2"
+                            },
+                            {
+                                min: 0.2,
+                                max: 0.5,
+                                attrs: {
+                                    fill: "#62ff62"
+                                },
+                                label: "HDI between 0.2 and 0.4"
+                            },
+                            {
+                                min: 0.5,
+                                max: 0.8,
+                                attrs: {
+                                    fill: "#00e600"
+                                },
+                                label: "HDI between 0.4 and 0.7"
+                            },
+                            {
+                                min: 0.8,
+                                attrs: {
+                                    fill: "#009d00"
+                                },
+                                label: "HDI more than 0.7"
+                            },
+                            {
+                                attrs: {
+                                    fill: "#000000"
+                                },
+                                label: "No data"
+                            },
+                        ]
+                    },
+                },
+                areas: list
+            });
+        
+            
+            var counter = 0;
+            var yearStart = 1990;
+            document.getElementById('year').textContent = "Human Development Index: " + (yearStart + counter);
+            window.setInterval(function test(){
+                counter = (counter + 1) % 29;
+                document.getElementById('year').textContent = "Human Development Index: " + (yearStart + counter);
+                
+                // Update the area value
+                var updatedOptions = {'areas': {}};
+                for(let k in hdiLst){
+                    // Update the area
+                    updatedOptions.areas[k] = {
+                        "value": hdiLst[k][counter + 1],
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">"+ hdiLst[k][0] +"<\/span><br \/>HDI : " + hdiLst[k][counter + 1]
+                        }
+                    }
+                }
+                console.log(hdiLst['US'][counter + 1])
+
+                $(".mapcontainer").trigger('update', [{
+                    mapOptions: updatedOptions, 
+                    animDuration: 500
+                }]);
+            }, 1000)
+        });
+
+
+        
+    </script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1 id="year"></h1>
+
+    <div class="mapcontainer">
+        <div class="map">
+            <span>Alternative content for the map</span>
+        </div>
+        <div class="areaLegend">
+            <span>Alternative content for the legend</span>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+</body>
+</html>

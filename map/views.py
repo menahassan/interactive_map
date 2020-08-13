@@ -36,7 +36,6 @@ def index(request):
     mapbox_access_token = 'pk.my_mapbox_access_token'
     embassy_list = json.dumps(a)
     dictionary = json.dumps(DICT)
-    HDI = json.dumps(countriesHDI)
     lang_list = json.dumps(translated)
     return render(request, "map/index.html", {
     'mapbox_access_token': mapbox_access_token,
@@ -46,5 +45,11 @@ def index(request):
     'lang_list' : lang_list,
     #'country' : request.session["country"],
     "articles": lst,
-    "countriesHDI": HDI
+    })
+
+
+def hdiMap(request):
+    hdi = json.dumps(countriesHDI)
+    return render(request, "map/hdiMap.html", {
+    'countriesHDI': hdi,
     })
