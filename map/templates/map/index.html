@@ -4,11 +4,44 @@
 <html>
   <head>
       <title>Map</title>
+
+      <style type="text/css">
+        .mapael .map {
+            position: relative;
+        }
+
+        .mapael .mapTooltip {
+            position: absolute;
+            background-color: #fff;
+            moz-opacity: 0.70;
+            opacity: 0.70;
+            filter: alpha(opacity=70);
+            border-radius: 10px;
+            padding: 10px;
+            z-index: 1000;
+            max-width: 200px;
+            display: none;
+            color: #343434;
+        }
+      </style>
+
+
       <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js'></script>
       <script src="https://cdn.jsdelivr.net/npm/translate@1/translate.min.js"></script>
       <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-mapael/2.2.0/js/jquery.mapael.min.js"></script>
       <script src="//cdn.jsdelivr.net/npm/jquery-mapael@2.2.0/js/jquery.mapael.min.js"></script>
       <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
+      
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" charset="utf-8"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"
+                charset="utf-8"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js" charset="utf-8"></script>
+      <script src='{% static "/jquery-mapael/js/jquery.mapael.js" %}' charset="utf-8"></script>
+      <script src='{% static "/jquery-mapael/js/maps/france_departments.js" %}' charset="utf-8"></script>
+      <script src='{% static "/jquery-mapael/js/maps/world_countries.js" %}' charset="utf-8"></script>
+      <script src='{% static "/jquery-mapael/js/maps/usa_states.js" %}' charset="utf-8"></script>
+
+      
       <link rel="stylesheet" href="{% static 'map/style.css' %}">
       <script>
           var embassies = {{ embassy_list|safe }};
@@ -242,24 +275,92 @@
       <h1>Year</h1>
       <h1 id="year"></h1>
 
-      <div class="container">
-        <div class="map">Alternative content</div>
-      </div>
-      <script>
-          var counter = 0;
-          var yearStart = 1990;
-          document.getElementById('year').textContent = yearStart + counter;
-          window.setInterval(function test(){
-            counter = (counter + 1) % 29;
-            document.getElementById('year').textContent = yearStart + counter;
+      <div class="mapcontainer">
+            <div class="map">
+                <span>Alternative content for the map</span>
+            </div>
+            <div class="areaLegend">
+                <span>Alternative content for the legend</span>
+            </div>
+            <div class="plotLegend">
+                <span>Alternative content for the legend</span>
+            </div>
+        </div>
+      <script type="text/javascript">
+        var counter = 0;
+        var yearStart = 1990;
+        document.getElementById('year').textContent = yearStart + counter;
+        window.setInterval(function test(){
+        counter = (counter + 1) % 29;
+        document.getElementById('year').textContent = yearStart + counter;
 
-          }, 1000)
+        }, 1000)
 
-          $(".container").mapael({
-            map : {
-                name : "world_countries"
-            }
-          });
+ /*       $(".container").mapael({
+        map : {
+            name : "world_countries"
+        }
+        });
+*/
+
+        var lstHDI = {{countriesHDI|safe}};
+        $(function () {
+            $(".mapcontainer").mapael({
+                "map": {
+                    "name": "world_countries",
+                    "defaultArea": {
+                        "stroke": "#fff",
+                        "stroke-width": 1
+                    }
+                },
+                "legend": {
+                    "area": {
+                        "title": "Countries Human Development Index",
+                        "slices": [
+                            {
+                                max: .2,
+                                attrs: {
+                                    fill: "#6aafe1"
+                                },
+                                label: "Less than 5 million inhabitants"
+                            },
+                            {
+                                min: 0.2,
+                                max: 0.4,
+                                attrs: {
+                                    fill: "#459bd9"
+                                },
+                                label: "Between 5 million and 10 million inhabitants"
+                            },
+                            {
+                                min: 0.4,
+                                max: 0.7,
+                                attrs: {
+                                    fill: "#2579b5"
+                                },
+                                label: "Between 10 million and 50 million inhabitants"
+                            },
+                            {
+                                min: 0.7,
+                                attrs: {
+                                    fill: "#1a527b"
+                                },
+                                label: "More than 50 million inhabitants"
+                            }
+                        ]
+                    },
+                },
+                "areas": {
+                    "CA": {
+                        "value": lstHDI["CA"][1],
+                        "href": "#",
+                        "tooltip": {
+                            "content": "<span style=\"font-weight:bold;\">Canada<\/span><br \/>Population : " + lstHDI["CA"][1]
+                        }
+                    },
+                }
+            });
+        });
 
 /*
           // Tell user if the embassy is open
