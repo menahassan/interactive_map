@@ -32,3 +32,16 @@ for i in a:
     translated[i[13]] = langs
 #arr[0] is ['Active', 'AF', "Cote d'Ivoire"]
 #arr[0][0] is 'Active'
+
+
+# Get the Human development Index of countries from 1990 - 2018
+book2 = openpyxl.load_workbook('Human_Development_Index.xlsx')
+
+sheet2 = book2.active
+countriesHDI = {} #keys: countries , values: list of HDI starting from 1990 - 2018
+
+for row in sheet2.iter_rows(min_row=3, max_row = 197, min_col=1, max_col=31, values_only=True):
+    countryHDI = []
+    for hdi in row[2:]:
+            countryHDI = countryHDI + [hdi]
+    countriesHDI[row[1]] = countryHDI

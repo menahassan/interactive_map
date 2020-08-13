@@ -3,9 +3,12 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from map import a
 from map import DICT
-import json
 from map import translated
+from map import countriesHDI
 from GoogleNews import GoogleNews
+import json
+
+
 
 class NewsArticles():
         def __init__(self, country):
@@ -40,6 +43,6 @@ def index(request):
     'embassy_list': embassy_list,
     'dict' : dictionary,
     'lang_list' : lang_list,
-    'country' : request.session["country"],
+    #'country' : request.session["country"],
     "articles": lst,
     })

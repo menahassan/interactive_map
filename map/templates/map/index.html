@@ -6,6 +6,8 @@
       <title>Map</title>
       <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js'></script>
       <script src="https://cdn.jsdelivr.net/npm/translate@1/translate.min.js"></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-mapael/2.2.0/js/jquery.mapael.min.js"></script>
+      <script src="//cdn.jsdelivr.net/npm/jquery-mapael@2.2.0/js/jquery.mapael.min.js"></script>
       <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
       <link rel="stylesheet" href="{% static 'map/style.css' %}">
       <script>
@@ -237,13 +239,29 @@
           }
       </script>
 
-      <h1>Time</h1>
-      <h1 id="time"></h1>
+      <h1>Year</h1>
+      <h1 id="year"></h1>
 
-      <div id='map2' style='width: 1000px; height: 670px;'></div>
+      <div class="container">
+        <div class="map">Alternative content</div>
+      </div>
       <script>
           var counter = 0;
+          var yearStart = 1990;
+          document.getElementById('year').textContent = yearStart + counter;
+          window.setInterval(function test(){
+            counter = (counter + 1) % 29;
+            document.getElementById('year').textContent = yearStart + counter;
 
+          }, 1000)
+
+          $(".container").mapael({
+            map : {
+                name : "world_countries"
+            }
+          });
+
+/*
           // Tell user if the embassy is open
           function isOpen(start, end, time){
               if(start < end){
@@ -355,6 +373,8 @@
                 });
             
             }, 1000);
+
+            */
 
       </script>
 
