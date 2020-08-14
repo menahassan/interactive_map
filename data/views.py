@@ -209,5 +209,11 @@ def population2018(request):
     'mydict': mydict,
     })
 
+def demo(request):
+    mydict = json.dumps(DICT)
+    return render(request, "data/demo.html", {
+    'mydict': mydict,
+    })
+
 
 

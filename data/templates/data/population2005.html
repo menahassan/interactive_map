@@ -134,87 +134,9 @@
                             }
                         ]
                     },
-                    plot: {
-                        title: "Cities population"
-                        , slices: [
-                            {
-                                max: 5000000,
-                                attrs: {
-                                    fill: "#f99200"
-                                },
-                                attrsHover: {
-                                    transform: "s1.5",
-                                    "stroke-width": 1
-                                },
-                                label: "less than 5 million inhabitants",
-                                size: 10
-                            },
-                            {
-                                min: 5000000,
-                                max: 10000000,
-                                attrs: {
-                                    fill: "#f99200"
-                                },
-                                attrsHover: {
-                                    transform: "s1.5",
-                                    "stroke-width": 1
-                                },
-                                label: "Between 5 million and 10 million inhabitants",
-                                size: 20
-                            },
-                            {
-                                min: 10000000,
-                                attrs: {
-                                    fill: "#f99200"
-                                },
-                                attrsHover: {
-                                    transform: "s1.5",
-                                    "stroke-width": 1
-                                },
-                                label: "More than 10 million inhabitants",
-                                size: 30
-                            }
-                        ]
-                    }
+                    
                 },
-                plots: {
-                    'delhi': {
-                        latitude: 28.6571579,
-                        longitude: 76.9734976,
-                        value: 29399141,
-                        tooltip: {content: "Delhi<br />Population: 29,399,141"}
-                    },
-                    'newyork': {
-                        latitude: 40.667,
-                        longitude: -73.833,
-                        value: 18804000,
-                        tooltip: {content: "New York City<br />Population: 18,804,000"}
-                    },
-                    'sydney': {
-                        latitude: -33.917,
-                        longitude: 151.167,
-                        value: 5230000,
-                        tooltip: {content: "Sydney<br />Population: 5,230,000"}
-                    },
-                    'sao paolo': {
-                        latitude: -23.6821604,
-                        longitude: -46.8754915,
-                        value: 21846507,
-                        tooltip: {content: "Sao Paolo<br />Population: 21,846,507"}
-                    },
-                    'tokyo': {
-                        latitude: 35.687418,
-                        longitude: 139.692306,
-                        value: 37435191,
-                        tooltip: {content: "Tokyo<br />Population: 37,435,191"}
-                    },
-                    'paris': {
-                        latitude: 48.8585212,
-                        longitude: 2.0675665,
-                        value: 2148000,
-                        tooltip: {content: "Paris<br />Population: 2,148,000"}
-                    }
-                },
+                
                 areas: {
                     "AF": {
                         "value": my_dict["Afghanistan"].five20,
