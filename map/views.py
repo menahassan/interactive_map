@@ -53,3 +53,9 @@ def hdiMap(request):
     return render(request, "map/hdiMap.html", {
     'countriesHDI': hdi,
     })
+
+def embassyYearOpen(request):
+    yearOpen = json.dumps(DICT)
+    return render(request, "map/embassyYearOpen.html", {
+    'embassiesData': yearOpen,
+    })

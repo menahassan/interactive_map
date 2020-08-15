@@ -10,11 +10,15 @@ translated = {} #list of hello translated in different languages
 DICT = {} #keys: countries , values: long/lat dictionary - DICT has not yet been tested
 a = []
 
-for row in sheet.iter_rows(min_row=2, max_row = 276, min_col=1, max_col=15, values_only=True):
-    longlat = {}
-    longlat["long"] = row[14]
-    longlat["lat"]= row[13]
-    DICT[row[2]] = longlat
+for row in sheet.iter_rows(min_row=2, max_row = 276, min_col=1, max_col=19, values_only=True):
+    data = {}
+    if(row[14] != None and row[13] != None and row[18] != None):
+        data["long"] = row[14]
+        data["lat"]= row[13]
+        data["yearOpen"] = row[18].year
+        data['city'] = row[3]
+        
+        DICT[row[2]] = data
 
 for row in sheet.iter_rows(min_row=2, min_col=1, max_row=276, max_col=18):
     col = []
