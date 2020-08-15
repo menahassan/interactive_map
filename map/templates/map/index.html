@@ -7,117 +7,35 @@
       <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js'></script>
       <script src="https://cdn.jsdelivr.net/npm/translate@1/translate.min.js"></script>
       <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
+      <link rel="stylesheet" href="{% static 'map/style.css' %}">
       <script>
-          var embassies = {{ embassy_list|safe }};
-          function openPopups(country) {
+          var cur_country = "";
+          function toggleMarkers(country){
               var markers = document.getElementsByClassName(`${country}`);
               for (i = 0; i < markers.length; ++i) {
-                  if (!markers[i].markerInstance.getPopup().isOpen()){
-                      markers[i].markerInstance.togglePopup();
-                  }
+                  markers[i].markerInstance.togglePopup();
               }
-          };
-          //returns a list. first elem: the greatest difference in latitude, second elem: midpoint between two farthest markers
-          function getDistanceMidpoint(country) {
-              var markers = document.getElementsByClassName(`${country}`);
-              var result = 0;
-              var midpoint = [markers[0].markerInstance.getLngLat().lng, markers[0].markerInstance.getLngLat().lat];
-              for (i = 0; i < markers.length-1; ++i) {
-                  for (j = i+1; j < markers.length; ++j) {
-                      var firstLat = markers[i].markerInstance.getLngLat().lat;
-                      var secondLat = markers[j].markerInstance.getLngLat().lat;
-                      var latDif = Math.abs(firstLat - secondLat);
-                      if (latDif > result) {
-                          result = latDif;
-                          var firstLng = markers[i].markerInstance.getLngLat().lng;
-                          var secondLng = markers[j].markerInstance.getLngLat().lng;
-                          midpoint = [ (firstLng + secondLng)/2, (firstLat + secondLat)/2 ];
-                      }
-                  }
-              }
-              return [result, midpoint];
           };
           function center(country) {
-              var distAndMid = getDistanceMidpoint(country);
-              var distance = distAndMid[0];
-              var midpoint = distAndMid[1];
-              //varying zoom settings depending on the greatest distance between the markers
-              //might chage these later
-              var zoomSetting = 6;
-              if (distance > 10.0) {
-                  zoomSetting = 3;
-              }
-              else if (distance > 5.0) {
-                  zoomSetting = 4;
-              }
+              var my_dict = JSON.parse('{{ dict|safe }}');
+              var longitude = my_dict[country].long;
+              var latitude = my_dict[country].lat;
+              var longlat = [longitude, latitude];
               map.flyTo({
-                  center : midpoint,
-                  zoom : zoomSetting,
-                  speed : .6,
+                  center : longlat,
+                  zoom : 3,
                   essential: true
               });
-              openPopups(country);
+              toggleMarkers(country);
           };
-          function closePopups(country) {
-              var curCountries = document.getElementsByClassName(`${country}`);
-              for (j = 0; j < curCountries.length; ++j) {
-                  var popup = curCountries[j].markerInstance.getPopup();
-                  if (popup.isOpen()) {
-                      popup.remove();
-                  }
-              }
-          };
-          //closes all existing popups and switches to country
-          function switchCountries(oldCountry, newCountry) {
-              if (oldCountry !== "") {
-                  closePopups(oldCountry);
-              }
-              center(newCountry);
-          };
-          //not sure if a global variable is good style
-          let countryList = {{countries|safe}};
-          function chooseCountry() {
-              if (countryList.length === 0) {
-                  return "";
-              }
-              var chosenIndex = Math.floor(Math.random() * countryList.length);
-              var chosenCountry = countryList[chosenIndex];
-              countryList.splice(chosenIndex, 1);
-              return chosenCountry;
-          }
-          var abort = false; //variable for freestyle loop to stop
           document.addEventListener('DOMContentLoaded', function() {
               document.querySelector('#countryselector').onclick = function() {
-                  //closes all popups when the form is resubmitted
-                  var allCountries = {{countries|safe}};
-                  for (i = 0; i < allCountries.length; ++i) {
-                      closePopups(allCountries[i]);
+                  if (cur_country !== "") {
+                      toggleMarkers(cur_country);
                   }
                   const country = document.querySelector('#countries').value;
+                  cur_country = country;
                   center(country);
-              };
-              //loops through each country, zooming into its embassy/consulates.
-              //stops when loop is over
-              //TO DO: make stop and restart buttons.
-              //TO DO: have the loop automatically restart
-
-              document.querySelector('#fsmodebtn').onclick = function() {
-                  var old = "";
-                  var cur = chooseCountry();
-                  function loop() {
-                      if (abort) {
-                          return;
-                      }
-                      setTimeout(function() {
-                          switchCountries(old, cur);
-                          old = cur;
-                          cur = chooseCountry();
-                          if (cur !== "") {
-                              loop();
-                          }
-                      }, 4000) //this is the time for each loop iteration
-                  }
-                  loop();
               };
           });
       </script>
@@ -126,7 +44,7 @@
       <h1 style="font-family: Courier New, Courier, monospace; font-size: 40px; padding-left: 5px">Welcome to our<span style="font-family: Brush Script MT; font-size: 55px; letter-spacing: 2.5px;"> interactive map</span></h1>
       <h1 style="font-family: Courier New, Courier, monospace; font-size: 40px; padding-left: 5px">Explore more maps!</h1>
       <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
-        <a href="{% url 'data:index' %}"><p style="display: inline-block; color: white">World Population Data</p></a>
+      <a href="{% url 'data:demo' %}"><p style="display: inline-block; color: white">World Population Data</p></a>
       </div>
       <form id="countryform">
           <label style="font-family: Courier New, Courier, monospace; padding-left: 5px">Which country would you like to explore?</label>
@@ -137,10 +55,7 @@
           </select>
           <input id="countryselector" type="button" value="Submit">
       </form>
-      <button id="fsmodebtn">Freestyle Mode</button>
-      <button id="stopbtn" onclick="abort = true">Stop</button>
-      <div id='map' style='width: 1400px; height: 750px;'></div>
-
+    <div id='map' style='width: 100%; height: 670px;'></div>
       <script>
           mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
           var map = new mapboxgl.Map({
@@ -154,7 +69,7 @@
           var langs = JSON.parse('{{ lang_list|safe }}');
           var title = '<h3>Learn more about this embassy!<h3>';
           var embassies = {{ embassy_list|safe }};
-          for(var i = 0; i < 275; i++) {
+          for(var i = 0; i < 275; i++){
               props = embassies[i];
               
 
@@ -164,11 +79,7 @@
                 l.style.width = "60px";
                 l.style.height = "60.23px";
                 let tmpMarker2 = new mapboxgl.Marker(l);*/
-              var description ='<p>' + props[3]+ '</p>'; //city name
-              if (props[0] !== "Active") {
-                  continue;
-              }
-              //commented out code is for adding background image
+              var description ='<p>' + props[3]+ '</p>';
               var el = document.createElement('div');
               var btn = '<div style="margin: 0 auto; width: 110px; text-align: center; cursor: pointer; background-color: black" onclick="myfunc('+props[13]+')"><p style="color: white">Play Language</p></div>'
 
@@ -189,28 +100,15 @@
               //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
               let tmpMarker = new mapboxgl.Marker(el);
               el.markerInstance = tmpMarker;
-              var title = '';
-              if (props[5] === 'OFFOBC') {
-                  title = `US Embassy in ${description}.`;
-              }
-              else if (props[5] === 'OFFCOB') {
-                  title = `US Consulate in ${description}.`;
-              }
-              else if (props[5] === 'OFFOBX'){
-                  title = `Annex building in ${description}.`;
-              }
-              else if (props[5] === 'OFFCAX' || props[5] === 'OFFAPP') {
-                  title = `US Embassy branch office in ${description}`;
-              }
-              else {
-                  title = `${props[2]}.`; //just to be safe -- change later
-              }
-
               tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
                 .setHTML(title +  description + btn)).addTo(map);
 
               el.addEventListener("click", e => {
+                  // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
                   let coords = e.target.markerInstance.getLngLat();
+              //l.markerInstance = tmpMarker2;
+                //tmpMarker2.setLngLat(coords).addTo(map);
+                  //tell the map to center on the marker coordinates
                   map.flyTo({
                       center: coords,
                       speed: 0.6,
@@ -218,127 +116,17 @@
                   });
                   
               });
-      </script>
-
-      {% comment %} <h1>Time</h1>
-      <h1 id="time"></h1>
-
-      <div id='map2' style='width: 1000px; height: 670px;'></div>
-      <script>
-          var counter = 0;
-
-          // Tell user if the embassy is open
-          function isOpen(start, end, time){
-              if(start < end){
-                  if(start <= time && time < end){
-                      return true;
-                  }
-                  else{
-                      return false
-                  }
-              }
-              else{
-                  if(start <= time || time < end){
-                      return true;
-                  }
-                  else{
-                      return false;
-                  }
-              }
+              
           }
-
-
-          mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
-          var map2 = new mapboxgl.Map({
-            container: 'map2',
-            style: 'mapbox://styles/mapbox/streets-v11',
-            center: [0,0],
-            zoom: 1    
-     
-          });
-
-          map2.scrollZoom.disable();
-
-          var geojson = {
-            type: 'FeatureCollection',
-            features: [{
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [-77.032, 38.913]
-                },
-                properties: {
-                    title: 'Mapbox',
-                    description: 'Washington, D.C.',
-                    openHour: 0,
-                    closeHour: 12,
-                }
-            },
-            {
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [-122.414, 37.776]
-                },
-                properties: {
-                    title: 'Mapbox',
-                    description: 'San Francisco, California',
-                    openHour: 15,
-                    closeHour: 3,
-                }
-            }]
-          };
-
-            var markerLst = []
-            geojson.features.forEach(function(marker) {
-
-                // make a marker for each feature and add to the map
-                //var m = new mapboxgl.Marker(el)
-                //.setLngLat(marker.geometry.coordinates)
-                //.addTo(map2);
-                var color = "#ff0000";        // Color red for close
-                if(isOpen(marker.properties.openHour, marker.properties.closeHour, counter)){
-                    // Color green for open
-                    color = "#008000"
-                }
-
-                markerLst.push(
-                    new mapboxgl.Marker({color: color, "icon-size": "0.5"})
-                    .setLngLat(marker.geometry.coordinates)
-                    .addTo(map2));
-            });
-
-            window.setInterval(function test(){   
-                counter = (counter + 1) % 24;
-                if(counter == 0){
-                    document.getElementById('time').textContent = "12:00 AM";
-                }
-                else if(counter < 12){
-                    document.getElementById('time').textContent = counter.toString() + ":00 AM";
-                }
-                else if(counter >= 12){
-                    document.getElementById('time').textContent = (counter % 12) == 0 ? "12:00 PM" : (counter % 12).toString() + ":00 PM";
-                }
-                
-                markerLst.forEach((m) => {
-                    m.remove();
-                });
-                markerLst = [];
-                geojson.features.forEach(function(marker) {
-                    var color = "#ff0000";        // Color red for close
-                    if(isOpen(marker.properties.openHour, marker.properties.closeHour, counter)){
-                        // Color green for open
-                        color = "#008000"
-                    }
-
-                    markerLst.push(
-                        new mapboxgl.Marker({color: color, "icon-size": "0.5"})
-                        .setLngLat(marker.geometry.coordinates)
-                        .addTo(map2));
-                });
-            
-            }, 1000); {% endcomment %}
-
       </script>
+      <h1>News</h1>
+        <ul>
+            {% for article in articles %}
+                <li>{{ article.2 }}</li>
+                <ul>
+                    <li><a href={{ article.1 }}> {{ article.0 }} </a></li>
+                </ul>
+            {% endfor %}
+        </ul>
   </body>
 </html>

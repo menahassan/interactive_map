@@ -7,8 +7,7 @@ book2 = openpyxl.load_workbook('Population.xlsx')
 sheet2 = book2.active
 #translated = {} #list of hello translated in different languages
 DICT = {} #keys: countries , values: long/lat dictionary - DICT has not yet been tested
-a = []
-
+countriesPop = {} #keys: countries , values: long/lat dictionary - DICT has not yet been tested
 for row in sheet2.iter_rows(min_row=5, max_row = 200, min_col=1, max_col=44, values_only=True):
     years = {}
     years["recent"] = row[43]
@@ -51,8 +50,13 @@ for row in sheet2.iter_rows(min_row=5, max_row = 200, min_col=1, max_col=44, val
     years["sixteen20"] = row[40]
     years["seventeen20"] = row[41]
     years["eighteen20"] = row[42]
-    years["code"] = row[1]
     DICT[row[0]] = years
+
+for row in sheet2.iter_rows(min_row=5, max_row = 200, min_col=1, max_col=44, values_only=True):
+    countryPop = [row[0]]
+    for pop in row[4:]:
+            countryPop = countryPop + [pop]
+    countriesPop[row[1]] = countryPop
 #for i in a:
 #    langs = {}
 #    translator = Translator()

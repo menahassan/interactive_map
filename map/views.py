@@ -7,12 +7,14 @@ import json
 from map import translated
 from GoogleNews import GoogleNews
 
-"""class NewsArticles():
-    
-        def news(country):
+class NewsArticles():
+        def __init__(self, country):
+            self.country = country
+
+        def news(self):
             articles = []
             googlenews = GoogleNews(lang='en')
-            googlenews.search('USA ' +  country + " embassy")
+            googlenews.search('USA ' +  self.country + " embassy")
             lst = googlenews.result()
 
             for i in range(3):
@@ -21,12 +23,13 @@ from GoogleNews import GoogleNews
                 link = lst[i]['link']
                 articles = articles + [(title, link, date)]
             
-            return articles"""
+            return articles
 
 #btw, no more need for dict
 # Create your views here.
 def index(request):
-    #list = NewsArticles.news('England')
+    articles = NewsArticles('England')
+    lst = articles.news()
     mapbox_access_token = 'pk.my_mapbox_access_token'
     embassy_list = json.dumps(a)
     dictionary = json.dumps(DICT)
@@ -38,5 +41,5 @@ def index(request):
     'dict' : dictionary,
     'lang_list' : lang_list,
     #'country' : request.session["country"],
-    "articles": list,
+    "articles": lst,
     })
