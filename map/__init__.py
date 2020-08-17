@@ -29,6 +29,7 @@ for i in a:
     txt = translation.text
     langs["word"] = txt
     langs["language"] = str(i[17])
+    langs["langFull"]=str(i[16])
     translated[i[13]] = langs
 #arr[0] is ['Active', 'AF', "Cote d'Ivoire"]
 #arr[0][0] is 'Active'

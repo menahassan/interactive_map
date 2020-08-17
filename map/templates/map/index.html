@@ -9,52 +9,196 @@
       <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
       <link rel="stylesheet" href="{% static 'map/style.css' %}">
       <script>
-          var cur_country = "";
-          function toggleMarkers(country){
+        var embassies = {{ embassy_list|safe }};
+
+          function openPopups(country) {
               var markers = document.getElementsByClassName(`${country}`);
               for (i = 0; i < markers.length; ++i) {
-                  markers[i].markerInstance.togglePopup();
+                  if (!markers[i].markerInstance.getPopup().isOpen()){
+                      markers[i].markerInstance.togglePopup();
+                  }
               }
           };
+          function openOnePopup(country) {
+              var marker = document.getElementById(`${country}`);
+              if (!marker.markerInstance.getPopup().isOpen()){
+                  marker.markerInstance.togglePopup();
+              }
+          };
+          //returns a list. first elem: the greatest difference in latitude, second elem: midpoint between two farthest markers
+          function getDistanceMidpoint(country) {
+              var markers = document.getElementsByClassName(`${country}`);
+              var result = 0;
+              var midpoint = [markers[0].markerInstance.getLngLat().lng, markers[0].markerInstance.getLngLat().lat];
+              for (i = 0; i < markers.length-1; ++i) {
+                  for (j = i+1; j < markers.length; ++j) {
+                      var firstLat = markers[i].markerInstance.getLngLat().lat;
+                      var secondLat = markers[j].markerInstance.getLngLat().lat;
+                      var latDif = Math.abs(firstLat - secondLat);
+                      if (latDif > result) {
+                          result = latDif;
+                          var firstLng = markers[i].markerInstance.getLngLat().lng;
+                          var secondLng = markers[j].markerInstance.getLngLat().lng;
+                          midpoint = [ (firstLng + secondLng)/2, (firstLat + secondLat)/2 ];
+                      }
+                  }
+              }
+              return [result, midpoint];
+          };
           function center(country) {
-              var my_dict = JSON.parse('{{ dict|safe }}');
-              var longitude = my_dict[country].long;
-              var latitude = my_dict[country].lat;
-              var longlat = [longitude, latitude];
+              var distAndMid = getDistanceMidpoint(country);
+              var distance = distAndMid[0];
+              var midpoint = distAndMid[1];
+              //varying zoom settings depending on the greatest distance between the markers
+              //might chage these later
+              var zoomSetting = 6;
+              if (distance > 10.0) {
+                  zoomSetting = 3;
+              }
+              else if (distance > 5.0) {
+                  zoomSetting = 4;
+              }
               map.flyTo({
-                  center : longlat,
-                  zoom : 3,
+                  center : midpoint,
+                  zoom : zoomSetting,
+                  speed : .6,
                   essential: true
               });
-              toggleMarkers(country);
+              openPopups(country);
           };
+          function closePopups(country) {
+              var curCountries = document.getElementsByClassName(`${country}`);
+              for (j = 0; j < curCountries.length; ++j) {
+                  var popup = curCountries[j].markerInstance.getPopup();
+                  if (popup.isOpen()) {
+                      popup.remove();
+                  }
+              }
+          };
+          //closes all existing popups and switches to country
+          function switchCountries(oldCountry, newCountry) {
+              if (oldCountry !== "") {
+                  closePopups(oldCountry);
+              }
+              center(newCountry);
+          };
+          //not sure if a global variable is good style
+          let countryList = {{countries|safe}};
+          function chooseCountry() {
+              if (countryList.length === 0) {
+                  return "";
+              }
+              var chosenIndex = Math.floor(Math.random() * countryList.length);
+              var chosenCountry = countryList[chosenIndex];
+              countryList.splice(chosenIndex, 1);
+              return chosenCountry;
+          };
+
+          function openIssue(country) { //delete / move to another doc
+              var curCountries = document.getElementsByClassName(`${country}`);
+              for (j = 0; j < curCountries.length; ++j) {
+                  var popup = curCountries[j].markerInstance.getPopup();
+                  if (!((popup.innerHTML).indexOf("No US Diplomatic Presence") !== -1 || (popup.innerHTML).indexOf("Embassy") !== -1)) {
+                     //has neither of these strings
+                     continue;
+                  }
+                  if (!popup.isOpen()){
+                      popup.togglePopup();
+                  }
+                  //to do: use popup or marker element to do the following
+                  var elems = document.getElementsByClassName(`issuebtn${country}`);
+                  for (i = 0; i < elems.length; ++i) {
+                      elems[i].style.visibility = 'visible';
+                  }
+                  elems = document.getElementsByClassName(`issueparagraph${country}`);
+                  for (i = 0; i < elems.length; ++i) {
+                      elems[i].style.visibility = 'visible';
+                  }
+              }
+          };
+          function setPopupText(list, param) {
+              var str = ``;
+              for (n=0; n<list.length; ++n) {
+                 str = str.concat(`<p>\"${list[n][0]}\"<br>${list[n][1]}<br>${list[n][2]}<br>Link: ${list[n][3]}</p>`);
+              }
+              param.content = str;
+          };
+
+          //probably can combine these two to avoid repetition
+
+          var abort = false; //variable for freestyle loop to stop
           document.addEventListener('DOMContentLoaded', function() {
+              var allCountries = {{countries|safe}};
               document.querySelector('#countryselector').onclick = function() {
-                  if (cur_country !== "") {
-                      toggleMarkers(cur_country);
+                  //closes all popups when the form is resubmitted
+                  for (i = 0; i < allCountries.length; ++i) {
+                      closePopups(allCountries[i]);
                   }
                   const country = document.querySelector('#countries').value;
-                  cur_country = country;
                   center(country);
+              };
+
+              document.querySelector('#issueselector').onclick = function() {
+                  for (i = 0; i < allCountries.length; ++i) {
+                      closePopups(allCountries[i]);
+                  }
+                  map.flyTo({
+                      center: [12.550343, 55.665957],
+                      zoom: 2
+                  });
+                  const issue = document.querySelector('#issues').value;
+
+                  //TO DO: issuedict will be a dict of issues with corresponding list of countries related to it
+                  //const issues = JSON.parse({{ issuedict }});
+
+                  //TO DO: add all countries to nodiplpresencelist
+                  //TO DO: find a way to use the selected issue to choose template variable
+
+              };
+              //loops through each country, zooming into its embassy/consulates.
+              //stops when loop is over
+              //TO DO: make stop and restart buttons.
+              //TO DO: have the loop automatically restart
+
+              document.querySelector('#fsmodebtn').onclick = function() {
+                  var old = "";
+                  var cur = chooseCountry();
+                  function loop() {
+                      if (abort) {
+                          return;
+                      }
+                      setTimeout(function() {
+                          switchCountries(old, cur);
+                          old = cur;
+                          cur = chooseCountry();
+                          if (cur !== "") {
+                              loop();
+                          }
+                      }, 10000) //this is the time for each loop iteration
+                  }
+                  loop();
               };
           });
       </script>
   </head>
-  <body>
-      <h1 style="font-family: Courier New, Courier, monospace; font-size: 40px; padding-left: 5px">Welcome to our<span style="font-family: Brush Script MT; font-size: 55px; letter-spacing: 2.5px;"> interactive map</span></h1>
+  <body style="background: linear-gradient(rgba(255,255,255,.2), rgba(255,255,255,.2)), url('https://previews.123rf.com/images/andreykuzmin/andreykuzmin1701/andreykuzmin170100014/70098366-old-world-map-background.jpg');">
+      <h1 style="font-family: Courier New, Courier, monospace; font-size: 40px; padding-left: 5px">Welcome to our<span style="font-family: Brush Script MT; font-size: 55px; letter-spacing: 2.5px;"> interactive embassy map</span></h1>
       <h1 style="font-family: Courier New, Courier, monospace; font-size: 40px; padding-left: 5px">Explore more maps!</h1>
       <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
       <a href="{% url 'data:demo' %}"><p style="display: inline-block; color: white">World Population Data</p></a>
       </div>
+      <h1 id='header'>United States Diplomatic Presence Worldwide</h1>
       <form id="countryform">
-          <label style="font-family: Courier New, Courier, monospace; padding-left: 5px">Which country would you like to explore?</label>
+          <label>Explore a country: </label>
           <select id="countries" name="countries">
               {% for country in countries %}
                   <option value="{{country}}">{{country}}</option>
               {% endfor %}
           </select>
-          <input id="countryselector" type="button" value="Submit">
+          <input id="countryselector" type="button" value="Explore!">
       </form>
+      <button id="fsmodebtn">Freestyle Mode</button>
+      <button id="stopbtn" onclick="abort = true">Stop</button>
     <div id='map' style='width: 100%; height: 670px;'></div>
       <script>
           mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
@@ -66,8 +210,10 @@
             zoom: 2
           });
           
+          var supportedLangs = ["en","de","es","fr","hi","id","it","ja","ko","nl","pl",
+          "pt","ru","zh-cn","zh-tw",]
           var langs = JSON.parse('{{ lang_list|safe }}');
-          var title = '<h3>Learn more about this embassy!<h3>';
+          var title = '<h3>Welcome!<h3>';
           var embassies = {{ embassy_list|safe }};
           for(var i = 0; i < 275; i++){
               props = embassies[i];
@@ -79,7 +225,24 @@
                 l.style.width = "60px";
                 l.style.height = "60.23px";
                 let tmpMarker2 = new mapboxgl.Marker(l);*/
-              var description ='<p>' + props[3]+ '</p>';
+              var d = '';
+              if (props[5] === 'OFFOBC') {
+                  d = `US Embassy in `;
+              }
+              else if (props[5] === 'OFFCOB') {
+                  d = `US Consulate in `;
+              }
+              else if (props[5] === 'OFFOBX'){
+                  d = `Annex building in `;
+              }
+              else if (props[5] === 'OFFCAX' || props[5] === 'OFFAPP') {
+                  d = `US Embassy branch office in `;
+              }
+              else {
+                  d = `props[2]`; //just to be safe -- change later
+              }
+
+              var description ='<p>' + d + props[3]+ '</p>';
               var el = document.createElement('div');
               var btn = '<div style="margin: 0 auto; width: 110px; text-align: center; cursor: pointer; background-color: black" onclick="myfunc('+props[13]+')"><p style="color: white">Play Language</p></div>'
 
@@ -87,6 +250,9 @@
                   var msg = new SpeechSynthesisUtterance(); 
                     msg.text = langs[x].word;
                     msg.lang = langs[x].language;
+                    if(!supportedLangs.includes(langs[x].language)){
+                        window.alert("Sorry! "+ langs[x].langFull.toString() + " is not currently supported.");
+                    }
                     //window.alert(msg.lang);
                     window.speechSynthesis.speak(msg);
               }
@@ -102,6 +268,7 @@
               el.markerInstance = tmpMarker;
               tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
                 .setHTML(title +  description + btn)).addTo(map);
+                
 
               el.addEventListener("click", e => {
                   // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
