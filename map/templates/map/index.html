@@ -4,9 +4,10 @@
 <html lang="en">
   <head>
       <title>Map</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
       <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js'></script>
       <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
-      <!--link rel="stylesheet" type="text/css" href="{% static 'map/style.css' %}"-->
+      <link rel="stylesheet" type="text/css" href="{% static 'map/styles.css' %}">
       <script>
           var embassies = {{ embassy_list|safe }};
           function openPopups(country) {
@@ -15,6 +16,12 @@
                   if (!markers[i].markerInstance.getPopup().isOpen()){
                       markers[i].markerInstance.togglePopup();
                   }
+              }
+          };
+          function openOnePopup(country) {
+              var marker = document.getElementById(`${country}`);
+              if (!marker.markerInstance.getPopup().isOpen()){
+                  marker.markerInstance.togglePopup();
               }
           };
           //returns a list. first elem: the greatest difference in latitude, second elem: midpoint between two farthest markers
@@ -86,7 +93,7 @@
               return chosenCountry;
           };
 
-          function openIssue(country) {
+          function openIssue(country) { //delete / move to another doc
               var curCountries = document.getElementsByClassName(`${country}`);
               for (j = 0; j < curCountries.length; ++j) {
                   var popup = curCountries[j].markerInstance.getPopup();
@@ -108,51 +115,31 @@
                   }
               }
           };
-          function closeIssue(country) {
-            var curCountries = document.getElementsByClassName(`${country}`);
-            for (j = 0; j < curCountries.length; ++j) {
-                var popup = curCountries[j].markerInstance.getPopup();
-                if (popup.isOpen()){
-                    popup.remove();
-                }
-                //to do: use popup or marker element to do the following
-                var elems = document.getElementsByClassName(`issuebtn${country}`);
-                for (i = 0; i < elems.length; ++i) {
-                    elems[i].style.visibility = 'hidden';
-                }
-                elems = document.getElementsByClassName(`issueparagraph${country}`);
-                for (i = 0; i < elems.length; ++i) {
-                    elems[i].style.visibility = 'hidden';
-                }
-            }
+          function setPopupText(list, param) {
+              var str = ``;
+              for (n=0; n<list.length; ++n) {
+                 str = str.concat(`<p>\"${list[n][0]}\"<br>${list[n][1]}<br>${list[n][2]}<br>Link: ${list[n][3]}</p>`);
+              }
+              param.content = str;
           };
 
-          function sendAjax(country) {
-            $.ajax({
-                url: '{% url "get_news" %}',
-                data: {
-                  'country': country
-                },
-                dataType: 'json',
-                success: function (data) {
-                    document.getElementById("latestnews").innerHTML = `${data.article_list.toString()}`;
-                    window.scrollTo(0,document.body.scrollHeight);
-                    //tmpMarker.getPopup().setHTML(`${cur}<p>${data.article_list.toString()}</p>`);
-                }
-            });
-          };
           //probably can combine these two to avoid repetition
-          function sendAjaxTwo(country, issue) {
+          function sendAjaxIssue(country, issue) { //delete
+            var parag = {content: ''};
             $.ajax({
                 url: '{% url "get_news_issue" %}',
                 data: {
                   'country': country,
                   'issue' : issue
                 },
+                async: false,
                 dataType: 'json',
                 success: function (data) {
-                    document.getElementById("latestnews").innerHTML = `${data.article_list.toString()}`;
-                    window.scrollTo(0,document.body.scrollHeight);
+                    setPopupText(data.article_list, parag);
+                    var popupElem = document.getElementById(`${country}`).markerInstance.getPopup().setHTML(
+                      `<h3>${country}</h3>` + parag.content +
+                      `<img src="" alt="My image" width = "40" height="40">`
+                    );
 
                 }
             });
@@ -160,9 +147,9 @@
 
           var abort = false; //variable for freestyle loop to stop
           document.addEventListener('DOMContentLoaded', function() {
+              var allCountries = {{countries|safe}};
               document.querySelector('#countryselector').onclick = function() {
                   //closes all popups when the form is resubmitted
-                  var allCountries = {{countries|safe}};
                   for (i = 0; i < allCountries.length; ++i) {
                       closePopups(allCountries[i]);
                   }
@@ -171,24 +158,28 @@
               };
 
               document.querySelector('#issueselector').onclick = function() {
-                  var allCountries = {{countries|safe}};
                   for (i = 0; i < allCountries.length; ++i) {
-                      closeIssue(allCountries[i]);
+                      closePopups(allCountries[i]);
                   }
+                  map.flyTo({
+                      center: [12.550343, 55.665957],
+                      zoom: 2
+                  });
                   const issue = document.querySelector('#issues').value;
+
                   //TO DO: issuedict will be a dict of issues with corresponding list of countries related to it
                   //const issues = JSON.parse({{ issuedict }});
 
                   //TO DO: add all countries to nodiplpresencelist
                   //TO DO: find a way to use the selected issue to choose template variable
+
                   var list = {{ airpollution|safe }};
                   for (i = 0; i < list.length; ++i) {
-                      openIssue(list[i][0]);
-                      var parags = document.getElementsByClassName(`issueparagraph${list[i][0]}`);
-                      for (j = 0; j < parags.length; j++) {
-                          parags[j].innerHTML = `${list[i][1].toString()}`;
-                      }
+                      var country = list[i][0];
+                      openOnePopup(country);
+                      sendAjaxIssue(country, issue);
                   }
+
               };
               //loops through each country, zooming into its embassy/consulates.
               //stops when loop is over
@@ -209,7 +200,7 @@
                           if (cur !== "") {
                               loop();
                           }
-                      }, 4000) //this is the time for each loop iteration
+                      }, 10000) //this is the time for each loop iteration
                   }
                   loop();
               };
@@ -217,26 +208,29 @@
       </script>
   </head>
   <body>
-      <h1>Hello world! This is our interactive map</h1>
+      <h1 id='header'>United States Diplomatic Presence Worldwide</h1>
       <form id="countryform">
-          <label>Which country would you like to explore?</label>
+          <label>Explore a country: </label>
           <select id="countries" name="countries">
               {% for country in countries %}
                   <option value="{{country}}">{{country}}</option>
               {% endfor %}
           </select>
-          <input id="countryselector" type="button" value="Submit">
+          <input id="countryselector" type="button" value="Explore!">
       </form>
       <form id="issueform">
-          <label>Global issue:</label>
+          <label>Or a global issue: </label>
           <select id="issues" name="issues">
               <option value="airpollution">Air pollution</option>
           </select>
-          <input id="issueselector" type="button" value="Submit">
+          <input id="issueselector" type="button" value="Explore!">
       </form>
       <button id="fsmodebtn">Freestyle Mode</button>
       <button id="stopbtn" onclick="abort = true">Stop</button>
-      <div id='map' style='width: 1400px; height: 750px;'></div>
+      <form class="link" action="airpollution.html">
+          <input type="submit" value="airpollution">
+      </form>
+      <div id='map' style='width: 100%; height: 750px; '></div>
       <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
       <script>
           mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
@@ -246,7 +240,7 @@
             center: [12.550343, 55.665957],
             zoom: 2
           });
-
+          //map.scrollZoom.disable();
           //var marker = new mapboxgl.Marker().setLngLat([12.550343, 55.665957]).addTo(map);
           var embassies = {{ embassy_list|safe }};
           var countries = {{ countries|safe }};
@@ -254,25 +248,40 @@
           for (var i = 0; i < countriesNoDiplPresence.length; i++) {
               var props = countriesNoDiplPresence[i];
               var country = props[0];
+
+              var parag = {content: ''};
+
+              $.ajax({
+                  url: '{% url "get_news" %}',
+                  data: {
+                    'country': country
+                  },
+                  async: false,
+                  dataType: 'json',
+                  success: function (data) {
+                      setPopupText(data.article_list, parag);
+                  }
+              });
+
               var el = document.createElement('div');
               el.className = `${country}`;
+              el.id = `${country}`;
               el.style.width = '15px';
               el.style.height = '15px';
               el.style.borderRadius = '50%';
               el.style.border = '0.25px solid';
-              el.style.backgroundImage = 'url(https://i.pinimg.com/564x/f4/a8/6a/f4a86a209ba10ab95afcfd4ed29f3acf.jpg)';
-              el.style.color = 'blue';
+              el.style.backgroundColor = 'rgb(72, 61, 139)';
+              //el.style.color = 'blue';
               let tmpMarker = new mapboxgl.Marker(el);
               el.markerInstance = tmpMarker;
-              el.style.color = 'red';
+
               //TO DO: how to make these markers present for issues
               //TO DO: should we add countries with no dipl presence to main menu?
               //TO DO: make spreadsheet with all countries and lat/long and use it instead of countries template var
               tmpMarker.setLngLat([props[2],props[1]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-                .setHTML(`<h3 class="title${country}">No US Diplomatic Presence</h3><p>` + `${country}` + `</p><button class="newsbtn" onclick="sendAjax('${country}')">See the latest news!</button>
-                <button class="issuebtn${country}" onclick="sendAjaxTwo('${country}', '${document.querySelector('#issues').value}')" style="visibility:hidden">See the latest news about ${document.querySelector('#issues').value}!</button>
-                <p class='issueparagraph${country}' style='visibility:hidden'></p>
-                <img src="" alt="My image" width = "40" height="40">`)).addTo(map);
+                .setHTML(`<h3 class="title${country}">No US Diplomatic Presence</h3><p>${country}</p>` +
+                parag.content +
+                `<img src="" alt="My image" width = "40" height="40">`)).addTo(map);
               el.addEventListener("click", e => {
                   // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
                   let coords = e.target.markerInstance.getLngLat();
@@ -290,11 +299,29 @@
               if (props[0] !== "Active") {
                   continue;
               }
-              //commented out code is for adding background image
               var el = document.createElement('div');
+
+              var parag = {content: ''};
+              if (document.getElementsByClassName(`${props[2]}`).length === 0) { //first emb/cons of a given country
+                  //parag = `<p id='parag${props[2]}'></p>`
+                  $.ajax({
+                      url: '{% url "get_news" %}',
+                      data: {
+                        'country': props[2]
+                      },
+                      async: false,
+                      dataType: 'json',
+                      success: function (data) {
+                          setPopupText(data.article_list, parag); //passing by reference
+                      }
+                  });
+
+                  el.id = `${props[2]}`;
+              }
+              //commented out code is for adding background image
               el.className = `${props[2]}`; //used to be set to 'marker'
               //red box image
-              el.style.backgroundImage = 'url(https://i.pinimg.com/564x/f4/a8/6a/f4a86a209ba10ab95afcfd4ed29f3acf.jpg)';
+              el.style.backgroundColor = 'rgb(139, 0, 0)';
               el.style.width = '15px';
               el.style.height = '15px';
               el.style.borderRadius = '50%';
@@ -321,15 +348,11 @@
                   title = `${props[2]}.`; //just to be safe -- change later
               }
 
-              //var news = [];
-              //TO DO: find a way to add it to popup, not replaces the html already there!
-
 
               tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-                .setHTML(`<h3 class="title${country}">` + title + '</h3><p>' + `${props[2]}` + `</p><button class="newsbtn" onclick="sendAjax('${props[2]}')">See the latest news!</button>
-                <button class="issuebtn${props[2]}" onclick="sendAjaxTwo('${props[2]}', '${document.querySelector('#issues').value}')" style="visibility:hidden">See the latest news about ${document.querySelector('#issues').value}!</button>
-                <p class='issueparagraph${props[2]}' style='visibility:hidden'></p>
-                <img src="" alt="My image" width = "40" height="40">`)).addTo(map);
+                .setHTML(`<h3 class="title${country}">` + title + `</h3><p>${props[2]}</p>` +
+                parag.content +
+                `<img src="" alt="My image" width = "40" height="40">`)).addTo(map);
               el.addEventListener("click", e => {
                   // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
                   let coords = e.target.markerInstance.getLngLat();
@@ -341,8 +364,9 @@
                   });
               });
           }
+
       </script>
 
-      <p id="latestnews"> <!--where news will show up-->
+      <p id="latestnews"> <!--where news will show up :: DELETE-->
   </body>
 </html>
