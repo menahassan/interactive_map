@@ -147,13 +147,13 @@
             center: [35.385076, 36.983267],
             zoom: 2
           });
-          
+
           var langs = JSON.parse('{{ lang_list|safe }}');
           var title = '<h3>Learn more about this embassy!<h3>';
           var embassies = {{ embassy_list|safe }};
           for(var i = 0; i < 275; i++) {
               props = embassies[i];
-              
+
 
               /*var l = document.createElement('div');
               l.className = 'custom-marker';
@@ -170,22 +170,39 @@
               var btn = '<div style="margin: 0 auto; width: 110px; text-align: center; cursor: pointer; background-color: black" onclick="myfunc('+props[13]+')"><p style="color: white">Play Language</p></div>'
 
               function myfunc(x){
-                  var msg = new SpeechSynthesisUtterance(); 
+                  var msg = new SpeechSynthesisUtterance();
                     msg.text = langs[x].word;
                     msg.lang = langs[x].language;
                     //window.alert(msg.lang);
                     window.speechSynthesis.speak(msg);
               }
-              
+
               el.style.backgroundImage = 'url(https://i.pinimg.com/564x/f4/a8/6a/f4a86a209ba10ab95afcfd4ed29f3acf.jpg)';
               el.style.width = '15px';
               el.style.height = '15px';
               el.style.borderRadius = '50%';
               el.style.border = '0.25px solid';
-              
+
               //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
               let tmpMarker = new mapboxgl.Marker(el);
               el.markerInstance = tmpMarker;
+              tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+                .setHTML('<h3>' + title + '</h3><p>' + description + '</p>'+ '<img src="https://flagcdn.com/w320/af.png"  alt="Afghanistan flag" width = "40" height="40">')).addTo(map);
+                .setHTML(title +  description + '<img src="https://flagcdn.com/w320/ag.png" alt="Antigua and Barbuda" width = "60" height="60">')).addTo(map);
+                .setHTML(title +  description + '<img src="https://flagcdn.com/w320/ai.png" alt="Anguilla" width = "60" height="60">')).addTo(map);
+                .setHTML(title +  description + '<img src="https://flagcdn.com/w320/al.png" alt="Albania" width = "60" height="60">')).addTo(map);
+                .setHTML(title +  description + '<img src="https://flagcdn.com/w320/am.png" alt=" Armenia" width = "60" height="60">')).addTo(map);
+                .setHTML(title +  description + '<img src="https://flagcdn.com/w320/ao.png" alt="Angola" width = "60" height="60">')).addTo(map);
+                .setHTML(title +  description + '<img src="https://flagcdn.com/w320/aq.png" alt="Antarctica" width = "60" height="60">')).addTo(map);
+                .setHTML(title +  description + '<img src="https://flagcdn.com/w320/ar.png" alt="Argentina" width = "60" height="60">')).addTo(map);
+                .setHTML(title +  description + '<img src="https://flagcdn.com/w320/as.png" alt="American Samoa" width = "60" height="60">')).addTo(map);
+                .setHTML(title +  description + '<img src="https://flagcdn.com/w320/at.png" alt="Austria" width = "60" height="60">')).addTo(map);
+                .setHTML(title +  description + '<img src="https://flagcdn.com/w320/au.png" alt="Australia" width = "60" height="60">')).addTo(map);
+                .setHTML(title +  description + '<img src="https://flagcdn.com/w320/aw.png" alt="Aruba" width = "60" height="60">')).addTo(map);
+                .setHTML(title +  description + '<img src="https://flagcdn.com/w320/ax.png" alt="Åland Islands" width = "60" height="60">')).addTo(map);
+                .setHTML(title +  description + '<img src="https://flagcdn.com/w320/az.png" alt="Azerbaijan" width = "60" height="60">')).addTo(map);
+
+
               var title = '';
               if (props[5] === 'OFFOBC') {
                   title = `US Embassy in ${description}.`;
@@ -217,7 +234,7 @@
                       speed: 0.6,
                       zoom: 6
                   });
-                  
+
               });
 
               //TO DO: find a way to add it to popup, not replaces the html already there!
@@ -270,8 +287,8 @@
             container: 'map2',
             style: 'mapbox://styles/mapbox/streets-v11',
             center: [0,0],
-            zoom: 1    
-     
+            zoom: 1
+
           });
 
           map2.scrollZoom.disable();
@@ -325,7 +342,7 @@
                     .addTo(map2));
             });
 
-            window.setInterval(function test(){   
+            window.setInterval(function test(){
                 counter = (counter + 1) % 24;
                 if(counter == 0){
                     document.getElementById('time').textContent = "12:00 AM";
@@ -336,7 +353,7 @@
                 else if(counter >= 12){
                     document.getElementById('time').textContent = (counter % 12) == 0 ? "12:00 PM" : (counter % 12).toString() + ":00 PM";
                 }
-                
+
                 markerLst.forEach((m) => {
                     m.remove();
                 });
@@ -353,7 +370,7 @@
                         .setLngLat(marker.geometry.coordinates)
                         .addTo(map2));
                 });
-            
+
             }, 1000);
 
       </script>
