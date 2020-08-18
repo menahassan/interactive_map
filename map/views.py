@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from . import embassies_consulates
 from . import nodiplpresencelist
 from . import airpollution
+from . import issues_summaries
 import json
 
 #btw, no more need for dict
@@ -26,9 +27,7 @@ def index(request):
     'mapbox_access_token': mapbox_access_token,
     'countries' : sorted(list(set(diplpresencecountries + nodiplpresencecountries))),
     'embassy_list': json.dumps(embassies_consulates),
-    'issuedict' : json.dumps(issue_dict),
+    'issues_summaries' : json.dumps(issues_summaries),
     'nodiplpresencelist': nodiplpresencelist,
     'airpollution': airpollution,
     })
-
-#^i used this to find set of countries not among the list in the original excel w/ embassies

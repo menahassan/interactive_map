@@ -30,6 +30,16 @@ for row in sheet.iter_rows(min_row=3, min_col=1, max_row=11, max_col=2):
         col.append(cell.value)
     airpollution.append(col)
 
+book = openpyxl.load_workbook('issues_summaries.xlsx') #will later include more comprehensive data
+sheet = book.active
+
+issues_summaries = []
+for row in sheet.iter_rows(min_row=3, min_col=1, max_row=3, max_col=3):
+    col = []
+    for cell in row:
+        col.append(cell.value)
+    issues_summaries.append(col)
+
 #arr[0] is ['Active', 'AF', "Cote d'Ivoire"]
 #arr[0][0] is 'Active'
 

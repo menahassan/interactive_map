@@ -23,6 +23,7 @@
               if (!marker.markerInstance.getPopup().isOpen()){
                   marker.markerInstance.togglePopup();
               }
+              marker.markerInstance.getPopup().closeOnClick = false;
           };
           //returns a list. first elem: the greatest difference in latitude, second elem: midpoint between two farthest markers
           function getDistanceMidpoint(country) {
@@ -124,7 +125,7 @@
           };
 
           //probably can combine these two to avoid repetition
-          function sendAjaxIssue(country, issue) { //delete
+          function sendAjaxIssue(country, issue, text, units, dataPoint) { //delete
             var parag = {content: ''};
             $.ajax({
                 url: '{% url "get_news_issue" %}',
@@ -137,13 +138,14 @@
                 success: function (data) {
                     setPopupText(data.article_list, parag);
                     var popupElem = document.getElementById(`${country}`).markerInstance.getPopup().setHTML(
-                      `<h3>${country}</h3>` + parag.content +
+                      `<h3>${country}</h3>` + parag.content + `<p>${text}${dataPoint}${units}</p>`+
                       `<img src="" alt="My image" width = "40" height="40">`
                     );
 
                 }
             });
           };
+          var issuesSummaries = {{ issues_summaries|safe }};
 
           var abort = false; //variable for freestyle loop to stop
           document.addEventListener('DOMContentLoaded', function() {
@@ -166,6 +168,16 @@
                       zoom: 2
                   });
                   const issue = document.querySelector('#issues').value;
+                  document.getElementById('header').innerHTML = `${issue}`;
+                  var text = '';
+                  var units = '';
+                  for (i=0; i < issuesSummaries.length; ++i) {
+                      if (issuesSummaries[i][0] === issue) {
+                          document.getElementById('description').innerHTML = `${issuesSummaries[i][1]}`;
+                          units = issuesSummaries[i][2];
+                          text = issuesSummaries[i][3];
+                      }
+                  }
 
                   //TO DO: issuedict will be a dict of issues with corresponding list of countries related to it
                   //const issues = JSON.parse({{ issuedict }});
@@ -173,11 +185,12 @@
                   //TO DO: add all countries to nodiplpresencelist
                   //TO DO: find a way to use the selected issue to choose template variable
 
-                  var list = {{ airpollution|safe }};
+                  var list = {{ airpollution|safe }};//create if statements to assign list to appropriate template
                   for (i = 0; i < list.length; ++i) {
                       var country = list[i][0];
+                      var dataPoint = list[i][1];
                       openOnePopup(country);
-                      sendAjaxIssue(country, issue);
+                      sendAjaxIssue(country, issue, text, units, dataPoint);
                   }
 
               };
@@ -209,6 +222,12 @@
   </head>
   <body>
       <h1 id='header'>United States Diplomatic Presence Worldwide</h1>
+      <p id='description'>
+        With 274 embassies, consulates, and other diplomatic missions around the globe,
+        the United States boasts the greatest diplomatic presence of any country.
+        To learn more about our bilateral relations with each country as well as the countries of focus
+        in solving the most pressing global issues.
+      </p>
       <form id="countryform">
           <label>Explore a country: </label>
           <select id="countries" name="countries">
@@ -221,7 +240,7 @@
       <form id="issueform">
           <label>Or a global issue: </label>
           <select id="issues" name="issues">
-              <option value="airpollution">Air pollution</option>
+              <option value="Air pollution">Air pollution</option>
           </select>
           <input id="issueselector" type="button" value="Explore!">
       </form>
@@ -244,6 +263,7 @@
           //var marker = new mapboxgl.Marker().setLngLat([12.550343, 55.665957]).addTo(map);
           var embassies = {{ embassy_list|safe }};
           var countries = {{ countries|safe }};
+          //console.log(countries.toString()); //delete!
           const countriesNoDiplPresence = {{ nodiplpresencelist|safe }};
           for (var i = 0; i < countriesNoDiplPresence.length; i++) {
               var props = countriesNoDiplPresence[i];

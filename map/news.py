@@ -17,10 +17,10 @@ def get_news_issue(request):
     return JsonResponse(data)
 
 def get_article_list(country):
-    return [["title", "media", "date", "link"]] #PLACEHOLDER B/C GOOGLENEWS.RESULT() RETURNS EMPTY LIST
+    return [["title", "media", "date", "www.google.com"]] #PLACEHOLDER B/C GOOGLENEWS.RESULT() RETURNS EMPTY LIST
     articles = []
     googlenews = GoogleNews(lang='en')
-    googlenews.search(f"USA {country} embassy")
+    googlenews.search(f"US {country} relations")
     lst = googlenews.result()
 
     for i in range(3):
