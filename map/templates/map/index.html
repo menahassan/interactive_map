@@ -130,7 +130,7 @@
           function sendAjaxIssue(country, issue, text, units, dataPoint) { //delete
             var parag = {content: ''};
             $.ajax({
-                url: '{% url "get_news_issue" %}',
+                url: '{% url "map:get_news_issue" %}',
                 data: {
                   'country': country,
                   'issue' : issue
@@ -280,7 +280,7 @@
               var parag = {content: ''};
 
               $.ajax({
-                  url: '{% url "get_news" %}',
+                  url: '{% url "map:get_news" %}',
                   data: {
                     'country': country
                   },
@@ -336,7 +336,7 @@
               if (document.getElementsByClassName(`${props[2]}`).length === 0) { //first emb/cons of a given country
                   //parag = `<p id='parag${props[2]}'></p>`
                   $.ajax({
-                      url: '{% url "get_news" %}',
+                      url: '{% url "map:get_news" %}',
                       data: {
                         'country': props[2]
                       },
@@ -347,20 +347,12 @@
                       }
                   });
 
-                  el.id = `${props[2]}`;
+                  el.id = props[2].toString();
               }
               //commented out code is for adding background image
-              el.className = `${props[2]}`; //used to be set to 'marker'
+              el.className = props[2].toString(); //used to be set to 'marker'
               //red box image
-              el.style.backgroundColor = 'rgb(139, 0, 0)';
-              el.style.width = '15px';
-              el.style.height = '15px';
-              el.style.borderRadius = '50%';
-              el.style.border = '0.25px solid';
-
               //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
-              let tmpMarker = new mapboxgl.Marker(el);
-              el.markerInstance = tmpMarker;
               var title = '';
               var city = props[3]; //city name
               if (props[5] === 'OFFOBC') {
@@ -374,11 +366,9 @@
               }
               else if (props[5] === 'OFFCAX' || props[5] === 'OFFAPP') {
                   title = `US Embassy branch office in ${city}`;
+            }
               
-
-
               
-              var el = document.createElement('div');
               var btn = '<div style="margin: 0 auto; width: 110px; text-align: center; cursor: pointer; background-color: black" onclick="myfunc('+props[13]+')"><p style="color: white">Play Language</p></div>'
 
               function myfunc(x){
@@ -393,14 +383,11 @@
                     }
                     //window.alert(msg.lang);
               }
-              
               el.style.backgroundImage = 'url(https://i.pinimg.com/564x/f4/a8/6a/f4a86a209ba10ab95afcfd4ed29f3acf.jpg)';
               el.style.width = '15px';
               el.style.height = '15px';
               el.style.borderRadius = '50%';
               el.style.border = '0.25px solid';
-              el.id = `${props[2]}`;
-              el.className = `${props[2]}`;
               
               //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
               let tmpMarker = new mapboxgl.Marker(el);
@@ -424,6 +411,7 @@
                   });
                   
               });
+              
           }
 
       </script>
