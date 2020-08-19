@@ -34,12 +34,18 @@ def index(request):
     embassy_list = json.dumps(a)
     dictionary = json.dumps(DICT)
     lang_list = json.dumps(translated)
+
+    diplpresencecountries = []
+    for row in a:
+        diplpresencecountries.append(row[2])
+
+
     return render(request, "map/index.html", {
     'mapbox_access_token': mapbox_access_token,
     'countries' : sorted(DICT.keys()),
     'embassy_list': embassy_list,
     'dict' : dictionary,
     'lang_list' : lang_list,
-    #'country' : request.session["country"],
+    'countries' : sorted(list(set(diplpresencecountries))),
     "articles": lst,
     })

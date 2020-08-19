@@ -46,6 +46,7 @@ urlpatterns = [
     path('population2017', views.population2017, name='population2017'),
     path('population2018', views.population2018, name='population2018'),
     path('demo', views.demo, name='demo'),
+    path('human_trafficking', views.human_trafficking, name='human_trafficking')
 ]
 
 urlpatterns += staticfiles_urlpatterns()

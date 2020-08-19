@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from data import countriesPop
+from data import trafficking
 import json
 
 def index(request):
@@ -213,5 +214,10 @@ def demo(request):
     'pop': pop,
     })
 
+def human_trafficking(request):
+    hTrafficking = json.dumps(trafficking)
+    return render(request, "data/human_trafficking.html", {
+    'hTrafficking': hTrafficking,
+    })
 
 

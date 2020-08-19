@@ -138,22 +138,6 @@
                   center(country);
               };
 
-              document.querySelector('#issueselector').onclick = function() {
-                  for (i = 0; i < allCountries.length; ++i) {
-                      closePopups(allCountries[i]);
-                  }
-                  map.flyTo({
-                      center: [12.550343, 55.665957],
-                      zoom: 2
-                  });
-                  const issue = document.querySelector('#issues').value;
-
-                  //TO DO: issuedict will be a dict of issues with corresponding list of countries related to it
-                  //const issues = JSON.parse({{ issuedict }});
-
-                  //TO DO: add all countries to nodiplpresencelist
-                  //TO DO: find a way to use the selected issue to choose template variable
-
               };
               //loops through each country, zooming into its embassy/consulates.
               //stops when loop is over
@@ -183,7 +167,7 @@
   </head>
   <body style="background: linear-gradient(rgba(255,255,255,.2), rgba(255,255,255,.2)), url('https://previews.123rf.com/images/andreykuzmin/andreykuzmin1701/andreykuzmin170100014/70098366-old-world-map-background.jpg');">
       <h1 style="font-family: Courier New, Courier, monospace; font-size: 40px; padding-left: 5px">Welcome to our<span style="font-family: Brush Script MT; font-size: 55px; letter-spacing: 2.5px;"> interactive embassy map</span></h1>
-      <h1 style="font-family: Courier New, Courier, monospace; font-size: 40px; padding-left: 5px">Explore more maps!</h1>
+      <h1 style="font-family: Courier New, Courier, monospace; font-size: 40px; padding-left: 5px">Explore global issues:!</h1>
       <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
       <a href="{% url 'data:demo' %}"><p style="display: inline-block; color: white">World Population Data</p></a>
       </div>
@@ -197,9 +181,11 @@
           </select>
           <input id="countryselector" type="button" value="Explore!">
       </form>
+    
       <button id="fsmodebtn">Freestyle Mode</button>
       <button id="stopbtn" onclick="abort = true">Stop</button>
     <div id='map' style='width: 100%; height: 670px;'></div>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
       <script>
           mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
           var map = new mapboxgl.Map({
@@ -211,7 +197,7 @@
           });
           
           var supportedLangs = ["en","de","es","fr","hi","id","it","ja","ko","nl","pl",
-          "pt","ru","zh-cn","zh-tw",]
+          "pt","ru","zh-cn","zh-tw","uz","cs","bs","ro","sq","hr","az","hu"]
           var langs = JSON.parse('{{ lang_list|safe }}');
           var title = '<h3>Welcome!<h3>';
           var embassies = {{ embassy_list|safe }};
@@ -253,8 +239,10 @@
                     if(!supportedLangs.includes(langs[x].language)){
                         window.alert("Sorry! "+ langs[x].langFull.toString() + " is not currently supported.");
                     }
+                    else{
+                        window.speechSynthesis.speak(msg);
+                    }
                     //window.alert(msg.lang);
-                    window.speechSynthesis.speak(msg);
               }
               
               el.style.backgroundImage = 'url(https://i.pinimg.com/564x/f4/a8/6a/f4a86a209ba10ab95afcfd4ed29f3acf.jpg)';
@@ -262,6 +250,8 @@
               el.style.height = '15px';
               el.style.borderRadius = '50%';
               el.style.border = '0.25px solid';
+              el.id = `${props[2]}`;
+              el.className = `${props[2]}`;
               
               //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
               let tmpMarker = new mapboxgl.Marker(el);
