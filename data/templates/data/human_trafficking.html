@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>World Population Animation</title>
+    <title>Human Trafficking Data Map</title>
     <style type="text/css">
         body {
             color: #5d5d5d;
@@ -46,11 +46,11 @@
         .btn{
             font-family: Courier New, Courier, monospace; 
             display: inline-block; 
-            width: 80px; 
-            height: 40px; 
+            width: 120px; 
+            height: auto; 
             text-align: center; 
             cursor: pointer; 
-            background-color: #78c0f0; 
+            background-color: blue; 
             margin-top: 10;
             overflow: hidden;
         }
@@ -58,6 +58,8 @@
             display: inline-block; 
             color: white; 
             font-weight: bold;
+            width: 80px;
+            text-align: center;
         }
         .btn-container{
             margin-top: 20;
@@ -94,7 +96,7 @@
                     "value": traffickList[k][1],
                     "href": "#",
                     "tooltip": {
-                        "content": "<span style=\"font-weight:bold;\">"+ traffickList[k][0] +"<\/span><br \/>Prevalence (per 1,000 population) : " + traffickList[k][1]
+                        "content": "<span style=\"font-weight:bold;\">"+ traffickList[k][0] +"<\/span><br \/>Prevalence (per 1,000 population) : " + traffickList[k][1] + "<br \/>Total number of victims: " + traffickList[k][2] 
                     }
                 }
             }
@@ -112,61 +114,61 @@
                 },
                 legend: {
                     area: {
-                        title: "Countries population",
+                        title: "Prevalence (per 1,000 population)",
                         slices: [
                             {
-                                max: 1000000,
+                                max: 3,
                                 attrs: {
-                                    fill: "#d9effc"
+                                    fill: "#b7ffbf"
                                 },
-                                label: "Less than 1 million inhabitants"
+                                label: "Less than 3"
                             },
                             {
-                                max: 5000000,
+                                min: 3,
+                                max: 6,
                                 attrs: {
-                                    fill: "#7bb6e8"
+                                    fill: "#95f985"
                                 },
-                                label: "Between 1 million and 5 million inhabitants"
+                                label: "Between 3 and 6"
                             },
                             {
-                                min: 5000000,
-                                max: 10000000,
+                                min: 6,
+                                max: 10,
                                 attrs: {
-                                    fill: "#286ead"
+                                    fill: "#4ded30"
                                 },
-                                label: "Between 5 million and 10 million inhabitants"
+                                label: "Between 6 and 10"
                             },
                             {
-                                min: 10000000,
-                                max: 30000000,
+                                min: 10,
+                                max: 20,
                                 attrs: {
-                                    fill: "#1d5485"
+                                    fill: "#26d701"
                                 },
-                                label: "Between 10 million and 30 million inhabitants"
+                                label: "Between 10 and 20"
                             },
                             {
-                                min: 30000000,
-                                max: 50000000,
+                                min: 20,
+                                max: 90,
                                 attrs: {
-                                    fill: "#143a5c"
+                                    fill: "#21823b"
                                 },
-                                label: "Between 30 million and 50 million inhabitants"
+                                label: "Between 20 and 90"
                             },
                             {
-                                min: 50000000,
-                                max: 100000000,
+                                min: 90,
                                 attrs: {
-                                    fill: "#0d2840"
+                                    fill: "#124d21"
                                 },
-                                label: "Between 50 million and 100 million inhabitants"
+                                label: "More than 90"
                             },
+                            
                             {
-                                min: 100000000,
-                                attrs: {
-                                    fill: "#000000"
+                                    attrs: {
+                                        fill: "#000000"
+                                    },
+                                    label: "No data"
                                 },
-                                label: "More than 100 million inhabitants"
-                            }
                         ]
                     },
                 },
@@ -185,7 +187,7 @@
 
 <div class="container">
 
-    <h1 id="year">World Population 2019</h1>
+    <h1 id="year">Human Trafficking Data (2018)</h1>
 
     <div class="mapcontainer">
         <div class="map">
@@ -195,135 +197,15 @@
             <span>Please check back later.</span>
         </div>
     </div>
-    <p>Source of data is United Nations Development Programme Human Development Reports.</p>
+    <p>Source of data is the 2018 Global Human Trafficking Index</p>
 </div>
 
 </div>
 
 <div class="btn-container">
-    <h2>Explore more years!</h2>
+    <h2>Explore more data!</h2>
     <div class="btn">
-        <a href="{% url 'data:population1980' %}"><p class="btn-text">1980</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1981' %}"><p class="btn-text">1981</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1982' %}"><p class="btn-text">1982</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1983' %}"><p class="btn-text">1983</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1984' %}"><p class="btn-text">1984</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1985' %}"><p class="btn-text">1985</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1986' %}"><p class="btn-text">1986</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1987' %}"><p class="btn-text">1987</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1988' %}"><p class="btn-text">1988</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1989' %}"><p class="btn-text">1989</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1990' %}"><p class="btn-text">1990</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1991' %}"><p class="btn-text">1991</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1992' %}"><p class="btn-text">1992</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1993' %}"><p class="btn-text">1993</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1994' %}"><p class="btn-text">1994</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1995' %}"><p class="btn-text">1995</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1996' %}"><p class="btn-text">1996</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1997' %}"><p class="btn-text">1997</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1998' %}"><p class="btn-text">1998</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population1999' %}"><p class="btn-text">1999</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2000' %}"><p class="btn-text">2000</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2001' %}"><p class="btn-text">2001</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2002' %}"><p class="btn-text">2002</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2003' %}"><p class="btn-text">2003</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2004' %}"><p class="btn-text">2004</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2005' %}"><p class="btn-text">2005</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2006' %}"><p class="btn-text">2006</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2007' %}"><p class="btn-text">2007</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2008' %}"><p class="btn-text">2008</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2009' %}"><p class="btn-text">2009</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2010' %}"><p class="btn-text">2010</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2011' %}"><p class="btn-text">2011</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2012' %}"><p class="btn-text">2012</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2013' %}"><p class="btn-text">2013</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2014' %}"><p class="btn-text">2014</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2015' %}"><p class="btn-text">2015</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2016' %}"><p class="btn-text">2016</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2017' %}"><p class="btn-text">2017</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:population2018' %}"><p class="btn-text">2018</p></a>
-    </div>
-    <div class="btn-selected">
-        <a href="{% url 'data:index' %}"><p class="btn-text">2019</p></a>
-    </div>
-    <div class="btn">
-        <a href="{% url 'data:demo' %}"><p class="btn-text">Demo!</p></a>
+        <a href="{% url 'data:demo' %}"><p class="btn-text">World Population</p></a>
     </div>
 </div>
 </body>

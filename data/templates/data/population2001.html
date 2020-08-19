@@ -4,7 +4,7 @@
 <head>
     <title>Data</title>
     <meta charset="utf-8">
-    <title>World Population (2001)</title>
+    <title>World Population (2000)</title>
     <style type="text/css">
         body {
             color: #5d5d5d;
@@ -86,16 +86,7 @@
     <script src='{% static "/jquery-mapael/js/maps/usa_states.js" %}' charset="utf-8"></script>
 
     <script type="text/javascript">
-    
-    </script>
-
-</head>
-
-<body>
-<div class="container">
-
-    <h1>World Population (2001)</h1>
-var popList = {{ pop|safe }};
+    var popList = {{ pop|safe }};
         $(function () {
             var list = {}
             for(let k in popList){
@@ -103,7 +94,7 @@ var popList = {{ pop|safe }};
                     "value": popList[k][22],
                     "href": "#",
                     "tooltip": {
-                        "content": "<span style=\"font-weight:bold;\">"+ popList[k][0] +"<\/span><br \/>Population : " + popList[k][2]
+                        "content": "<span style=\"font-weight:bold;\">"+ popList[k][0] +"<\/span><br \/>Population : " + popList[k][22]
                     }
                 }
             }
@@ -183,6 +174,15 @@ var popList = {{ pop|safe }};
             });
         
         });
+    </script>
+
+</head>
+
+<body>
+<div class="container">
+
+    <h1>World Population (2001)</h1>
+
     <div class="mapcontainer">
         <div class="map">
             <span>Oh no! Our map isn't working right now.</span>
@@ -194,7 +194,6 @@ var popList = {{ pop|safe }};
 </div>
 
 </div>
-
 <div class="btn-container">
     <h2>Explore more years!</h2>
     <div class="btn">
@@ -291,28 +290,28 @@ var popList = {{ pop|safe }};
         <a href="{% url 'data:population2010' %}"><p class="btn-text">2010</p></a>
     </div>
     <div class="btn">
-        <a href="{% url 'data:population2011' %}"><p class="btn-text">2011</p></a>
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2011</p></a>
     </div>
     <div class="btn">
-        <a href="{% url 'data:population2012' %}"><p class="btn-text">2012</p></a>
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2012</p></a>
     </div>
     <div class="btn">
-        <a href="{% url 'data:population2013' %}"><p class="btn-text">2013</p></a>
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2013</p></a>
     </div>
     <div class="btn">
-        <a href="{% url 'data:population2014' %}"><p class="btn-text">2014</p></a>
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2014</p></a>
     </div>
     <div class="btn">
-        <a href="{% url 'data:population2015' %}"><p class="btn-text">2015</p></a>
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2015</p></a>
     </div>
     <div class="btn">
-        <a href="{% url 'data:population2016' %}"><p class="btn-text">2016</p></a>
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2016</p></a>
     </div>
     <div class="btn">
-        <a href="{% url 'data:population2017' %}"><p class="btn-text">2017</p></a>
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2017</p></a>
     </div>
     <div class="btn">
-        <a href="{% url 'data:population2018' %}"><p class="btn-text">2018</p></a>
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2018</p></a>
     </div>
     <div class="btn">
         <a href="{% url 'data:index' %}"><p class="btn-text">2019</p></a>
@@ -321,5 +320,6 @@ var popList = {{ pop|safe }};
         <a href="{% url 'data:demo' %}"><p class="btn-text">Demo!</p></a>
     </div>
 </div>
+
 </body>
 </html>
