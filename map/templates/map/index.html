@@ -1,15 +1,17 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
       <title>Map</title>
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
       <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js'></script>
+      <script src="https://cdn.jsdelivr.net/npm/translate@1/translate.min.js"></script>
       <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
       <link rel="stylesheet" type="text/css" href="{% static 'map/styles.css' %}">
       <script>
-          var embassies = {{ embassy_list|safe }};
+        var embassies = {{ embassy_list|safe }};
+
           function openPopups(country) {
               var markers = document.getElementsByClassName(`${country}`);
               for (i = 0; i < markers.length; ++i) {
@@ -228,6 +230,10 @@
         To learn more about our bilateral relations with each country as well as the countries of focus
         in solving the most pressing global issues.
       </p>
+      <h1 style="font-family: Courier New, Courier, monospace; font-size: 40px; padding-left: 5px">Explore global issues:!</h1>
+      <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
+      <a href="{% url 'data:demo' %}"><p style="display: inline-block; color: white">World Population Data</p></a>
+      </div>
       <form id="countryform">
           <label>Explore a country: </label>
           <select id="countries" name="countries">
@@ -244,6 +250,7 @@
           </select>
           <input id="issueselector" type="button" value="Explore!">
       </form>
+    
       <button id="fsmodebtn">Freestyle Mode</button>
       <button id="stopbtn" onclick="abort = true">Stop</button>
       <form class="link" action="airpollution.html">
@@ -254,9 +261,10 @@
       <script>
           mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
           var map = new mapboxgl.Map({
+            pitch:0.01,
             container: 'map',
             style: 'mapbox://styles/mapbox/streets-v11',
-            center: [12.550343, 55.665957],
+            center: [35.385076, 36.983267],
             zoom: 2
           });
           //map.scrollZoom.disable();
@@ -314,6 +322,9 @@
               });
 
           }
+          var supportedLangs = ["en","de","es","fr","hi","id","it","ja","ko","nl","pl",
+                "pt","ru","zh-cn","zh-tw","uz","cs","bs","ro","sq","hr","az","hu"]
+            var langs = JSON.parse('{{ lang_list|safe }}');
           for(var i = 0; i < embassies.length; i++) {
               props = embassies[i];
               if (props[0] !== "Active") {
@@ -363,25 +374,55 @@
               }
               else if (props[5] === 'OFFCAX' || props[5] === 'OFFAPP') {
                   title = `US Embassy branch office in ${city}`;
-              }
-              else {
-                  title = `${props[2]}.`; //just to be safe -- change later
-              }
+              
 
 
-              tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+              
+              var el = document.createElement('div');
+              var btn = '<div style="margin: 0 auto; width: 110px; text-align: center; cursor: pointer; background-color: black" onclick="myfunc('+props[13]+')"><p style="color: white">Play Language</p></div>'
+
+              function myfunc(x){
+                  var msg = new SpeechSynthesisUtterance(); 
+                    msg.text = langs[x].word;
+                    msg.lang = langs[x].language;
+                    if(!supportedLangs.includes(langs[x].language)){
+                        window.alert("Sorry! "+ langs[x].langFull.toString() + " is not currently supported.");
+                    }
+                    else{
+                        window.speechSynthesis.speak(msg);
+                    }
+                    //window.alert(msg.lang);
+              }
+              
+              el.style.backgroundImage = 'url(https://i.pinimg.com/564x/f4/a8/6a/f4a86a209ba10ab95afcfd4ed29f3acf.jpg)';
+              el.style.width = '15px';
+              el.style.height = '15px';
+              el.style.borderRadius = '50%';
+              el.style.border = '0.25px solid';
+              el.id = `${props[2]}`;
+              el.className = `${props[2]}`;
+              
+              //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
+              let tmpMarker = new mapboxgl.Marker(el);
+              el.markerInstance = tmpMarker;
+                tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
                 .setHTML(`<h3 class="title${country}">` + title + `</h3><p>${props[2]}</p>` +
                 parag.content +
-                `<img src="" alt="My image" width = "40" height="40">`)).addTo(map);
+                `<img src="" alt="My image" width = "40" height="40">` + btn)).addTo(map);
+                
+
               el.addEventListener("click", e => {
                   // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
                   let coords = e.target.markerInstance.getLngLat();
+              //l.markerInstance = tmpMarker2;
+                //tmpMarker2.setLngLat(coords).addTo(map);
                   //tell the map to center on the marker coordinates
                   map.flyTo({
                       center: coords,
                       speed: 0.6,
-                      zoom: 5
+                      zoom: 6
                   });
+                  
               });
           }
 
