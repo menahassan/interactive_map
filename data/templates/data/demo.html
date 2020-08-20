@@ -54,6 +54,19 @@
             margin-top: 10;
             overflow: hidden;
         }
+
+        .btn-issue{
+            font-family: Courier New, Courier, monospace; 
+            display: inline-block; 
+            width: 170; 
+            height: auto; 
+            text-align: center; 
+            cursor: pointer; 
+            background-color: #78c0f0; 
+            margin-top: 10;
+            overflow: hidden;
+        }
+
         .btn-text{
             display: inline-block; 
             color: white; 
@@ -352,5 +365,9 @@
     </div>
 </div>
 
+<h2>Explore more issues!</h2>
+<div class="btn-issue">
+        <a href="{% url 'data:human_trafficking' %}"><p class="btn-text">Human Trafficking</p></a>
+    </div>
 </body>
 </html> 
