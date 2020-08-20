@@ -37,6 +37,15 @@ for row in sheet2.iter_rows(min_row=3, min_col=1, max_row=11, max_col=2):
 
 book3 = openpyxl.load_workbook('issues_summaries.xlsx') #will later include more comprehensive data
 sheet3 = book3.active
+for row in sheet.iter_rows(min_row=2, max_row = 276, min_col=1, max_col=19, values_only=True):
+    data = {}
+    if(row[14] != None and row[13] != None and row[18] != None):
+        data["long"] = row[14]
+        data["lat"]= row[13]
+        data["yearOpen"] = row[18].year
+        data['city'] = row[3]
+        
+        DICT[row[2]] = data
 
 issues_summaries = []
 for row in sheet3.iter_rows(min_row=3, min_col=1, max_row=3, max_col=3):
@@ -57,3 +66,16 @@ for i in embassies_consulates:
     translated[i[13]] = langs
 #arr[0] is ['Active', 'AF', "Cote d'Ivoire"]
 #arr[0][0] is 'Active'
+
+
+# Get the Human development Index of countries from 1990 - 2018
+book4 = openpyxl.load_workbook('Human_Development_Index.xlsx')
+
+sheet4 = book4.active
+countriesHDI = {} #keys: countries initial , values: first element is the name of the country, the rest is HDI starting from 1990 - 2018
+
+for row in sheet4.iter_rows(min_row=3, max_row = 197, min_col=1, max_col=32, values_only=True):
+    countryHDI = [row[1]]
+    for hdi in row[3:]:
+            countryHDI = countryHDI + [hdi]
+    countriesHDI[row[2]] = countryHDI

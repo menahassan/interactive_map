@@ -6,6 +6,7 @@ from . import embassies_consulates
 from . import nodiplpresencelist
 from . import airpollution
 from . import issues_summaries
+from map import countriesHDI
 import json
 
 #btw, no more need for dict
@@ -33,4 +34,17 @@ def index(request):
     'issues_summaries' : json.dumps(issues_summaries),
     'nodiplpresencelist': nodiplpresencelist,
     'airpollution': airpollution,
+    })
+
+
+def hdiMap(request):
+    hdi = json.dumps(countriesHDI)
+    return render(request, "map/hdiMap.html", {
+    'countriesHDI': hdi,
+    })
+
+def embassyYearOpen(request):
+    yearOpen = json.dumps(DICT)
+    return render(request, "map/embassyYearOpen.html", {
+    'embassiesData': yearOpen,
     })
