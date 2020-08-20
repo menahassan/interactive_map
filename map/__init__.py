@@ -34,7 +34,7 @@ book = openpyxl.load_workbook('issues_summaries.xlsx') #will later include more 
 sheet = book.active
 
 issues_summaries = []
-for row in sheet.iter_rows(min_row=3, min_col=1, max_row=3, max_col=3):
+for row in sheet.iter_rows(min_row=3, min_col=1, max_row=3, max_col=4):
     col = []
     for cell in row:
         col.append(cell.value)

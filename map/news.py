@@ -17,22 +17,26 @@ def get_news_issue(request):
     return JsonResponse(data)
 
 def get_article_list(country):
-    return [["title", "media", "date", "www.google.com"]] #PLACEHOLDER B/C GOOGLENEWS.RESULT() RETURNS EMPTY LIST
+    return [["title", "media", "date", "desc"]] #PLACEHOLDER B/C GOOGLENEWS.RESULT() RETURNS EMPTY LIST
     articles = []
     googlenews = GoogleNews(lang='en')
     googlenews.search(f"US {country} relations")
     lst = googlenews.result()
 
-    for i in range(3):
+    for i in range(10):
         title = lst[i]['title']
         media = lst[i]['media']
         date = lst[i]['date']
         link = lst[i]['link']
-        articles = articles + [[title, media, date, link]]
+        desc = lst[i]['desc']
+        if country in title or country in desc:
+            articles = articles + [[title, media, date, desc]]
+        if len(articles) == 2:
+            break
     return articles
 
 def get_article_list_issue(country, issue):
-    return [["title", "media", "date", "link"]]
+    return [["title", "media", "date", "desc"]]
     articles = []
     googlenews = GoogleNews(lang='en')
     googlenews.search(f"{country} {issue}")
@@ -40,13 +44,10 @@ def get_article_list_issue(country, issue):
 
     for i in range(10):
         title = lst[i]['title']
+        desc = lst[i]['desc']
         #to weed out irrelevant articles
-        if country in title or issue in title:
-            articles = articles + [(title, lst[i]['media'], st[i]['date'], lst[i]['link'])]
+        if country in title or issue.lower() in title.lower() or country in desc:
+            articles = articles + [[title, lst[i]['media'], st[i]['date'], desc]]
         if len(articles) == 2:
             break
     return articles
-
-
-
-print(get_article_list('China'))

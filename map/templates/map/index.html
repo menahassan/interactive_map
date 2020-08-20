@@ -10,6 +10,7 @@
       <link rel="stylesheet" type="text/css" href="{% static 'map/styles.css' %}">
       <script>
           var embassies = {{ embassy_list|safe }};
+          var countries = {{ countries|safe }};
           function openPopups(country) {
               var markers = document.getElementsByClassName(`${country}`);
               for (i = 0; i < markers.length; ++i) {
@@ -18,12 +19,19 @@
                   }
               }
           };
-          function openOnePopup(country) {
-              var marker = document.getElementById(`${country}`);
-              if (!marker.markerInstance.getPopup().isOpen()){
-                  marker.markerInstance.togglePopup();
+          function showMarkers(countriesToKeep) {
+              for (i=0; i<countriesToKeep.length; ++i) {
+                  var marker = document.getElementById(`${countriesToKeep[i]}`);
+                  marker.style.visibility = 'visible';
               }
-              marker.markerInstance.getPopup().closeOnClick = false;
+          };
+          function hideMarkers() {
+              for (i=0; i<countries.length; ++i) {
+                  var markers = document.getElementsByClassName(`${countries[i]}`);
+                  for (j=0; j<markers.length; ++j) {
+                      markers[j].style.visibility = 'hidden';
+                  }
+              }
           };
           //returns a list. first elem: the greatest difference in latitude, second elem: midpoint between two farthest markers
           function getDistanceMidpoint(country) {
@@ -119,13 +127,12 @@
           function setPopupText(list, param) {
               var str = ``;
               for (n=0; n<list.length; ++n) {
-                 str = str.concat(`<p>\"${list[n][0]}\"<br>${list[n][1]}<br>${list[n][2]}<br>Link: ${list[n][3]}</p>`);
+                 str = str.concat(`<p>\"${list[n][0]}\"<br>${list[n][1]}<br>${list[n][2]}<br>Description: ${list[n][3]}</p>`);
               }
               param.content = str;
           };
 
-          //probably can combine these two to avoid repetition
-          function sendAjaxIssue(country, issue, text, units, dataPoint) { //delete
+          function sendAjaxIssue(country, issue, text, units, dataPoint) {
             var parag = {content: ''};
             $.ajax({
                 url: '{% url "get_news_issue" %}',
@@ -138,13 +145,18 @@
                 success: function (data) {
                     setPopupText(data.article_list, parag);
                     var popupElem = document.getElementById(`${country}`).markerInstance.getPopup().setHTML(
-                      `<h3>${country}</h3>` + parag.content + `<p>${text}${dataPoint}${units}</p>`+
+                      `<h3>${country}</h3>` + `<p>${text}${dataPoint} ${units}</p>` + parag.content +
                       `<img src="" alt="My image" width = "40" height="40">`
                     );
 
                 }
             });
           };
+          function reload(){
+              location.reload();
+              return false;
+          };
+
           var issuesSummaries = {{ issues_summaries|safe }};
 
           var abort = false; //variable for freestyle loop to stop
@@ -176,22 +188,25 @@
                           document.getElementById('description').innerHTML = `${issuesSummaries[i][1]}`;
                           units = issuesSummaries[i][2];
                           text = issuesSummaries[i][3];
+                          break;
                       }
                   }
 
-                  //TO DO: issuedict will be a dict of issues with corresponding list of countries related to it
-                  //const issues = JSON.parse({{ issuedict }});
-
-                  //TO DO: add all countries to nodiplpresencelist
-                  //TO DO: find a way to use the selected issue to choose template variable
 
                   var list = {{ airpollution|safe }};//create if statements to assign list to appropriate template
+                  var cur_countries = [];
                   for (i = 0; i < list.length; ++i) {
                       var country = list[i][0];
                       var dataPoint = list[i][1];
-                      openOnePopup(country);
+                      cur_countries.push(country);
                       sendAjaxIssue(country, issue, text, units, dataPoint);
                   }
+                  hideMarkers();
+                  showMarkers(cur_countries);
+                  document.getElementById('reload').style.visibility = 'visible';
+                  document.getElementById('countryform').style.visibility = 'hidden';
+                  document.getElementById("fsmodebtn").style.visibility = 'hidden';
+                  document.getElementById('stopbtn').style.visibility = 'hidden';
 
               };
               //loops through each country, zooming into its embassy/consulates.
@@ -221,35 +236,36 @@
       </script>
   </head>
   <body>
-      <h1 id='header'>United States Diplomatic Presence Worldwide</h1>
-      <p id='description'>
-        With 274 embassies, consulates, and other diplomatic missions around the globe,
-        the United States boasts the greatest diplomatic presence of any country.
-        To learn more about our bilateral relations with each country as well as the countries of focus
-        in solving the most pressing global issues.
-      </p>
-      <form id="countryform">
-          <label>Explore a country: </label>
-          <select id="countries" name="countries">
-              {% for country in countries %}
-                  <option value="{{country}}">{{country}}</option>
-              {% endfor %}
-          </select>
-          <input id="countryselector" type="button" value="Explore!">
-      </form>
-      <form id="issueform">
-          <label>Or a global issue: </label>
-          <select id="issues" name="issues">
-              <option value="Air pollution">Air pollution</option>
-          </select>
-          <input id="issueselector" type="button" value="Explore!">
-      </form>
-      <button id="fsmodebtn">Freestyle Mode</button>
-      <button id="stopbtn" onclick="abort = true">Stop</button>
-      <form class="link" action="airpollution.html">
-          <input type="submit" value="airpollution">
-      </form>
-      <div id='map' style='width: 100%; height: 750px; '></div>
+      <div id='intro' style='margin-left:25px'>
+          <h1 id='header' style='text-align:center;'>American Diplomatic Presence</h1>
+          <button id='reload' style="visibility:hidden;" onclick='reload()'>Back</button>
+          <p id='description'>
+            With 274 embassies, consulates, and other diplomatic missions around the globe,
+            the United States boasts the greatest diplomatic presence of any country.
+            To learn more about our bilateral relations with each country as well as the countries of focus
+            in solving the most pressing global issues. Key: Red pins - countries where the US has a diplomatic presence;
+            blue pins - countries where the US does not have a diplomatic presence.
+          </p>
+          <form id="countryform" style="visibility:visible;">
+              <label>Explore a country: </label>
+              <select id="countries" name="countries">
+                  {% for country in countries %}
+                      <option value="{{country}}">{{country}}</option>
+                  {% endfor %}
+              </select>
+              <input id="countryselector" type="button" value="Explore!">
+          </form>
+          <form id="issueform">
+              <label>Or a global issue: </label>
+              <select id="issues" name="issues">
+                  <option value="Air pollution">Air pollution</option>
+              </select>
+              <input id="issueselector" type="button" value="Explore!">
+          </form>
+          <button id="fsmodebtn" style="visibility:visible;">Freestyle Mode</button>
+          <button id="stopbtn" style="visibility:visible;" onclick="abort = true">Stop</button>
+      </div>
+      <div id='map' style='margin-left: 25px; margin-right: 25px; height: 750px;'></div>
       <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
       <script>
           mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
@@ -259,11 +275,10 @@
             center: [12.550343, 55.665957],
             zoom: 2
           });
-          //map.scrollZoom.disable();
-          //var marker = new mapboxgl.Marker().setLngLat([12.550343, 55.665957]).addTo(map);
+
           var embassies = {{ embassy_list|safe }};
           var countries = {{ countries|safe }};
-          //console.log(countries.toString()); //delete!
+
           const countriesNoDiplPresence = {{ nodiplpresencelist|safe }};
           for (var i = 0; i < countriesNoDiplPresence.length; i++) {
               var props = countriesNoDiplPresence[i];
@@ -368,7 +383,6 @@
                   title = `${props[2]}.`; //just to be safe -- change later
               }
 
-
               tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
                 .setHTML(`<h3 class="title${country}">` + title + `</h3><p>${props[2]}</p>` +
                 parag.content +
@@ -387,6 +401,5 @@
 
       </script>
 
-      <p id="latestnews"> <!--where news will show up :: DELETE-->
   </body>
 </html>
