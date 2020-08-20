@@ -6,6 +6,7 @@ from . import embassies_consulates
 from . import nodiplpresencelist
 from . import airpollution
 from . import issues_summaries
+from . import DICT
 from map import countriesHDI
 import json
 

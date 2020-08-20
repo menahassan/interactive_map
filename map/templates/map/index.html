@@ -267,9 +267,15 @@
       </p>
       <h1 style="font-family: Courier New, Courier, monospace; font-size: 40px; padding-left: 5px">Explore global issues:!</h1>
       <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
-      <a href="{% url 'data:demo' %}"><p style="display: inline-block; color: white">World Population Data</p></a>
-      <a href="{% url 'data:human_trafficking' %}"><p style="display: inline-block; color: white">Human Trafficking</p></a>
+        <a href="{% url 'data:demo' %}"><p style="display: inline-block; color: white">World Population Data</p></a>
       </div>
+      <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
+        <a href="{% url 'data:human_trafficking' %}"><p style="display: inline-block; color: white">Human Trafficking Data</p></a>
+      </div>
+      <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
+        <a href="{% url 'map:hdiMap' %}"><p style="display: inline-block; color: white">Human Development Index</p></a>
+      </div>
+    
       <form id="countryform">
           <label>Explore a country: </label>
           <select id="countries" name="countries">
@@ -450,7 +456,7 @@
 
               //TO DO: find a way to add it to popup, not replaces the html already there!
               $.ajax({
-                  url: '{% url "get_news" %}',
+                  url: '{% url "map:get_news" %}',
                   data: {
                     'country': `${props[2]}`
                   },
