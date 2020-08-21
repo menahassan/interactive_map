@@ -51,6 +51,39 @@
                 display: none;
                 color: #343434;
             }
+
+             .btn{
+            font-family: Courier New, Courier, monospace; 
+            display: inline-block; 
+            width: 140px; 
+            height: auto; 
+            text-align: center; 
+            cursor: pointer; 
+            background-color: #21823b; 
+            margin-top: 10;
+            overflow: hidden;
+        }
+        .btn-text{
+            display: inline-block; 
+            color: white; 
+            font-weight: bold;
+            width: 80px;
+            text-align: center;
+        }
+        .btn-container{
+            margin-top: 20;
+        }
+        .btn-selected{
+            font-family: Courier New, Courier, monospace; 
+            display: inline-block; 
+            width: 80px; 
+            height: 40px; 
+            text-align: center; 
+            cursor: pointer; 
+            background-color: #17346e; 
+            margin-top: 10;
+            overflow: hidden;
+        }
         </style>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" charset="utf-8"></script>
@@ -192,5 +225,18 @@
             </div>
         </div>
         <p>Source of data is United Nations Development Programme Human Development Reports.</p>
+
+        <div class="btn-container">
+            <h2>Explore more issues!</h2>
+            <div class="btn">
+                <a href="{% url 'data:demo' %}"><p class="btn-text">World Population</p></a>
+            </div>
+            <div class="btn">
+                <a href="{% url 'data:human_trafficking' %}"><p class="btn-text">Human Trafficking</p></a>
+            </div>
+            <div class="btn">
+                <a href="{% url 'map:index' %}"><p class="btn-text">Back to Embassy Map</p></a>
+            </div>
+        </div>
     </body>
 </html>

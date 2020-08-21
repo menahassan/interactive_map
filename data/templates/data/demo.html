@@ -43,6 +43,18 @@
             color: #343434;
         }
 
+        .btn-issue{
+            font-family: Courier New, Courier, monospace; 
+            display: inline-block; 
+            width: 120px; 
+            height: auto; 
+            text-align: center; 
+            cursor: pointer; 
+            background-color: #21823b; 
+            margin-top: 10;
+            overflow: hidden;
+        }
+
         .btn{
             font-family: Courier New, Courier, monospace; 
             display: inline-block; 
@@ -54,6 +66,19 @@
             margin-top: 10;
             overflow: hidden;
         }
+
+        .btn-issue{
+            font-family: Courier New, Courier, monospace; 
+            display: inline-block; 
+            width: 170; 
+            height: auto; 
+            text-align: center; 
+            cursor: pointer; 
+            background-color: #78c0f0; 
+            margin-top: 10;
+            overflow: hidden;
+        }
+
         .btn-text{
             display: inline-block; 
             color: white; 
@@ -213,6 +238,11 @@
 
     <h1 id="year"></h1>
 
+    <h4>This map shows the progression of population in countries around the world from 1980 to 2019.
+    According to the World Bank, the world population was 7.594 billion in 2018, and is likely to reach 8 billion by 2023. The U.S. Department of State Bureau of Population, Refugees, and Migration
+     aims to help advance an integrated U.S. government strategy to support women’s health, including maternal health and voluntary, informed 
+     family planning assistance, and to combat HIV/AIDS, especially in developing countries.</h4>
+
     <div class="mapcontainer">
         <div class="map">
             <span>Alternative content for the map</span>
@@ -221,7 +251,7 @@
             <span>Alternative content for the legend</span>
         </div>
     </div>
-    <p>Source of data is United Nations Development Programme Human Development Reports.</p>
+    <p>Source of data is the World Bank Group (including data from the United Nations Population Division).</p>
 </div>
 
 </div>
@@ -352,5 +382,17 @@
     </div>
 </div>
 
+<h2>Explore more issues!</h2>
+<div class="btn-container">
+    <div class="btn-issue">
+        <a href="{% url 'data:human_trafficking' %}"><p class="btn-text">Human Trafficking</p></a>
+    </div>
+    <div class="btn-issue">
+        <a href="{% url 'map:hdiMap' %}"><p class="btn-text">Human Development Index</p></a>
+    </div>
+    <div class="btn-issue">
+                <a href="{% url 'map:index' %}"><p class="btn-text">Back to Embassy Map</p></a>
+    </div>
+</div>
 </body>
 </html> 
