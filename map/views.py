@@ -7,10 +7,12 @@ from . import airpollution
 from . import co2emissions
 from . import povertyrate
 from . import issues_summaries
+from map import a
+from map import DICT
 import json
+from map import translated
+from GoogleNews import GoogleNews
 
-#btw, no more need for dict
-# Create your views here.
 def index(request):
     #TO DO: automize this
     issue_dict = {"air_polution": ["Bangladesh", "Pakistan", "Mongolia", "Afghanistan", "India", "Indonesia", "Bahrain"],}
@@ -29,6 +31,7 @@ def index(request):
     for row in issues_summaries:
         issues.append(row[0])
 
+    lang_list = json.dumps(translated)
     return render(request, "map/index.html", {
     'mapbox_access_token': mapbox_access_token,
     'countries' : sorted(list(set(diplpresencecountries + nodiplpresencecountries))),
@@ -38,5 +41,6 @@ def index(request):
     'airpollution': airpollution,
     'co2emissions':co2emissions,
     'povertyrate':povertyrate,
+    'lang_list' : lang_list,
     'issues':issues,
     })
