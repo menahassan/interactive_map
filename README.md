@@ -7,7 +7,7 @@ Mena Hassan (menah9@gmail.com),
 Thong Do (thobado1999@gmail.com), 
 Ruth Fekade (fekad22r@mtholyoke.edu).
 
-With both interactive and non-interactive elements, we hope our project will be useful for the museum. 
+With both interactive and non-interactive elements, we hope our project will be useful for the museum. We chose this project because we wanted to help reduce the information barrier between the government and the people. Today, tensions between the executive branch and the press are at an all-time high. Access to free reporting is a cornerstone of our democracy, which is why one of our primary focal points was developing a web scraping service to display the latest, most up-to-date reporting on the United States' relations with each country as well as on the world's most pressing global issues.
 
 Highlights: 
 - US diplomatic presence visualization: indicates where we do and don't have a diplomatic presence
