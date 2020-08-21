@@ -21,6 +21,8 @@ def get_article_list(country):
     googlenews = GoogleNews(lang='en')
     googlenews.search(f"US {country} relations")
     lst = googlenews.result()
+    if len(lst) == 0:
+        return [['title','media','date','desc']]
 
     for i in range(10):
         title = lst[i]['title']
@@ -39,6 +41,8 @@ def get_article_list_issue(country, issue):
     googlenews = GoogleNews(lang='en')
     googlenews.search(f"{country} {issue}")
     lst = googlenews.result()
+    if len(lst) == 0:
+        return [['title','media','date','desc']]
 
     for i in range(10):
         title = lst[i]['title']
