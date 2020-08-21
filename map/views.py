@@ -9,9 +9,12 @@ from . import povertyrate
 from . import issues_summaries
 from map import a
 from map import DICT
-import json
 from map import translated
+from map import countriesHDI
 from GoogleNews import GoogleNews
+import json
+
+
 
 def index(request):
     #TO DO: automize this
@@ -43,4 +46,17 @@ def index(request):
     'povertyrate':povertyrate,
     'lang_list' : lang_list,
     'issues':issues,
+    })
+
+
+def hdiMap(request):
+    hdi = json.dumps(countriesHDI)
+    return render(request, "map/hdiMap.html", {
+    'countriesHDI': hdi,
+    })
+
+def embassyYearOpen(request):
+    yearOpen = json.dumps(DICT)
+    return render(request, "map/embassyYearOpen.html", {
+    'embassiesData': yearOpen,
     })
