@@ -24,7 +24,8 @@ How our project can be developed further:
 - adding images to popups (e.g. flags)
 - adding more data-driven global issues to the drop-down menu
 
-map/views.py - renders html template 
-map/templates/map/index.html - html to be rendered
-map/news.py - uses the GoogleNews module to search the web for news
+Important files:
+- map/views.py - renders html template 
+- map/templates/map/index.html - html to be rendered
+- map/news.py - uses the GoogleNews module to search the web for news
 
