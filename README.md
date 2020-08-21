@@ -8,6 +8,7 @@ Thong Do (thobado1999@gmail.com),
 Ruth Fekade (fekad22r@mtholyoke.edu).
 
 With both interactive and non-interactive elements, we hope our project will be useful for the museum. 
+
 Highlights: 
 - US diplomatic presence visualization: indicates where we do and don't have a diplomatic presence
 - global issue data visualization
