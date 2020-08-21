@@ -27,25 +27,11 @@
       </style>
 
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-      <link rel="stylesheet" type="text/css" href="{% static 'map/styles.css' %}">
-
       <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js'></script>
       <script src="https://cdn.jsdelivr.net/npm/translate@1/translate.min.js"></script>
-      <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-mapael/2.2.0/js/jquery.mapael.min.js"></script>
-      <script src="//cdn.jsdelivr.net/npm/jquery-mapael@2.2.0/js/jquery.mapael.min.js"></script>
       <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
-      
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" charset="utf-8"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"
-                charset="utf-8"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js" charset="utf-8"></script>
-      <script src='{% static "/jquery-mapael/js/jquery.mapael.js" %}' charset="utf-8"></script>
-      <script src='{% static "/jquery-mapael/js/maps/france_departments.js" %}' charset="utf-8"></script>
-      <script src='{% static "/jquery-mapael/js/maps/world_countries.js" %}' charset="utf-8"></script>
-      <script src='{% static "/jquery-mapael/js/maps/usa_states.js" %}' charset="utf-8"></script>
+      <link rel="stylesheet" type="text/css" href="{% static 'map/styles.css' %}">
 
-      
-      <link rel="stylesheet" href="{% static 'map/style.css' %}">
       <script>
           var embassies = {{ embassy_list|safe }};
           var countries = {{ countries|safe }};
@@ -170,6 +156,7 @@
               param.content = str;
           };
           function sendAjax(country, param) {
+              window.alert("sendajax working");
               $.ajax({
                   url: '{% url "map:get_news" %}',
                   data: {
@@ -183,6 +170,7 @@
               });
           };
           function getNews(btnid) {
+              window.alert("getnews working");
               var country = btnid.substring(0,btnid.indexOf('newsbtn'));
               var parag = {content: ''};
               sendAjax(country, parag);
@@ -190,6 +178,7 @@
           };
 
           function sendAjaxIssue(country, issue, text, units, dataPoint) {
+              window.alert("sendajax working");
             var parag = {content: ''};
             $.ajax({
                 url: '{% url "map:get_news_issue" %}',
@@ -420,32 +409,7 @@
               //commented out code is for adding background image
               el.className = `${props[2]}`; //used to be set to 'marker'
               //red box image
-              el.style.backgroundColor = 'rgb(139, 0, 0)';
-              el.style.width = '15px';
-              el.style.height = '15px';
-              el.style.borderRadius = '50%';
-              el.style.border = '0.25px solid';
-
-              var btn = '<div style="margin: 0 auto; width: 110px; text-align: center; cursor: pointer; background-color: black" onclick="myfunc('+props[13]+')"><p style="color: white">Play Language</p></div>'
-
-              function myfunc(x){
-                  var msg = new SpeechSynthesisUtterance(); 
-                    msg.text = langs[x].word;
-                    msg.lang = langs[x].language;
-                    if(!supportedLangs.includes(langs[x].language)){
-                        window.alert("Sorry! "+ langs[x].langFull.toString() + " is not currently supported.");
-                    }
-                    else{
-                        window.speechSynthesis.speak(msg);
-                    }
-                    //window.alert(msg.lang);
-              }
               
-
-              //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
-              let tmpMarker = new mapboxgl.Marker(el);
-              el.markerInstance = tmpMarker;
-              var title = '';
               var city = props[3]; //city name
               if (props[5] === 'OFFOBC') {
                   title = `US Embassy in ${city}.`;
@@ -462,6 +426,34 @@
               else {
                   title = `${props[2]}.`; //just to be safe -- change later
               }
+
+              var btn = '<div style="margin: 0 auto; width: 110px; text-align: center; cursor: pointer; background-color: black" onclick="myfunc('+props[13]+')"><p style="color: white">Play Language</p></div>'
+
+              function myfunc(x){
+                  var msg = new SpeechSynthesisUtterance(); 
+                    msg.text = langs[x].word;
+                    msg.lang = langs[x].language;
+                    if(!supportedLangs.includes(langs[x].language)){
+                        window.alert("Sorry! "+ langs[x].langFull.toString() + " is not currently supported.");
+                    }
+                    else{
+                        window.speechSynthesis.speak(msg);
+                    }
+                    //window.alert(msg.lang);
+              }
+
+              el.style.backgroundColor = 'rgb(139, 0, 0)';
+              el.style.width = '15px';
+              el.style.height = '15px';
+              el.style.borderRadius = '50%';
+              el.style.border = '0.25px solid';
+              
+
+              //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
+              let tmpMarker = new mapboxgl.Marker(el);
+              el.markerInstance = tmpMarker;
+              var title = '';
+              
 
               tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
                 .setHTML(`<h3 class="title${props[2]}">` + title + `</h3><p>${props[2]}</p>` +
