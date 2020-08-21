@@ -11,6 +11,8 @@
       <script>
           var embassies = {{ embassy_list|safe }};
           var countries = {{ countries|safe }};
+
+          //opens popups of indicated country
           function openPopups(country) {
               var markers = document.getElementsByClassName(`${country}`);
               for (i = 0; i < markers.length; ++i) {
@@ -19,12 +21,16 @@
                   }
               }
           };
+
+          //makes visible the markers of the indicated countries
           function showMarkers(countriesToKeep) {
               for (i=0; i<countriesToKeep.length; ++i) {
                   var marker = document.getElementById(`${countriesToKeep[i]}`);
                   marker.style.visibility = 'visible';
               }
           };
+
+          //hides all markers
           function hideMarkers() {
               for (i=0; i<countries.length; ++i) {
                   var markers = document.getElementsByClassName(`${countries[i]}`);
@@ -33,6 +39,7 @@
                   }
               }
           };
+
           //returns a list. first elem: the greatest difference in latitude, second elem: midpoint between two farthest markers
           function getDistanceMidpoint(country) {
               var markers = document.getElementsByClassName(`${country}`);
@@ -53,6 +60,8 @@
               }
               return [result, midpoint];
           };
+
+          //centers the map at a country by averaging the locations of the markers
           function center(country) {
               var distAndMid = getDistanceMidpoint(country);
               var distance = distAndMid[0];
@@ -74,6 +83,8 @@
               });
               openPopups(country);
           };
+
+          //closes all of the indicated country's popups
           function closePopups(country) {
               var curCountries = document.getElementsByClassName(`${country}`);
               for (j = 0; j < curCountries.length; ++j) {
@@ -83,6 +94,7 @@
                   }
               }
           };
+
           //closes all existing popups and switches to country
           function switchCountries(oldCountry, newCountry) {
               if (oldCountry !== "") {
@@ -90,7 +102,8 @@
               }
               center(newCountry);
           };
-          //not sure if a global variable is good style
+
+          //randomly selects a country without replacement. restarts with full list when all countries used.
           let countryList = {{countries|safe}};
           function chooseCountry() {
               if (countryList.length === 0) {
@@ -102,28 +115,7 @@
               return chosenCountry;
           };
 
-          function openIssue(country) { //delete / move to another doc
-              var curCountries = document.getElementsByClassName(`${country}`);
-              for (j = 0; j < curCountries.length; ++j) {
-                  var popup = curCountries[j].markerInstance.getPopup();
-                  if (!((popup.innerHTML).indexOf("No US Diplomatic Presence") !== -1 || (popup.innerHTML).indexOf("Embassy") !== -1)) {
-                     //has neither of these strings
-                     continue;
-                  }
-                  if (!popup.isOpen()){
-                      popup.togglePopup();
-                  }
-                  //to do: use popup or marker element to do the following
-                  var elems = document.getElementsByClassName(`issuebtn${country}`);
-                  for (i = 0; i < elems.length; ++i) {
-                      elems[i].style.visibility = 'visible';
-                  }
-                  elems = document.getElementsByClassName(`issueparagraph${country}`);
-                  for (i = 0; i < elems.length; ++i) {
-                      elems[i].style.visibility = 'visible';
-                  }
-              }
-          };
+          //changes param's 'content' key to the news paragraph
           function setPopupText(list, param) {
               var str = ``;
               for (n=0; n<list.length; ++n) {
@@ -131,6 +123,8 @@
               }
               param.content = str;
           };
+
+          //sends an ajax request to retrieve news about country
           function sendAjax(country, param) {
               $.ajax({
                   url: '{% url "get_news" %}',
@@ -144,15 +138,21 @@
                   }
               });
           };
+
+          //facilitates news retrieval
           function getNews(btnid) {
               var country = btnid.substring(0,btnid.indexOf('newsbtn'));
               var parag = {content: ''};
               sendAjax(country, parag);
-              document.getElementById('newsdiv').innerHTML = `<p>${country} news: </p>`+ parag.content;
+              document.getElementById('newsdiv').innerHTML = `<p>The latest news from ${country}: </p>`+ parag.content;
           };
 
+          //sends an ajax request to retrieve news about country and issue
           function sendAjaxIssue(country, issue, text, units, dataPoint) {
             var parag = {content: ''};
+            if (country === 'United States') {
+                document.getElementById('United States').style.visibility = 'visible';
+            }
             $.ajax({
                 url: '{% url "get_news_issue" %}',
                 data: {
@@ -164,13 +164,14 @@
                 success: function (data) {
                     setPopupText(data.article_list, parag);
                     var popupElem = document.getElementById(`${country}`).markerInstance.getPopup().setHTML(
-                      `<h3>${country}</h3>` + `<p>${text}${dataPoint} ${units}</p>` + parag.content +
-                      `<img src="" alt="My image" width = "40" height="40">`
+                      `<h3>${country}</h3>` + `<p>${text}${dataPoint} ${units}</p>` + parag.content
                     );
 
                 }
             });
           };
+
+          //reloads the page
           function reload(){
               location.reload();
               return false;
@@ -183,6 +184,8 @@
               var allCountries = {{countries|safe}};
               document.querySelector('#countryselector').onclick = function() {
                   //closes all popups when the form is resubmitted
+                  document.getElementById('newsdiv').innerHTML = '';
+                  document.getElementById('United States').style.visibility = 'hidden';
                   for (i = 0; i < allCountries.length; ++i) {
                       closePopups(allCountries[i]);
                   }
@@ -196,7 +199,7 @@
                   }
                   map.flyTo({
                       center: [12.550343, 55.665957],
-                      zoom: 2
+                      zoom: 1
                   });
                   const issue = document.querySelector('#issues').value;
                   document.getElementById('header').innerHTML = `${issue}`;
@@ -211,17 +214,21 @@
                       }
                   }
 
+                  //assign list to appropriate template
                   var list = [];
                   if (issue === 'Air pollution') {
-                      list = {{ airpollution|safe }};//create if statements to assign list to appropriate template
+                      list = {{ airpollution|safe }};
                   }
                   else if (issue === 'CO2 emissions') {
                       list = {{ co2emissions|safe }};
                   }
+                  else if (issue === 'Poverty rate') {
+                      list = {{ povertyrate|safe }};
+                  }
                   var cur_countries = [];
                   for (i = 0; i < list.length; ++i) {
                       var country = list[i][0];
-                      if (!allCountries.includes(country)) {
+                      if (country !== 'United States' && !allCountries.includes(country)) {
                          continue;
                       }
                       var dataPoint = list[i][1];
@@ -234,14 +241,14 @@
                   document.getElementById('countryform').style.visibility = 'hidden';
                   document.getElementById("fsmodebtn").style.visibility = 'hidden';
                   document.getElementById('stopbtn').style.visibility = 'hidden';
+                  document.getElementById('newsdiv').innerHTML = '';
 
               };
               //loops through each country, zooming into its embassy/consulates.
               //stops when loop is over
-              //TO DO: make stop and restart buttons.
-              //TO DO: have the loop automatically restart
-
               document.querySelector('#fsmodebtn').onclick = function() {
+                  document.getElementById('newsdiv').innerHTML = '';
+                  document.getElementById('United States').style.visibility = 'hidden';
                   var old = "";
                   var cur = chooseCountry();
                   function loop() {
@@ -310,13 +317,25 @@
           var embassies = {{ embassy_list|safe }};
           var countries = {{ countries|safe }};
 
+          //sets marker for United States
+          var us = document.createElement('div');
+          us.className = 'United States';
+          us.id = 'United States';
+          us.style.width = '15px';
+          us.style.height = '15px';
+          us.style.borderRadius = '50%';
+          us.style.border = '0.25px solid';
+          us.style.backgroundColor = 'black';
+          us.style.visibility = 'hidden';
+          let usMarker = new mapboxgl.Marker(us);
+          us.markerInstance = usMarker;
+          usMarker.setLngLat([-95.712891, 37.09024]).setPopup(new mapboxgl.Popup({ offset: 25 })).addTo(map);
+
+          //sets markers for countries with no diplomatic presence (blue)
           const countriesNoDiplPresence = {{ nodiplpresencelist|safe }};
           for (var i = 0; i < countriesNoDiplPresence.length; i++) {
               var props = countriesNoDiplPresence[i];
               var country = props[0];
-
-              //var parag = {content: ''};
-              //sendAjax(country, parag);
 
               var el = document.createElement('div');
               el.className = `${country}`;
@@ -330,15 +349,13 @@
               let tmpMarker = new mapboxgl.Marker(el);
               el.markerInstance = tmpMarker;
 
-
-
               //TO DO: how to make these markers present for issues
               //TO DO: should we add countries with no dipl presence to main menu?
               //TO DO: make spreadsheet with all countries and lat/long and use it instead of countries template var
               tmpMarker.setLngLat([props[2],props[1]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
                 .setHTML(`<h3 class="title${country}">No US Diplomatic Presence</h3><p>${country}</p>` +
                 `<button id='${country}newsbtn' onclick='getNews(country)'>Get the latest news!</button>`+
-                `<img src='' alt="My image" width = "40" height="40">`)).addTo(map);
+                `<img src="" alt="My image" width = "40" height="40">`)).addTo(map);
               el.addEventListener("click", e => {
                   // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
                   let coords = e.target.markerInstance.getLngLat();
@@ -351,6 +368,8 @@
               });
 
           }
+
+          //sets markers for all other countries
           for(var i = 0; i < embassies.length; i++) {
               props = embassies[i];
               if (props[0] !== "Active") {
@@ -409,7 +428,6 @@
                   });
               });
           }
-
       </script>
 
   </body>

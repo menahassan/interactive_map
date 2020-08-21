@@ -30,7 +30,7 @@ for row in sheet.iter_rows(min_row=3, min_col=1, max_row=11, max_col=2):
         col.append(cell.value)
     airpollution.append(col)
 
-book = openpyxl.load_workbook('co2emissions.xlsx') 
+book = openpyxl.load_workbook('co2emissions.xlsx')
 sheet = book.active
 
 co2emissions = []
@@ -40,11 +40,21 @@ for row in sheet.iter_rows(min_row=3, min_col=1, max_row=11, max_col=2):
         col.append(cell.value)
     co2emissions.append(col)
 
+book = openpyxl.load_workbook('povertyrate.xlsx')
+sheet = book.active
+
+povertyrate = []
+for row in sheet.iter_rows(min_row=3, min_col=1, max_row=11, max_col=2):
+    col = []
+    for cell in row:
+        col.append(cell.value)
+    povertyrate.append(col)
+
 book = openpyxl.load_workbook('issues_summaries.xlsx')
 sheet = book.active
 
 issues_summaries = []
-for row in sheet.iter_rows(min_row=3, min_col=1, max_row=3, max_col=4):
+for row in sheet.iter_rows(min_row=3, min_col=1, max_row=5, max_col=4):
     col = []
     for cell in row:
         col.append(cell.value)

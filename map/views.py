@@ -5,6 +5,7 @@ from . import embassies_consulates
 from . import nodiplpresencelist
 from . import airpollution
 from . import co2emissions
+from . import povertyrate
 from . import issues_summaries
 import json
 
@@ -36,5 +37,6 @@ def index(request):
     'nodiplpresencelist': nodiplpresencelist,
     'airpollution': airpollution,
     'co2emissions':co2emissions,
+    'povertyrate':povertyrate,
     'issues':issues,
     })
