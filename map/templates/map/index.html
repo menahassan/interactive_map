@@ -26,6 +26,8 @@
         }
       </style>
 
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <link rel="stylesheet" type="text/css" href="{% static 'map/styles.css' %}">
 
       <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js'></script>
       <script src="https://cdn.jsdelivr.net/npm/translate@1/translate.min.js"></script>
@@ -310,6 +312,17 @@
             in solving the most pressing global issues. Key: Red pins - countries where the US has a diplomatic presence;
             blue pins - countries where the US does not have a diplomatic presence.
           </p>
+          <h1 style="font-family: Courier New, Courier, monospace; font-size: 40px; padding-left: 5px">Explore global issues:!</h1>
+            <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
+                <a href="{% url 'data:demo' %}"><p style="display: inline-block; color: white">World Population Data</p></a>
+            </div>
+            <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
+                <a href="{% url 'data:human_trafficking' %}"><p style="display: inline-block; color: white">Human Trafficking</p></a>
+            </div>
+            <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
+                <a href="{% url 'map:hdiMap' %}"><p style="display: inline-block; color: white">Human Development Index</p></a>
+            </div>
+            
           <div id='newsdiv'></div>
           <form id="countryform" style="visibility:visible;">
               <label>Explore a country: </label>
@@ -334,13 +347,13 @@
       </div>
       <div id='map' style='margin-left: 25px; margin-right: 25px; height: 750px;'></div>
       <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+      
       <script>
           mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
           var map = new mapboxgl.Map({
-            pitch:0.01,
             container: 'map',
             style: 'mapbox://styles/mapbox/streets-v11',
-            center: [35.385076, 36.983267],
+            center: [12.550343, 55.665957],
             zoom: 2
           });
 
@@ -405,27 +418,14 @@
                   el.id = `${props[2]}`;
               }
               //commented out code is for adding background image
-              el.className = props[2].toString(); //used to be set to 'marker'
+              el.className = `${props[2]}`; //used to be set to 'marker'
               //red box image
-              //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
-              var title = '';
-              var city = props[3]; //city name
-              if (props[5] === 'OFFOBC') {
-                  title = `US Embassy in ${city}.`;
-              }
-              else if (props[5] === 'OFFCOB') {
-                  title = `US Consulate in ${city}.`;
-              }
-              else if (props[5] === 'OFFOBX'){
-                  title = `Annex building in ${city}.`;
-              }
-              else if (props[5] === 'OFFCAX' || props[5] === 'OFFAPP') {
-                  title = `US Embassy branch office in ${city}`;
-            }
-            else {
-                  title = `${props[2]}.`; //just to be safe -- change later
-              }
-              
+              el.style.backgroundColor = 'rgb(139, 0, 0)';
+              el.style.width = '15px';
+              el.style.height = '15px';
+              el.style.borderRadius = '50%';
+              el.style.border = '0.25px solid';
+
               var btn = '<div style="margin: 0 auto; width: 110px; text-align: center; cursor: pointer; background-color: black" onclick="myfunc('+props[13]+')"><p style="color: white">Play Language</p></div>'
 
               function myfunc(x){
@@ -440,246 +440,44 @@
                     }
                     //window.alert(msg.lang);
               }
-              el.style.backgroundImage = 'url(https://i.pinimg.com/564x/f4/a8/6a/f4a86a209ba10ab95afcfd4ed29f3acf.jpg)';
-              el.style.width = '15px';
-              el.style.height = '15px';
-              el.style.borderRadius = '50%';
-              el.style.border = '0.25px solid';
               
+
               //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
               let tmpMarker = new mapboxgl.Marker(el);
               el.markerInstance = tmpMarker;
-                tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+              var title = '';
+              var city = props[3]; //city name
+              if (props[5] === 'OFFOBC') {
+                  title = `US Embassy in ${city}.`;
+              }
+              else if (props[5] === 'OFFCOB') {
+                  title = `US Consulate in ${city}.`;
+              }
+              else if (props[5] === 'OFFOBX'){
+                  title = `Annex building in ${city}.`;
+              }
+              else if (props[5] === 'OFFCAX' || props[5] === 'OFFAPP') {
+                  title = `US Embassy branch office in ${city}`;
+              }
+              else {
+                  title = `${props[2]}.`; //just to be safe -- change later
+              }
+
+              tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
                 .setHTML(`<h3 class="title${props[2]}">` + title + `</h3><p>${props[2]}</p>` +
                 `<button id='${props[2]}newsbtn' onclick='getNews(this.id)'>Get the latest news!</button>` + `<div id='${props[2]}div'></div>` +
                 `<img src="" alt="My image" width = "40" height="40">` + btn)).addTo(map);
-
-              
               el.addEventListener("click", e => {
                   // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
                   let coords = e.target.markerInstance.getLngLat();
-              //l.markerInstance = tmpMarker2;
-                //tmpMarker2.setLngLat(coords).addTo(map);
                   //tell the map to center on the marker coordinates
                   map.flyTo({
                       center: coords,
                       speed: 0.6,
-                      zoom: 6
+                      zoom: 5
                   });
-                  
               });
-
-              //TO DO: find a way to add it to popup, not replaces the html already there!
-              $.ajax({
-                  url: '{% url "map:get_news" %}',
-                  data: {
-                    'country': `${props[2]}`
-                  },
-                  dataType: 'json',
-                  success: function (data) {
-                      tmpMarker.getPopup().setText(data.article_list.toString());
-                      //var cur = tmpMarker.getPopup().getElement();
-                      //tmpMarker.getPopup().setHTML(`${cur}<p>${data.article_list.toString()}</p>`);
-                  }
-              });
-
           }
-      </script>
-
-      <h1>Year</h1>
-      <h1 id="year"></h1>
-
-      <div class="mapcontainer">
-            <div class="map">
-                <span>Alternative content for the map</span>
-            </div>
-            <div class="areaLegend">
-                <span>Alternative content for the legend</span>
-            </div>
-            <div class="plotLegend">
-                <span>Alternative content for the legend</span>
-            </div>
-        </div>
-      <script type="text/javascript">
-        var counter = 0;
-        var yearStart = 1990;
-        document.getElementById('year').textContent = yearStart + counter;
-        window.setInterval(function test(){
-        counter = (counter + 1) % 29;
-        document.getElementById('year').textContent = yearStart + counter;
-
-        }, 1000)
-
- /*       $(".container").mapael({
-        map : {
-            name : "world_countries"
-        }
-        });
-*/
-
-        var lstHDI = {{countriesHDI|safe}};
-        $(function () {
-            $(".mapcontainer").mapael({
-                "map": {
-                    "name": "world_countries",
-                    "defaultArea": {
-                        "stroke": "#fff",
-                        "stroke-width": 1
-                    }
-                },
-                "legend": {
-                    "area": {
-                        "title": "Countries Human Development Index",
-                        "slices": [
-                            {
-                                max: .2,
-                                attrs: {
-                                    fill: "#6aafe1"
-                                },
-                                label: "Less than 5 million inhabitants"
-                            },
-                            {
-                                min: 0.2,
-                                max: 0.4,
-                                attrs: {
-                                    fill: "#459bd9"
-                                },
-                                label: "Between 5 million and 10 million inhabitants"
-                            },
-                            {
-                                min: 0.4,
-                                max: 0.7,
-                                attrs: {
-                                    fill: "#2579b5"
-                                },
-                                label: "Between 10 million and 50 million inhabitants"
-                            },
-                            {
-                                min: 0.7,
-                                attrs: {
-                                    fill: "#1a527b"
-                                },
-                                label: "More than 50 million inhabitants"
-                            }
-                        ]
-                    },
-                },
-                "areas": {
-                    "CA": {
-                        "value": lstHDI["CA"][1],
-                        "href": "#",
-                        "tooltip": {
-                            "content": "<span style=\"font-weight:bold;\">Canada<\/span><br \/>Population : " + lstHDI["CA"][1]
-                        }
-                    },
-                }
-            });
-        });
-
-/*
-          // Tell user if the embassy is open
-          function isOpen(start, end, time){
-              if(start < end){
-                  if(start <= time && time < end){
-                      return true;
-                  }
-                  else{
-                      return false
-                  }
-              }
-              else{
-                  if(start <= time || time < end){
-                      return true;
-                  }
-                  else{
-                      return false;
-                  }
-              }
-          }
-          mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
-          var map2 = new mapboxgl.Map({
-            container: 'map2',
-            style: 'mapbox://styles/mapbox/streets-v11',
-            center: [0,0],
-            zoom: 1    
-     
-          });
-          map2.scrollZoom.disable();
-          var geojson = {
-            type: 'FeatureCollection',
-            features: [{
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [-77.032, 38.913]
-                },
-                properties: {
-                    title: 'Mapbox',
-                    description: 'Washington, D.C.',
-                    openHour: 0,
-                    closeHour: 12,
-                }
-            },
-            {
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [-122.414, 37.776]
-                },
-                properties: {
-                    title: 'Mapbox',
-                    description: 'San Francisco, California',
-                    openHour: 15,
-                    closeHour: 3,
-                }
-            }]
-          };
-            var markerLst = []
-            geojson.features.forEach(function(marker) {
-                // make a marker for each feature and add to the map
-                //var m = new mapboxgl.Marker(el)
-                //.setLngLat(marker.geometry.coordinates)
-                //.addTo(map2);
-                var color = "#ff0000";        // Color red for close
-                if(isOpen(marker.properties.openHour, marker.properties.closeHour, counter)){
-                    // Color green for open
-                    color = "#008000"
-                }
-                markerLst.push(
-                    new mapboxgl.Marker({color: color, "icon-size": "0.5"})
-                    .setLngLat(marker.geometry.coordinates)
-                    .addTo(map2));
-            });
-            window.setInterval(function test(){   
-                counter = (counter + 1) % 24;
-                if(counter == 0){
-                    document.getElementById('time').textContent = "12:00 AM";
-                }
-                else if(counter < 12){
-                    document.getElementById('time').textContent = counter.toString() + ":00 AM";
-                }
-                else if(counter >= 12){
-                    document.getElementById('time').textContent = (counter % 12) == 0 ? "12:00 PM" : (counter % 12).toString() + ":00 PM";
-                }
-                
-                markerLst.forEach((m) => {
-                    m.remove();
-                });
-                markerLst = [];
-                geojson.features.forEach(function(marker) {
-                    var color = "#ff0000";        // Color red for close
-                    if(isOpen(marker.properties.openHour, marker.properties.closeHour, counter)){
-                        // Color green for open
-                        color = "#008000"
-                    }
-                    markerLst.push(
-                        new mapboxgl.Marker({color: color, "icon-size": "0.5"})
-                        .setLngLat(marker.geometry.coordinates)
-                        .addTo(map2));
-                });
-            
-            }, 1000);
-            */
 
       </script>
 
