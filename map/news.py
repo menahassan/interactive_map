@@ -45,7 +45,7 @@ def get_article_list_issue(country, issue):
         desc = lst[i]['desc']
         #to weed out irrelevant articles
         if country in title or issue.lower() in title.lower() or country in desc:
-            articles = articles + [[title, lst[i]['media'], st[i]['date'], desc]]
+            articles = articles + [[title, lst[i]['media'], lst[i]['date'], desc]]
         if len(articles) == 2:
             break
     return articles
