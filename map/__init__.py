@@ -16,6 +16,7 @@ for row in sheet.iter_rows(min_row=2, min_col=1, max_row=sheet.max_row, max_col=
         col.append(cell.value)
     embassies_consulates.append(col)
 
+yearEmbassyOpen = {} #keys: countries , values: long/lat dictionary - DICT has not yet been tested
 for row in sheet.iter_rows(min_row=2, max_row = 276, min_col=1, max_col=19, values_only=True):
     data = {}
     if(row[14] != None and row[13] != None and row[18] != None):
@@ -24,7 +25,7 @@ for row in sheet.iter_rows(min_row=2, max_row = 276, min_col=1, max_col=19, valu
         data["yearOpen"] = row[18].year
         data['city'] = row[3]
         
-        DICT[row[2]] = data
+        yearEmbassyOpen[row[2]] = data
 
 book1 = openpyxl.load_workbook('nodiplpresence.xlsx')
 sheet1 = book1.active
@@ -71,12 +72,12 @@ for i in embassies_consulates:
 
 
 # Get the Human development Index of countries from 1990 - 2018
-book4 = openpyxl.load_workbook('Human_Development_Index.xlsx')
+book2 = openpyxl.load_workbook('Human_Development_Index.xlsx')
 
-sheet4 = book4.active
+sheet2 = book2.active
 countriesHDI = {} #keys: countries initial , values: first element is the name of the country, the rest is HDI starting from 1990 - 2018
 
-for row in sheet4.iter_rows(min_row=3, max_row = 197, min_col=1, max_col=32, values_only=True):
+for row in sheet2.iter_rows(min_row=3, max_row = 197, min_col=1, max_col=32, values_only=True):
     countryHDI = [row[1]]
     for hdi in row[3:]:
             countryHDI = countryHDI + [hdi]
