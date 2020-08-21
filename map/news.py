@@ -17,7 +17,6 @@ def get_news_issue(request):
     return JsonResponse(data)
 
 def get_article_list(country):
-    return [["title", "media", "date", "desc"]] #PLACEHOLDER -- DELETE
     articles = []
     googlenews = GoogleNews(lang='en')
     googlenews.search(f"US {country} relations")
@@ -36,7 +35,6 @@ def get_article_list(country):
     return articles
 
 def get_article_list_issue(country, issue):
-    return [["title", "media", "date", "desc"]]  #PLACEHOLDER -- DELETE
     articles = []
     googlenews = GoogleNews(lang='en')
     googlenews.search(f"{country} {issue}")
