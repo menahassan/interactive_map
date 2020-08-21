@@ -1,0 +1,171 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>United State Embassy Open Time Lapse</title>
+        <style type="text/css">
+            body {
+                color: #5d5d5d;
+                font-family: Helvetica, Arial, sans-serif;
+            }
+
+            h1 {
+/*                font-size: 30px;*/
+                margin: auto;
+                margin-top: 20px;
+                margin-right: 10px;
+                margin-left: 10px;
+            }
+
+            h4 {
+                margin: auto;
+                margin-top: 10px;
+                margin-right: 10px;
+                margin-left: 10px;    
+            }
+
+            .container {
+                max-width: 800px;
+                margin: auto;
+            }
+            
+            /* Specific mapael css class are below
+            * 'mapael' class is added by plugin
+            */
+
+            .mapael .map {
+                position: relative;
+            }
+
+            .mapael .mapTooltip {
+                position: absolute;
+                background-color: #fff;
+                moz-opacity: 0.70;
+                opacity: 0.70;
+                filter: alpha(opacity=70);
+                border-radius: 10px;
+                padding: 10px;
+                z-index: 1000;
+                max-width: 200px;
+                display: none;
+                color: #343434;
+            }
+        </style>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" charset="utf-8"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"
+                charset="utf-8"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js" charset="utf-8"></script>
+        <script src='{% static "/jquery-mapael/js/jquery.mapael.js" %}' charset="utf-8"></script>
+        <script src='{% static "/jquery-mapael/js/maps/france_departments.js" %}' charset="utf-8"></script>
+        <script src='{% static "/jquery-mapael/js/maps/world_countries.js" %}' charset="utf-8"></script>
+        <script src='{% static "/jquery-mapael/js/maps/usa_states.js" %}' charset="utf-8"></script>
+
+        <script type="text/javascript">
+
+            var embassies = {{ embassiesData|safe }};
+            $(function () {
+                var startList = {}
+                for(let k in embassies){
+                    // Make a list of plot of embassy open in 1925
+                    if(embassies[k]['yearOpen'] == 1925){
+                        startList[k + embassies[k]['lat'] + ", " + embassies[k]['long']] = {
+                            type: 'circle',
+                            size: 5,
+                            latitude: embassies[k]['lat'],
+                            longitude: embassies[k]['long'],
+                            "tooltip": {
+                                content: "<span style=\"font-weight:bold;\">Embassy in "+ embassies[k]['city'] + ", " + k +"<\/span><br \/>Year : " + embassies[k]['yearOpen']
+                            }
+                        }
+                    }
+                }
+
+
+                $(".mapcontainer").mapael({
+                    map: {
+                        name: "world_countries",
+                        defaultPlot: {
+                            text: {
+                                attrs: {
+                                    fill: "#505444"
+                                }
+                                , attrsHover: {
+                                    fill: "#000"
+                                }
+                            }
+                        },
+                        width: 1200,
+                        height: 1100
+                    },
+                    plots: startList
+                });
+            
+                var counter = 0;
+                var yearStart = 1925;
+                var keyAfterInitialYear = []
+                document.getElementById('year').textContent = "United State Embassy opened as of: " + (yearStart + counter);
+                window.setInterval(function test(){
+                    counter = (counter + 1) % 96;
+                    document.getElementById('year').textContent = "United State Embassy opened as of: " + (yearStart + counter);
+
+                    if(counter !== 0){
+                        // Add new plot for the current year
+                        var addPlot = {};
+                        for(let k in embassies){
+                            // Add the plot
+                            if(embassies[k]['yearOpen'] == (yearStart + counter)){
+                                // The key is combination of country, lat, long so that there is no repeated key
+                                addPlot[k + embassies[k]['lat'] + ", " + embassies[k]['long']] = {
+                                    type: 'circle',
+                                    size: 5,
+                                    latitude: embassies[k]['lat'],
+                                    longitude: embassies[k]['long'],
+                                    "tooltip": {
+                                        content: "<span style=\"font-weight:bold;\">Embassy in "+ embassies[k]['city'] + ", " + k +"<\/span><br \/>Year : " + embassies[k]['yearOpen']
+                                    }
+                                }
+                                keyAfterInitialYear.push(k + embassies[k]['lat'] + ", " + embassies[k]['long']);
+                            }
+                            
+                        }
+
+
+                        $(".mapcontainer").trigger('update', [{
+                            newPlots: addPlot, 
+                            animDuration: 250
+                        }]);
+                    }
+                    else{
+                        $(".mapcontainer").trigger('update', [{
+                            deletePlotKeys: keyAfterInitialYear, 
+                            animDuration: 50
+                        }]);
+                        keyAfterInitialYear = []
+                        console.log('Delete');
+                    }
+                    
+                }, 300)
+            });
+
+
+            
+        </script>
+
+    </head>
+
+    <body>
+        <h1 id="year"></h1>
+        <div>
+            <div class="mapcontainer">
+                <div>
+                    <div class="map">
+                        <span>Alternative content for the map</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p>Source of data is from the The National Museum of American Diplomacy.</p>
+    </body>
+</html>
