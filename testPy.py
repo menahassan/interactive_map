@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import openpyxl
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -53,10 +54,3 @@ class NewsArticles():
                 driver.quit()
 
         return articles
-
-a = NewsArticles.news()
-for l in a:
-        print(l)
-print(len(a))
-
-

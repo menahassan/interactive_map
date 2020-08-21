@@ -51,6 +51,40 @@
                 display: none;
                 color: #343434;
             }
+
+
+            .btn{
+            font-family: Courier New, Courier, monospace; 
+            display: inline-block; 
+            width: 140px; 
+            height: auto; 
+            text-align: center; 
+            cursor: pointer; 
+            background-color: #21823b; 
+            margin-top: 10;
+            overflow: hidden;
+        }
+        .btn-text{
+            display: inline-block; 
+            color: white; 
+            font-weight: bold;
+            width: 80px;
+            text-align: center;
+        }
+        .btn-container{
+            margin-top: 20;
+        }
+        .btn-selected{
+            font-family: Courier New, Courier, monospace; 
+            display: inline-block; 
+            width: 80px; 
+            height: 40px; 
+            text-align: center; 
+            cursor: pointer; 
+            background-color: #17346e; 
+            margin-top: 10;
+            overflow: hidden;
+        }
         </style>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" charset="utf-8"></script>
@@ -175,7 +209,7 @@
 
     <body>
         <h1 id="year"></h1>
-        <h4>Human Development Index (HDI) look at the life expectancy, education, and gross 
+        <h4>The Human Development Index (HDI) looks at the life expectancy, education, and gross 
             national income per capita to create a value, ranging from 0 - 1, to assess the 
             development of a country.</h4>
         <div>
@@ -192,5 +226,15 @@
             </div>
         </div>
         <p>Source of data is United Nations Development Programme Human Development Reports.</p>
+
+        <div class="btn-container">
+            <h2>Explore more issues!</h2>
+            <div class="btn">
+                <a href="{% url 'data:demo' %}"><p class="btn-text">World Population</p></a>
+            </div>
+            <div class="btn">
+                <a href="{% url 'data:human_trafficking' %}"><p class="btn-text">Human Trafficking</p></a>
+            </div>
+        </div>
     </body>
 </html>

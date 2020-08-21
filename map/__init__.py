@@ -8,6 +8,7 @@ sheet = book.active
 
 translated = {}
 a = []
+DICT = {}
 embassies_consulates = [] #list of rows as shown in excel spreadsheet
 for row in sheet.iter_rows(min_row=2, min_col=1, max_row=sheet.max_row, max_col=18):
     col = []
