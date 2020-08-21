@@ -7,10 +7,6 @@ Mena Hassan (menah9@gmail.com)
 Thong Do (thobado1999@gmail.com)
 Ruth Fekade (fekad22r@mtholyoke.edu)
 
-map/views.py - renders html template 
-map/templates/map/index.html - html to be rendered
-map/news.py - uses the GoogleNews module to search the web for news
-
 With both interactive and non-interactive elements, we hope our project will be useful for the museum. 
 Highlights: 
 - US diplomatic presence visualization: indicates where we do and don't have a diplomatic presence
@@ -27,4 +23,8 @@ How our project can be developed further:
 - improved "freestyle" feature
 - adding images to popups (e.g. flags)
 - adding more data-driven global issues to the drop-down menu
+
+map/views.py - renders html template 
+map/templates/map/index.html - html to be rendered
+map/news.py - uses the GoogleNews module to search the web for news
 
