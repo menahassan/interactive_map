@@ -3,7 +3,7 @@
 import openpyxl
 from googletrans import Translator
 
-book = openpyxl.load_workbook('map/Embassies Consulates and Missions Lat Longs.xlsx')
+book = openpyxl.load_workbook('Embassies Consulates and Missions Lat Longs.xlsx')
 sheet = book.active
 
 translated = {}
@@ -27,7 +27,7 @@ for row in sheet.iter_rows(min_row=2, max_row = 276, min_col=1, max_col=19, valu
         
         yearEmbassyOpen[row[2]] = data
 
-book1 = openpyxl.load_workbook('map/nodiplpresence.xlsx')
+book1 = openpyxl.load_workbook('nodiplpresence.xlsx')
 sheet1 = book1.active
 
 nodiplpresencelist = []
@@ -37,7 +37,7 @@ for row in sheet1.iter_rows(min_row=3, min_col=1, max_row=sheet1.max_row, max_co
         col.append(cell.value)
     nodiplpresencelist.append(col)
 
-book2 = openpyxl.load_workbook('map/airpollution.xlsx') #will later include more comprehensive data
+book2 = openpyxl.load_workbook('airpollution.xlsx') #will later include more comprehensive data
 sheet2 = book2.active
 
 airpollution = []
@@ -47,7 +47,7 @@ for row in sheet2.iter_rows(min_row=3, min_col=1, max_row=11, max_col=2):
         col.append(cell.value)
     airpollution.append(col)
 
-book3 = openpyxl.load_workbook('map/issues_summaries.xlsx') #will later include more comprehensive data
+book3 = openpyxl.load_workbook('issues_summaries.xlsx') #will later include more comprehensive data
 sheet3 = book3.active
 
 issues_summaries = []
@@ -72,7 +72,7 @@ for i in embassies_consulates:
 
 
 # Get the Human development Index of countries from 1990 - 2018
-book2 = openpyxl.load_workbook('map/Human_Development_Index.xlsx')
+book2 = openpyxl.load_workbook('Human_Development_Index.xlsx')
 
 sheet2 = book2.active
 countriesHDI = {} #keys: countries initial , values: first element is the name of the country, the rest is HDI starting from 1990 - 2018
