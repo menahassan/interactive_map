@@ -24,6 +24,7 @@ How our project can be developed further:
 - improved "freestyle" feature
 - adding images to popups (e.g. flags)
 - adding more data-driven global issues to the drop-down menu
+- adding another map visualizing which embassies are open at the present moment
 
 Important files:
 - map/views.py - renders html template 
