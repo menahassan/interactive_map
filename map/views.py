@@ -5,7 +5,6 @@ from map import translated
 from . import embassies_consulates
 from . import nodiplpresencelist
 from . import airpollution
-from . import co2emissions
 from . import issues_summaries
 from . import yearEmbassyOpen
 from . import countriesHDI 
@@ -40,7 +39,6 @@ def index(request):
     'issues_summaries' : json.dumps(issues_summaries),
     'nodiplpresencelist': nodiplpresencelist,
     'airpollution': airpollution,
-    'co2emissions':co2emissions,
     'issues':issues,
     })
 

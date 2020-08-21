@@ -169,7 +169,7 @@
           };
           function sendAjax(country, param) {
               $.ajax({
-                  url: '{% url "get_news" %}',
+                  url: '{% url "map:get_news" %}',
                   data: {
                     'country': country
                   },
