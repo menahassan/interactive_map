@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from . import embassies_consulates
 from . import nodiplpresencelist
 from . import airpollution
+from . import co2emissions
 from . import issues_summaries
 import json
 
@@ -23,6 +24,10 @@ def index(request):
     for row in embassies_consulates:
         diplpresencecountries.append(row[2])
 
+    issues = []
+    for row in issues_summaries:
+        issues.append(row[0])
+
     return render(request, "map/index.html", {
     'mapbox_access_token': mapbox_access_token,
     'countries' : sorted(list(set(diplpresencecountries + nodiplpresencecountries))),
@@ -30,4 +35,6 @@ def index(request):
     'issues_summaries' : json.dumps(issues_summaries),
     'nodiplpresencelist': nodiplpresencelist,
     'airpollution': airpollution,
+    'co2emissions':co2emissions,
+    'issues':issues,
     })

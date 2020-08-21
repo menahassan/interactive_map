@@ -131,6 +131,25 @@
               }
               param.content = str;
           };
+          function sendAjax(country, param) {
+              $.ajax({
+                  url: '{% url "get_news" %}',
+                  data: {
+                    'country': country
+                  },
+                  async: false,
+                  dataType: 'json',
+                  success: function (data) {
+                      setPopupText(data.article_list, param); //passing by reference
+                  }
+              });
+          };
+          function getNews(btnid) {
+              var country = btnid.substring(0,btnid.indexOf('newsbtn'));
+              var parag = {content: ''};
+              sendAjax(country, parag);
+              document.getElementById('newsdiv').innerHTML = `<p>${country} news: </p>`+ parag.content;
+          };
 
           function sendAjaxIssue(country, issue, text, units, dataPoint) {
             var parag = {content: ''};
@@ -192,11 +211,19 @@
                       }
                   }
 
-
-                  var list = {{ airpollution|safe }};//create if statements to assign list to appropriate template
+                  var list = [];
+                  if (issue === 'Air pollution') {
+                      list = {{ airpollution|safe }};//create if statements to assign list to appropriate template
+                  }
+                  else if (issue === 'CO2 emissions') {
+                      list = {{ co2emissions|safe }};
+                  }
                   var cur_countries = [];
                   for (i = 0; i < list.length; ++i) {
                       var country = list[i][0];
+                      if (!allCountries.includes(country)) {
+                         continue;
+                      }
                       var dataPoint = list[i][1];
                       cur_countries.push(country);
                       sendAjaxIssue(country, issue, text, units, dataPoint);
@@ -232,6 +259,7 @@
                   }
                   loop();
               };
+
           });
       </script>
   </head>
@@ -246,6 +274,7 @@
             in solving the most pressing global issues. Key: Red pins - countries where the US has a diplomatic presence;
             blue pins - countries where the US does not have a diplomatic presence.
           </p>
+          <div id='newsdiv'></div>
           <form id="countryform" style="visibility:visible;">
               <label>Explore a country: </label>
               <select id="countries" name="countries">
@@ -258,7 +287,9 @@
           <form id="issueform">
               <label>Or a global issue: </label>
               <select id="issues" name="issues">
-                  <option value="Air pollution">Air pollution</option>
+                  {% for issue in issues %}
+                      <option value="{{issue}}">{{issue}}</option>
+                  {% endfor %}
               </select>
               <input id="issueselector" type="button" value="Explore!">
           </form>
@@ -284,19 +315,8 @@
               var props = countriesNoDiplPresence[i];
               var country = props[0];
 
-              var parag = {content: ''};
-
-              $.ajax({
-                  url: '{% url "get_news" %}',
-                  data: {
-                    'country': country
-                  },
-                  async: false,
-                  dataType: 'json',
-                  success: function (data) {
-                      setPopupText(data.article_list, parag);
-                  }
-              });
+              //var parag = {content: ''};
+              //sendAjax(country, parag);
 
               var el = document.createElement('div');
               el.className = `${country}`;
@@ -310,13 +330,15 @@
               let tmpMarker = new mapboxgl.Marker(el);
               el.markerInstance = tmpMarker;
 
+
+
               //TO DO: how to make these markers present for issues
               //TO DO: should we add countries with no dipl presence to main menu?
               //TO DO: make spreadsheet with all countries and lat/long and use it instead of countries template var
               tmpMarker.setLngLat([props[2],props[1]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
                 .setHTML(`<h3 class="title${country}">No US Diplomatic Presence</h3><p>${country}</p>` +
-                parag.content +
-                `<img src="" alt="My image" width = "40" height="40">`)).addTo(map);
+                `<button id='${country}newsbtn' onclick='getNews(country)'>Get the latest news!</button>`+
+                `<img src='' alt="My image" width = "40" height="40">`)).addTo(map);
               el.addEventListener("click", e => {
                   // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
                   let coords = e.target.markerInstance.getLngLat();
@@ -336,21 +358,10 @@
               }
               var el = document.createElement('div');
 
-              var parag = {content: ''};
+              //var parag = {content: ''};
               if (document.getElementsByClassName(`${props[2]}`).length === 0) { //first emb/cons of a given country
                   //parag = `<p id='parag${props[2]}'></p>`
-                  $.ajax({
-                      url: '{% url "get_news" %}',
-                      data: {
-                        'country': props[2]
-                      },
-                      async: false,
-                      dataType: 'json',
-                      success: function (data) {
-                          setPopupText(data.article_list, parag); //passing by reference
-                      }
-                  });
-
+                  //sendAjax(props[2], parag);
                   el.id = `${props[2]}`;
               }
               //commented out code is for adding background image
@@ -384,8 +395,8 @@
               }
 
               tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-                .setHTML(`<h3 class="title${country}">` + title + `</h3><p>${props[2]}</p>` +
-                parag.content +
+                .setHTML(`<h3 class="title${props[2]}">` + title + `</h3><p>${props[2]}</p>` +
+                `<button id='${props[2]}newsbtn' onclick='getNews(this.id)'>Get the latest news!</button>` + `<div id='${props[2]}div'></div>` +
                 `<img src="" alt="My image" width = "40" height="40">`)).addTo(map);
               el.addEventListener("click", e => {
                   // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat

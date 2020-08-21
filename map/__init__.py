@@ -20,7 +20,7 @@ for row in sheet.iter_rows(min_row=3, min_col=1, max_row=sheet.max_row, max_col=
         col.append(cell.value)
     nodiplpresencelist.append(col)
 
-book = openpyxl.load_workbook('airpollution.xlsx') #will later include more comprehensive data
+book = openpyxl.load_workbook('airpollution.xlsx')
 sheet = book.active
 
 airpollution = []
@@ -30,7 +30,17 @@ for row in sheet.iter_rows(min_row=3, min_col=1, max_row=11, max_col=2):
         col.append(cell.value)
     airpollution.append(col)
 
-book = openpyxl.load_workbook('issues_summaries.xlsx') #will later include more comprehensive data
+book = openpyxl.load_workbook('co2emissions.xlsx') 
+sheet = book.active
+
+co2emissions = []
+for row in sheet.iter_rows(min_row=3, min_col=1, max_row=11, max_col=2):
+    col = []
+    for cell in row:
+        col.append(cell.value)
+    co2emissions.append(col)
+
+book = openpyxl.load_workbook('issues_summaries.xlsx')
 sheet = book.active
 
 issues_summaries = []
