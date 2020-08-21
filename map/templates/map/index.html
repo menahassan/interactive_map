@@ -275,6 +275,9 @@
       <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
         <a href="{% url 'map:hdiMap' %}"><p style="display: inline-block; color: white">Human Development Index</p></a>
       </div>
+      <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
+        <a href="{% url 'map:embassyYearOpen' %}"><p style="display: inline-block; color: white">US Embassy Established Time Lapse</p></a>
+      </div>
     
       <form id="countryform">
           <label>Explore a country: </label>
@@ -581,8 +584,6 @@
                   }
               }
           }
-
-
           mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
           var map2 = new mapboxgl.Map({
             container: 'map2',
@@ -591,9 +592,7 @@
             zoom: 1    
      
           });
-
           map2.scrollZoom.disable();
-
           var geojson = {
             type: 'FeatureCollection',
             features: [{
@@ -623,10 +622,8 @@
                 }
             }]
           };
-
             var markerLst = []
             geojson.features.forEach(function(marker) {
-
                 // make a marker for each feature and add to the map
                 //var m = new mapboxgl.Marker(el)
                 //.setLngLat(marker.geometry.coordinates)
@@ -636,13 +633,11 @@
                     // Color green for open
                     color = "#008000"
                 }
-
                 markerLst.push(
                     new mapboxgl.Marker({color: color, "icon-size": "0.5"})
                     .setLngLat(marker.geometry.coordinates)
                     .addTo(map2));
             });
-
             window.setInterval(function test(){   
                 counter = (counter + 1) % 24;
                 if(counter == 0){
@@ -665,7 +660,6 @@
                         // Color green for open
                         color = "#008000"
                     }
-
                     markerLst.push(
                         new mapboxgl.Marker({color: color, "icon-size": "0.5"})
                         .setLngLat(marker.geometry.coordinates)
@@ -673,7 +667,6 @@
                 });
             
             }, 1000);
-
             */
 
       </script>
