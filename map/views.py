@@ -5,6 +5,7 @@ from map import translated
 from . import embassies_consulates
 from . import nodiplpresencelist
 from . import airpollution
+from . import co2emissions
 from . import issues_summaries
 from . import yearEmbassyOpen
 from . import countriesHDI 
@@ -27,6 +28,10 @@ def index(request):
     for row in embassies_consulates:
         diplpresencecountries.append(row[2])
 
+    issues = []
+    for row in issues_summaries:
+        issues.append(row[0])
+
     return render(request, "map/index.html", {
     'mapbox_access_token': mapbox_access_token,
     'lang_list' : lang_list,
@@ -35,6 +40,8 @@ def index(request):
     'issues_summaries' : json.dumps(issues_summaries),
     'nodiplpresencelist': nodiplpresencelist,
     'airpollution': airpollution,
+    'co2emissions':co2emissions,
+    'issues':issues,
     })
 
 def hdiMap(request):
