@@ -2,10 +2,10 @@
 Welcome to our project!
 
 Group members:
-Elizabeth Sinyavin (esinyavin01@gmail.com or sinyavin@stanford.edu)
-Mena Hassan (menah9@gmail.com)
-Thong Do (thobado1999@gmail.com)
-Ruth Fekade (fekad22r@mtholyoke.edu)
+Elizabeth Sinyavin (esinyavin01@gmail.com or sinyavin@stanford.edu), 
+Mena Hassan (menah9@gmail.com), 
+Thong Do (thobado1999@gmail.com), 
+Ruth Fekade (fekad22r@mtholyoke.edu).
 
 With both interactive and non-interactive elements, we hope our project will be useful for the museum. 
 Highlights: 
