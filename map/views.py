@@ -7,11 +7,11 @@ from . import airpollution
 from . import co2emissions
 from . import povertyrate
 from . import issues_summaries
-from map import a
-from map import DICT
-from map import translated
-from map import countriesHDI
-from GoogleNews import GoogleNews
+#from map import a
+#from map import DICT
+#from map import translated
+#from map import countriesHDI
+#from GoogleNews import GoogleNews
 import json
 
 
@@ -44,7 +44,6 @@ def index(request):
     'airpollution': airpollution,
     'co2emissions':co2emissions,
     'povertyrate':povertyrate,
-    'lang_list' : lang_list,
     'issues':issues,
     })
 
