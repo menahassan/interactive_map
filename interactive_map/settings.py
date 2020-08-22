@@ -135,6 +135,9 @@ STATICFILES_FINDERS = [
     'django_node_assets.finders.NodeModulesFinder',
 ]
 NODE_PACKAGE_JSON = '/var/assets/package.json'
+NODE_MODULES_ROOT = '/var/assets/node_modules'
+NODE_PACKAGE_MANAGER_EXECUTABLE = '/usr/local/bin/npm'
+
 
 # Heroku: Update database configuration from $DATABASE_URL.
 import dj_database_url
