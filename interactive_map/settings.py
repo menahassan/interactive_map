@@ -131,6 +131,10 @@ STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
+STATICFILES_FINDERS = [
+    'django_node_assets.finders.NodeModulesFinder',
+]
+NODE_PACKAGE_JSON = '/var/assets/package.json'
 
 # Heroku: Update database configuration from $DATABASE_URL.
 import dj_database_url
