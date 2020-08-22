@@ -16,7 +16,7 @@ Highlights:
   1) the US's relations with each country
   2) current events pertaining to relevant global issues
 - automated non-interactive design (freestyle feature)
-- audio effects
+- language audio effects
 - time lapse on certain global issues
 
 How our project can be developed further:
