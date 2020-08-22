@@ -364,8 +364,7 @@
               //TO DO: make spreadsheet with all countries and lat/long and use it instead of countries template var
               tmpMarker.setLngLat([props[2],props[1]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
                 .setHTML(`<h3 class="title${country}">No US Diplomatic Presence</h3><p>${country}</p>` +
-                `<button id='${country}newsbtn' onclick='getNews(country)'>Get the latest news!</button>`+
-                `<img src="" alt="My image" width = "40" height="40">`)).addTo(map);
+                `<button id='${country}newsbtn' onclick='getNews(country)'>Get the latest news!</button>`)).addTo(map);
               el.addEventListener("click", e => {
                   // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
                   let coords = e.target.markerInstance.getLngLat();
@@ -378,9 +377,10 @@
               });
 
           }
-          var supportedLangs = ["en","de","es","fr","hi","id","it","ja","ko","nl","pl",
-                "pt","ru","zh-cn","zh-tw","uz","cs","bs","ro","sq","hr","az","hu"]
-            var langs = JSON.parse('{{ lang_list|safe }}');
+          //var supportedLangs = ["en","de","es","fr","hi","id","it","ja","ko","nl","pl",
+          //      "pt","ru","zh-cn","zh-tw","uz","cs","bs","ro","sq","hr","az","hu"]
+          //  var langs = JSON.parse('{{ lang_list|safe }}');
+        
           //sets markers for all other countries
           for(var i = 0; i < embassies.length; i++) {
               props = embassies[i];
@@ -388,14 +388,10 @@
                   continue;
               }
               var el = document.createElement('div');
-
-              //var parag = {content: ''};
+            
               if (document.getElementsByClassName(`${props[2]}`).length === 0) { //first emb/cons of a given country
-                  //parag = `<p id='parag${props[2]}'></p>`
-                  //sendAjax(props[2], parag);
                   el.id = `${props[2]}`;
               }
-              //commented out code is for adding background image
               el.className = `${props[2]}`; //used to be set to 'marker'
               //red box image
               el.style.backgroundColor = 'rgb(139, 0, 0)';
@@ -404,7 +400,6 @@
               el.style.borderRadius = '50%';
               el.style.border = '0.25px solid';
 
-              //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
               let tmpMarker = new mapboxgl.Marker(el);
               el.markerInstance = tmpMarker;
               var title = '';
@@ -425,20 +420,20 @@
                   title = `${props[2]}.`; //just to be safe -- change later
               }
 
-              var btn = '<div style="margin: 0 auto; margin-top: 5px; width: 110px; text-align: center; cursor: pointer; background-color: black" onclick="myfunc('+props[13]+')"><p style="color: white">Play Language</p></div>'
+              //var btn = '<div style="margin: 0 auto; margin-top: 5px; width: 110px; text-align: center; cursor: pointer; background-color: black" onclick="myfunc('+props[13]+')"><p style="color: white">Play Language</p></div>'
 
-              function myfunc(x){
-                  var msg = new SpeechSynthesisUtterance(); 
-                    msg.text = langs[x].word;
-                    msg.lang = langs[x].language;
-                    if(!supportedLangs.includes(langs[x].language)){
-                        window.alert("Sorry! "+ langs[x].langFull.toString() + " is not currently supported.");
-                    }
-                    else{
-                        window.speechSynthesis.speak(msg);
-                    }
+              //function myfunc(x){
+              //    var msg = new SpeechSynthesisUtterance(); 
+              //      msg.text = langs[x].word;
+              //      msg.lang = langs[x].language;
+              //      if(!supportedLangs.includes(langs[x].language)){
+              //          window.alert("Sorry! "+ langs[x].langFull.toString() + " is not currently supported.");
+              //      }
+              //      else{
+              //          window.speechSynthesis.speak(msg);
+              //      }
                     //window.alert(msg.lang);
-              }
+              //}
 
               tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
                 .setHTML(`<h3 class="title${props[2]}">` + title + `</h3><p>${props[2]}</p>` +
