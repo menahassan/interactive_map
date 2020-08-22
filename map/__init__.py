@@ -76,27 +76,27 @@ for row in sheet.iter_rows(min_row=3, min_col=1, max_row=5, max_col=4):
         col.append(cell.value)
     issues_summaries.append(col)
 
-for i in a:
-    langs = {}
-    translator = Translator()
-    translation = translator.translate('hello', dest=str(i[17]).lower())
-    txt = translation.text
-    langs["word"] = txt
-    langs["language"] = str(i[17])
-    langs["langFull"]=str(i[16])
-    translated[i[13]] = langs
+#for i in a:
+#    langs = {}
+#    translator = Translator()
+#    translation = translator.translate('hello', dest=str(i[17]).lower())
+#    txt = translation.text
+#    langs["word"] = txt
+#    langs["language"] = str(i[17])
+#    langs["langFull"]=str(i[16])
+#    translated[i[13]] = langs
 #arr[0] is ['Active', 'AF', "Cote d'Ivoire"]
 #arr[0][0] is 'Active'
 
 
 # Get the Human development Index of countries from 1990 - 2018
-book2 = openpyxl.load_workbook('Human_Development_Index.xlsx')
+#book2 = openpyxl.load_workbook('Human_Development_Index.xlsx')
 
-sheet2 = book2.active
-countriesHDI = {} #keys: countries initial , values: first element is the name of the country, the rest is HDI starting from 1990 - 2018
+#sheet2 = book2.active
+#countriesHDI = {} #keys: countries initial , values: first element is the name of the country, the rest is HDI starting from 1990 - 2018
 
-for row in sheet2.iter_rows(min_row=3, max_row = 197, min_col=1, max_col=32, values_only=True):
-    countryHDI = [row[1]]
-    for hdi in row[3:]:
-            countryHDI = countryHDI + [hdi]
-    countriesHDI[row[2]] = countryHDI
+#for row in sheet2.iter_rows(min_row=3, max_row = 197, min_col=1, max_col=32, values_only=True):
+#    countryHDI = [row[1]]
+#    for hdi in row[3:]:
+#            countryHDI = countryHDI + [hdi]
+#    countriesHDI[row[2]] = countryHDI
