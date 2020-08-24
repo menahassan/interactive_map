@@ -29,6 +29,6 @@ How our project can be developed further:
 
 Important files:
 - map/views.py - renders html template 
-- map/templates/map/index.html - html to be rendered
+- map/templates/map/index.html - main html to be rendered
 - map/news.py - uses the GoogleNews module to search the web for news
-
+- data folder - holds all data visualization map files
