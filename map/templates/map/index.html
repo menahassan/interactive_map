@@ -1,12 +1,11 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
       <title>Map</title>
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
       <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js'></script>
-      <script src="https://cdn.jsdelivr.net/npm/translate@1/translate.min.js"></script>
       <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
       <link rel="stylesheet" type="text/css" href="{% static 'map/styles.css' %}">
       <script>
@@ -128,7 +127,7 @@
           //sends an ajax request to retrieve news about country
           function sendAjax(country, param) {
               $.ajax({
-                  url: '{% url "get_news" %}',
+                  url: '{% url "map:get_news" %}',
                   data: {
                     'country': country
                   },
@@ -155,7 +154,7 @@
                 document.getElementById('United States').style.visibility = 'visible';
             }
             $.ajax({
-                url: '{% url "get_news_issue" %}',
+                url: '{% url "map:get_news_issue" %}',
                 data: {
                   'country': country,
                   'issue' : issue
@@ -282,6 +281,12 @@
             in solving the most pressing global issues. Key: Red pins - countries where the US has a diplomatic presence;
             blue pins - countries where the US does not have a diplomatic presence.
           </p>
+          <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
+                <a href="{% url 'data:demo' %}"><p style="display: inline-block; color: white">World Population Data</p></a>
+            </div>
+            <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
+                <a href="{% url 'data:human_trafficking' %}"><p style="display: inline-block; color: white">Human Trafficking Data</p></a>
+            </div>
           <div id='newsdiv'></div>
           <form id="countryform" style="visibility:visible;">
               <label>Explore a country: </label>
@@ -309,10 +314,9 @@
       <script>
           mapboxgl.accessToken = 'pk.eyJ1IjoiZXNpbnlhdmluIiwiYSI6ImNrY3F0b2E0eDE2dWUycm8ycnZiaWFnMGoifQ.fNIknam7PYZohKbgfigHvA';
           var map = new mapboxgl.Map({
-            pitch:0.01,
             container: 'map',
             style: 'mapbox://styles/mapbox/streets-v11',
-            center: [35.385076, 36.983267],
+            center: [12.550343, 55.665957],
             zoom: 2
           });
 
@@ -412,37 +416,9 @@
                   title = `US Embassy branch office in ${city}`;
               }
               else {
-                  d = `props[2]`; //just to be safe -- change later
+                  title = `${props[2]}.`; //just to be safe -- change later
               }
 
-              var description ='<p>' + d + props[3]+ '</p>';
-              var el = document.createElement('div');
-              var btn = '<div style="margin: 0 auto; width: 110px; text-align: center; cursor: pointer; background-color: black" onclick="myfunc('+props[13]+')"><p style="color: white">Play Language</p></div>'
-
-              function myfunc(x){
-                  var msg = new SpeechSynthesisUtterance(); 
-                    msg.text = langs[x].word;
-                    msg.lang = langs[x].language;
-                    if(!supportedLangs.includes(langs[x].language)){
-                        window.alert("Sorry! "+ langs[x].langFull.toString() + " is not currently supported.");
-                    }
-                    else{
-                        window.speechSynthesis.speak(msg);
-                    }
-                    //window.alert(msg.lang);
-              }
-              
-              el.style.backgroundImage = 'url(https://i.pinimg.com/564x/f4/a8/6a/f4a86a209ba10ab95afcfd4ed29f3acf.jpg)';
-              el.style.width = '15px';
-              el.style.height = '15px';
-              el.style.borderRadius = '50%';
-              el.style.border = '0.25px solid';
-              el.id = `${props[2]}`;
-              el.className = `${props[2]}`;
-              
-              //var marker = new mapboxgl.Marker().setLngLat([props[14],props[13]]).addTo(map);
-              let tmpMarker = new mapboxgl.Marker(el);
-              el.markerInstance = tmpMarker;
               tmpMarker.setLngLat([props[14],props[13]]).setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
                 .setHTML(`<h3 class="title${props[2]}">` + title + `</h3><p>${props[2]}</p>` +
                 `<button id='${props[2]}newsbtn' onclick='getNews(this.id)'>Get the latest news!</button>` + `<div id='${props[2]}div'></div>` +
@@ -450,15 +426,12 @@
               el.addEventListener("click", e => {
                   // here's where I can use the "markerInstance" I added earlier to then expose the getLngLat
                   let coords = e.target.markerInstance.getLngLat();
-              //l.markerInstance = tmpMarker2;
-                //tmpMarker2.setLngLat(coords).addTo(map);
                   //tell the map to center on the marker coordinates
                   map.flyTo({
                       center: coords,
                       speed: 0.6,
-                      zoom: 6
+                      zoom: 5
                   });
-                  
               });
           }
       </script>

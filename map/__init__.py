@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import openpyxl
 
 book = openpyxl.load_workbook('Embassies Consulates and Missions Lat Longs.xlsx')
@@ -61,3 +59,8 @@ for row in sheet.iter_rows(min_row=3, min_col=1, max_row=5, max_col=4):
     for cell in row:
         col.append(cell.value)
     issues_summaries.append(col)
+
+#arr[0] is ['Active', 'AF', "Cote d'Ivoire"]
+#arr[0][0] is 'Active'
+
+#book.save('iterbycols.xlsx')

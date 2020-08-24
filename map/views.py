@@ -8,25 +8,6 @@ from . import co2emissions
 from . import povertyrate
 from . import issues_summaries
 import json
-from GoogleNews import GoogleNews
-
-class NewsArticles():
-        def __init__(self, country):
-            self.country = country
-
-        def news(self):
-            articles = []
-            googlenews = GoogleNews(lang='en')
-            googlenews.search('USA ' +  self.country + " embassy")
-            lst = googlenews.result()
-
-            for i in range(3):
-                title = lst[i]['title']
-                date = lst[i]['date']
-                link = lst[i]['link']
-                articles = articles + [(title, link, date)]
-            
-            return articles
 
 #btw, no more need for dict
 # Create your views here.
