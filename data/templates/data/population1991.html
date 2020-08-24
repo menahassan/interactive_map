@@ -1,0 +1,325 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data</title>
+    <meta charset="utf-8">
+    <title>World Population (1991)</title>
+    <style type="text/css">
+        body {
+            color: #5d5d5d;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin: auto;
+            margin-top: 50px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        
+        /* Specific mapael css class are below
+         * 'mapael' class is added by plugin
+        */
+
+        .mapael .map {
+            position: relative;
+        }
+
+        .mapael .mapTooltip {
+            position: absolute;
+            background-color: #fff;
+            moz-opacity: 0.70;
+            opacity: 0.70;
+            filter: alpha(opacity=70);
+            border-radius: 10px;
+            padding: 10px;
+            z-index: 1000;
+            max-width: 200px;
+            display: none;
+            color: #343434;
+        }
+
+        .btn{
+            font-family: Courier New, Courier, monospace; 
+            display: inline-block; 
+            width: 80px; 
+            height: 40px; 
+            text-align: center; 
+            cursor: pointer; 
+            background-color: #78c0f0; 
+            margin-top: 10;
+            overflow: hidden;
+        }
+        .btn-text{
+            display: inline-block; 
+            color: white; 
+            font-weight: bold;
+        }
+        .btn-container{
+            margin-top: 20;
+        }
+        .btn-selected{
+            font-family: Courier New, Courier, monospace; 
+            display: inline-block; 
+            width: 80px; 
+            height: 40px; 
+            text-align: center; 
+            cursor: pointer; 
+            background-color: #17346e; 
+            margin-top: 10;
+            overflow: hidden;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"
+            charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js" charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/jquery.mapael.js" %}' charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/maps/france_departments.js" %}' charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/maps/world_countries.js" %}' charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/maps/usa_states.js" %}' charset="utf-8"></script>
+
+    <script type="text/javascript">
+    var popList = {{ pop|safe }};
+        $(function () {
+            var list = {}
+            for(let k in popList){
+                list[k] = {
+                    "value": popList[k][12],
+                    "href": "#",
+                    "tooltip": {
+                        "content": "<span style=\"font-weight:bold;\">"+ popList[k][0] +"<\/span><br \/>Population : " + popList[k][12]
+                    }
+                }
+            }
+
+
+            $(".mapcontainer").mapael({
+                map: {
+                    name: "world_countries",
+                    defaultArea: {
+                        attrs: {
+                            stroke: "#fff",
+                            "stroke-width": 1
+                        }
+                    }
+                },
+                legend: {
+                    area: {
+                        title: "Countries population",
+                        slices: [
+                            {
+                                max: 1000000,
+                                attrs: {
+                                    fill: "#d9effc"
+                                },
+                                label: "Less than 1 million inhabitants"
+                            },
+                            {
+                                max: 5000000,
+                                attrs: {
+                                    fill: "#7bb6e8"
+                                },
+                                label: "Between 1 million and 5 million inhabitants"
+                            },
+                            {
+                                min: 5000000,
+                                max: 10000000,
+                                attrs: {
+                                    fill: "#286ead"
+                                },
+                                label: "Between 5 million and 10 million inhabitants"
+                            },
+                            {
+                                min: 10000000,
+                                max: 30000000,
+                                attrs: {
+                                    fill: "#1d5485"
+                                },
+                                label: "Between 10 million and 30 million inhabitants"
+                            },
+                            {
+                                min: 30000000,
+                                max: 50000000,
+                                attrs: {
+                                    fill: "#143a5c"
+                                },
+                                label: "Between 30 million and 50 million inhabitants"
+                            },
+                            {
+                                min: 50000000,
+                                max: 100000000,
+                                attrs: {
+                                    fill: "#0d2840"
+                                },
+                                label: "Between 50 million and 100 million inhabitants"
+                            },
+                            {
+                                min: 100000000,
+                                attrs: {
+                                    fill: "#000000"
+                                },
+                                label: "More than 100 million inhabitants"
+                            }
+                        ]
+                    },
+                },
+                areas: list
+            });
+        
+        });
+    </script>
+
+</head>
+
+<body>
+<div class="container">
+
+    <h1>World Population (1991)</h1>
+
+    <div class="mapcontainer">
+        <div class="map">
+            <span>Oh no! Our map isn't working right now.</span>
+        </div>
+        <div class="areaLegend">
+            <span>Please check back later.</span>
+        </div>
+    </div>
+</div>
+
+</div>
+<div class="btn-container">
+    <h2>Explore more years!</h2>
+    <div class="btn">
+        <a href="{% url 'data:population1980' %}"><p class="btn-text">1980</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1981' %}"><p class="btn-text">1981</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1982' %}"><p class="btn-text">1982</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1983' %}"><p class="btn-text">1983</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1984' %}"><p class="btn-text">1984</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1985' %}"><p class="btn-text">1985</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1986' %}"><p class="btn-text">1986</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1987' %}"><p class="btn-text">1987</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1988' %}"><p class="btn-text">1988</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1989' %}"><p class="btn-text">1989</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1990' %}"><p class="btn-text">1990</p></a>
+    </div>
+    <div class="btn-selected">
+        <a href="{% url 'data:population1991' %}"><p class="btn-text">1991</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1992' %}"><p class="btn-text">1992</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1993' %}"><p class="btn-text">1993</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1994' %}"><p class="btn-text">1994</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1995' %}"><p class="btn-text">1995</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1996' %}"><p class="btn-text">1996</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1997' %}"><p class="btn-text">1997</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1998' %}"><p class="btn-text">1998</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population1999' %}"><p class="btn-text">1999</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2000' %}"><p class="btn-text">2000</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2001' %}"><p class="btn-text">2001</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2002' %}"><p class="btn-text">2002</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2003' %}"><p class="btn-text">2003</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2004' %}"><p class="btn-text">2004</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2005' %}"><p class="btn-text">2005</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2006' %}"><p class="btn-text">2006</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2007' %}"><p class="btn-text">2007</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2008' %}"><p class="btn-text">2008</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2009' %}"><p class="btn-text">2009</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2010</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2011</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2012</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2013</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2014</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2015</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2016</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2017</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:population2010' %}"><p class="btn-text">2018</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:index' %}"><p class="btn-text">2019</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'data:demo' %}"><p class="btn-text">Demo!</p></a>
+    </div>
+</div>
+
+</body>
+</html>
