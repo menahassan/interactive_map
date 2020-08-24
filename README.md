@@ -32,3 +32,14 @@ Important files:
 - map/templates/map/index.html - main html to be rendered
 - map/news.py - uses the GoogleNews module to search the web for news
 - data folder - holds all data visualization map files
+
+Images and Demos:
+- Embassy Map with markers (red for embassies/consulates, blue for countries in which the US does not currently have a diplomatic presence):
+![Embassy Map](https://github.com/menahassan/images/blob/master/embassy%20markers.PNG)
+- A marker popup showing the embassy/consulate, name country, and buttons to display the news or play the primary language:
+![Popup](https://github.com/menahassan/images/blob/master/marker%20popup.png)
+- A menu to allow the user to explore a specific country, global issue, or loop through embassies randomly with freestyle mode
+![Explore Menu](https://github.com/menahassan/images/blob/master/exploremenu.png)
+- Display if a user were to choose a global issue (ex: air pollution would show only the top 10 most polluted countries)
+![Air Pollution](https://github.com/menahassan/images/blob/master/airpoluutiontitle.PNG)
+![Air Pollution](https://github.com/menahassan/images/blob/master/airPoluutionmap.png)
