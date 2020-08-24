@@ -41,6 +41,7 @@ Images and Demos:
 - A menu to allow the user to explore a specific country, global issue, or loop through embassies randomly with freestyle mode
 ![Explore Menu](https://github.com/menahassan/images/blob/master/exploremenu.png)
 - Display if a user were to choose a global issue (ex: air pollution would show only the top 10 most polluted countries)
+
 ![Air Pollution](https://github.com/menahassan/images/blob/master/airpoluutiontitle.PNG)
 ![Air Pollution](https://github.com/menahassan/images/blob/master/airPoluutionmap.png)
 - Popup if a user clicks on a global issue country marker (shows global issue data and top global news issue article in that country)
