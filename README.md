@@ -57,4 +57,4 @@ Images and Demos:
 - Data map visualizes human trafficking data in 2018 
 ![human trafficking](https://github.com/menahassan/images/blob/master/humanTraficking.png)
 - Data map shows the Human Development Index change for each country (from 1990 to 2018)
-![hdiMap](https://github.com/menahassan/images/blob/master/hdiMap.gif
+![hdiMap](https://github.com/menahassan/images/blob/master/hdiMap.gif)
