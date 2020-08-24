@@ -48,7 +48,7 @@ Images and Demos:
 ![Air Pollution Marker](https://github.com/menahassan/images/blob/master/airpollutionmarker.png)
 - Freestyle Mode (loops through markers randomly without user interaction)
 ![freestyle gif](https://github.com/menahassan/images/blob/master/freestyle_mode.gif)
-- Displays top 2 news articles in a country when user clicks "Get latest news" on popup
+- Displays top 2 news articles relating to US relations with a country when user clicks "Get latest news" on popup
 ![news](https://github.com/menahassan/images/blob/master/news.png)
 - Data map shows the years each embassy opened (from 1925 to 2020)
 ![embassy_years](https://github.com/menahassan/images/blob/master/embassy_map.gif)
