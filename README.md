@@ -43,3 +43,15 @@ Images and Demos:
 - Display if a user were to choose a global issue (ex: air pollution would show only the top 10 most polluted countries)
 ![Air Pollution](https://github.com/menahassan/images/blob/master/airpoluutiontitle.PNG)
 ![Air Pollution](https://github.com/menahassan/images/blob/master/airPoluutionmap.png)
+- Popup if a user clicks on a global issue country marker (shows global issue data and top global news issue article in that country)
+![Air Pollution Marker](https://github.com/menahassan/images/blob/master/airpollutionmarker.png)
+- Freestyle Mode (loops through markers randomly without user interaction)
+![freestyle gif](https://github.com/menahassan/images/blob/master/freestyle_mode.gif)
+- Displays top 2 news articles in a country when user clicks "Get latest news" on popup
+![news](https://github.com/menahassan/images/blob/master/news.png)
+- Data map shows the years each embassy opened (from 1925 to 2020)
+![embassy_years](https://github.com/menahassan/images/blob/master/embassy_map.gif)
+- Data map shows the population change for each country around the world (from 1980 to 2020)
+![world Population](https://github.com/menahassan/images/blob/master/world_pop.gif)
+- Data map visualizes human trafficking data in 2018 
+![human trafficking](https://github.com/menahassan/images/blob/master/humanTraficking.png)
