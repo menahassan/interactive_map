@@ -4,6 +4,7 @@ from django.conf.urls import url
 from . import views
 from . import news
 
+app_name = "map"
 urlpatterns = [
     path('', views.index, name='index'),
     path('index', views.index, name='index'),
