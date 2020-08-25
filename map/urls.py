@@ -1,6 +1,6 @@
 from django.urls import path
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls import url
-
 from . import views
 from . import news
 
@@ -13,3 +13,5 @@ urlpatterns = [
     path('hdiMap', views.hdiMap, name='hdiMap'),
     path('embassyYearOpen', views.embassyYearOpen, name='embassyYearOpen'),
 ]
+
+urlpatterns += staticfiles_urlpatterns()
