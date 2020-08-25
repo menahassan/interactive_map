@@ -196,6 +196,7 @@
               };
 
               document.querySelector('#issueselector').onclick = function() {
+                  document.getElementById('processing').innerHTML = 'Processing... (May take a few seconds)';
                   for (i = 0; i < allCountries.length; ++i) {
                       closePopups(allCountries[i]);
                   }
@@ -244,18 +245,21 @@
                   document.getElementById("fsmodebtn").style.visibility = 'hidden';
                   document.getElementById('stopbtn').style.visibility = 'hidden';
                   document.getElementById('newsdiv').innerHTML = '';
+                  document.getElementById('processing').innerHTML = '';
 
               };
               //loops through each country, zooming into its embassy/consulates.
               //stops when loop is over
               document.querySelector('#fsmodebtn').onclick = function() {
-                  document.getElementById('map').scrollIntoView();
+                  document.getElementById('processing').innerHTML = 'Processing... (May take a few seconds)';
+                  document.getElementById('processing').scrollIntoView();
                   document.getElementById('newsdiv').innerHTML = '';
                   document.getElementById('United States').style.visibility = 'hidden';
                   var old = "";
                   var cur = chooseCountry();
                   function loop() {
                       if (abort) {
+                          document.getElementById('processing').innerHTML = '';
                           return;
                       }
                       setTimeout(function() {
@@ -318,6 +322,7 @@
           </form>
           <button id="fsmodebtn" style="visibility:visible;">Freestyle Mode</button>
           <button id="stopbtn" style="visibility:visible;" onclick="abort = true">Stop</button>
+          <p id="processing"></p>
       </div>
       <div id='map' style='margin-left: 25px; margin-right: 25px; height: 750px;'></div>
       <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
