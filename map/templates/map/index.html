@@ -127,7 +127,7 @@
           //sends an ajax request to retrieve news about country
           function sendAjax(country, param) {
               $.ajax({
-                  url: '{% url "get_news" %}',
+                  url: '{% url "map:get_news" %}',
                   data: {
                     'country': country
                   },
@@ -154,7 +154,7 @@
                 document.getElementById('United States').style.visibility = 'visible';
             }
             $.ajax({
-                url: '{% url "get_news_issue" %}',
+                url: '{% url "map:get_news_issue" %}',
                 data: {
                   'country': country,
                   'issue' : issue
