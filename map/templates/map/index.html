@@ -273,6 +273,7 @@
   <body>
       <div id='intro' style='margin-left:25px'>
           <h1 id='header' style='text-align:center;'>American Diplomatic Presence</h1>
+          <h3 id='groupnames' style='text-align:center;'>Group Names: Elizabeth Sinyavin, Mena Hassan, Thong Do, Ruth Fekade</h3>
           <button id='reload' style="visibility:hidden;" onclick='reload()'>Back</button>
           <p id='description'>
             With 274 embassies, consulates, and other diplomatic missions around the globe,
@@ -289,10 +290,10 @@
             </div>
             <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
                 <a href="{% url 'map:hdiMap' %}"><p style="display: inline-block; color: white">Human Development Index</p></a>
-            </div> 
+            </div>
             <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
                 <a href="{% url 'map:embassyYearOpen' %}"><p style="display: inline-block; color: white">Embassies Year Opened</p></a>
-            </div> 
+            </div>
           <div id='newsdiv'></div>
           <form id="countryform" style="visibility:visible;">
               <label>Explore a country: </label>
