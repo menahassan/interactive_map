@@ -1,0 +1,223 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Human Trafficking Data Map</title>
+    <style type="text/css">
+        body {
+            color: #5d5d5d;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin: auto;
+            margin-top: 50px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        
+        /* Specific mapael css class are below
+         * 'mapael' class is added by plugin
+        */
+
+        .mapael .map {
+            position: relative;
+        }
+
+        .mapael .mapTooltip {
+            position: absolute;
+            background-color: #fff;
+            moz-opacity: 0.70;
+            opacity: 0.70;
+            filter: alpha(opacity=70);
+            border-radius: 10px;
+            padding: 10px;
+            z-index: 1000;
+            max-width: 200px;
+            display: none;
+            color: #343434;
+        }
+
+        .btn{
+            font-family: Courier New, Courier, monospace; 
+            display: inline-block; 
+            width: 120px; 
+            height: auto; 
+            text-align: center; 
+            cursor: pointer; 
+            background-color: #960202; 
+            margin-top: 10;
+            overflow: hidden;
+        }
+        .btn-text{
+            display: inline-block; 
+            color: white; 
+            font-weight: bold;
+            width: 80px;
+            text-align: center;
+        }
+        .btn-container{
+            margin-top: 20;
+        }
+        .btn-selected{
+            font-family: Courier New, Courier, monospace; 
+            display: inline-block; 
+            width: 80px; 
+            height: 40px; 
+            text-align: center; 
+            cursor: pointer; 
+            background-color: #17346e; 
+            margin-top: 10;
+            overflow: hidden;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"
+            charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js" charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/jquery.mapael.js" %}' charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/maps/france_departments.js" %}' charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/maps/world_countries.js" %}' charset="utf-8"></script>
+    <script src='{% static "/jquery-mapael/js/maps/usa_states.js" %}' charset="utf-8"></script>
+
+    <script type="text/javascript">
+
+        var traffickList = {{ hTrafficking|safe }};
+        $(function () {
+            var list = {}
+            for(let k in traffickList){
+                list[k] = {
+                    "value": traffickList[k][1],
+                    "href": "#",
+                    "tooltip": {
+                        "content": "<span style=\"font-weight:bold;\">"+ traffickList[k][0] +"<\/span><br \/>Prevalence (per 1,000 population) : " + traffickList[k][1] + "<br \/>Total number of victims: " + traffickList[k][2] 
+                    }
+                }
+            }
+
+
+            $(".mapcontainer").mapael({
+                map: {
+                    name: "world_countries",
+                    defaultArea: {
+                        attrs: {
+                            stroke: "#fff",
+                            "stroke-width": 1
+                        }
+                    }
+                },
+                legend: {
+                    area: {
+                        title: "Prevalence (per 1,000 population)",
+                        slices: [
+                            {
+                                max: 3,
+                                attrs: {
+                                    fill: "#f7baba"
+                                },
+                                label: "Less than 3"
+                            },
+                            {
+                                min: 3,
+                                max: 6,
+                                attrs: {
+                                    fill: "#f07878"
+                                },
+                                label: "Between 3 and 6"
+                            },
+                            {
+                                min: 6,
+                                max: 10,
+                                attrs: {
+                                    fill: "#f03535"
+                                },
+                                label: "Between 6 and 10"
+                            },
+                            {
+                                min: 10,
+                                max: 20,
+                                attrs: {
+                                    fill: "#fc0000"
+                                },
+                                label: "Between 10 and 20"
+                            },
+                            {
+                                min: 20,
+                                max: 90,
+                                attrs: {
+                                    fill: "#960202"
+                                },
+                                label: "Between 20 and 90"
+                            },
+                            {
+                                min: 90,
+                                attrs: {
+                                    fill: "#630404"
+                                },
+                                label: "More than 90"
+                            },
+                            
+                            {
+                                    attrs: {
+                                        fill: "#000000"
+                                    },
+                                    label: "No data"
+                                },
+                        ]
+                    },
+                },
+                areas: list
+            });
+        
+        });
+
+
+        
+    </script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1 id="year">Human Trafficking Data (2018)</h1>
+
+    <h4>This map shows the prevalence of human trafficking (number of victims per 1,000 population) in countrries around the world in 2018.
+     The total number of victims per country can be seen when a country is clicked.
+    Human Trafficking can refer to both sex trafficking and compelled labor. The Department of State leads the U.S. global engagement to combat 
+    human trafficking and supports the coordination of anti-trafficking efforts across the U.S. government.
+     </h4>
+    <div class="mapcontainer">
+        <div class="map">
+            <span>Oh no! Our map isn't working right now.</span>
+        </div>
+        <div class="areaLegend">
+            <span>Please check back later.</span>
+        </div>
+    </div>
+    <p>Source of data is the 2018 Global Human Trafficking Index</p>
+</div>
+
+</div>
+
+<div class="btn-container">
+    <h2>Explore more issues!</h2>
+    <div class="btn">
+        <a href="{% url 'data:demo' %}"><p class="btn-text">World Population</p></a>
+    </div>
+    <div class="btn">
+        <a href="{% url 'map:hdiMap' %}"><p class="btn-text">Human Development Index</p></a>
+    </div>
+    <div class="btn">
+                <a href="{% url 'map:index' %}"><p class="btn-text">Back to Embassy Map</p></a>
+     </div>
+</div>
+</body>
+</html> 

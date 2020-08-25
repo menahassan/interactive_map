@@ -6,6 +6,8 @@ from . import nodiplpresencelist
 from . import airpollution
 from . import co2emissions
 from . import povertyrate
+from map import DICT
+from map import countriesHDI
 from . import issues_summaries
 import json
 
@@ -39,4 +41,16 @@ def index(request):
     'co2emissions':co2emissions,
     'povertyrate':povertyrate,
     'issues':issues,
+    })
+
+def hdiMap(request):
+    hdi = json.dumps(countriesHDI)
+    return render(request, "map/hdiMap.html", {
+    'countriesHDI': hdi,
+    })
+
+def embassyYearOpen(request):
+    yearOpen = json.dumps(DICT)
+    return render(request, "map/embassyYearOpen.html", {
+    'embassiesData': yearOpen,
     })

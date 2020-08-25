@@ -281,6 +281,18 @@
             in solving the most pressing global issues. Key: Red pins - countries where the US has a diplomatic presence;
             blue pins - countries where the US does not have a diplomatic presence.
           </p>
+          <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
+                <a href="{% url 'data:demo' %}"><p style="display: inline-block; color: white">World Population Data</p></a>
+            </div>
+            <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
+                <a href="{% url 'data:human_trafficking' %}"><p style="display: inline-block; color: white">Human Trafficking Data</p></a>
+            </div>
+            <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
+                <a href="{% url 'map:hdiMap' %}"><p style="display: inline-block; color: white">Human Development Index</p></a>
+            </div> 
+            <div style="font-family: Courier New, Courier, monospace; display: inline-block; width: 110px; text-align: center; cursor: pointer; background-color: #4a57ed">
+                <a href="{% url 'map:embassyYearOpen' %}"><p style="display: inline-block; color: white">Embassies Year Opened</p></a>
+            </div> 
           <div id='newsdiv'></div>
           <form id="countryform" style="visibility:visible;">
               <label>Explore a country: </label>
