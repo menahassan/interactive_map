@@ -145,7 +145,7 @@
               var country = btnid.substring(0,btnid.indexOf('newsbtn'));
               var parag = {content: ''};
               sendAjax(country, parag);
-              document.getElementById('newsdiv').innerHTML = `<p>The latest news from ${country}: </p>`+ parag.content;
+              document.getElementById('newsdiv').innerHTML = `<p>The latest news about US relations with ${country}: </p>`+ parag.content;
           };
 
           //sends an ajax request to retrieve news about country and issue
